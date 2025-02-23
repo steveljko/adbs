@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5509c09a876a03acdf216a750aaf5a8e",
+    "content-hash": "e7087fd885aa735845f10f546d134969",
     "packages": [
         {
             "name": "brick/math",
@@ -2005,6 +2005,71 @@
                 }
             ],
             "time": "2024-12-08T08:18:47+00:00"
+        },
+        {
+            "name": "mauricius/laravel-htmx",
+            "version": "v0.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mauricius/laravel-htmx.git",
+                "reference": "fac430dc6391be6739d63677cad9087d8ea0c374"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mauricius/laravel-htmx/zipball/fac430dc6391be6739d63677cad9087d8ea0c374",
+                "reference": "fac430dc6391be6739d63677cad9087d8ea0c374",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "illuminate/contracts": "^9.0|^10.0|^11.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^6.0|^7.0|^8.1",
+                "orchestra/testbench": "^7.0|^8.0|^9.0",
+                "phpunit/phpunit": "^9.5|^10.0",
+                "spatie/phpunit-snapshot-assertions": "^4.2|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "LaravelHtmx": "Mauricius\\LaravelHtmx\\Facades\\LaravelHtmx"
+                    },
+                    "providers": [
+                        "Mauricius\\LaravelHtmx\\LaravelHtmxServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mauricius\\LaravelHtmx\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "mauricius",
+                    "email": "maurizio.bonani@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel helper library for Htmx",
+            "homepage": "https://github.com/mauricius/laravel-htmx",
+            "keywords": [
+                "htmx",
+                "laravel",
+                "laravel-htmx"
+            ],
+            "support": {
+                "issues": "https://github.com/mauricius/laravel-htmx/issues",
+                "source": "https://github.com/mauricius/laravel-htmx/tree/v0.7.0"
+            },
+            "time": "2024-12-20T19:57:27+00:00"
         },
         {
             "name": "monolog/monolog",
