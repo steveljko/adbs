@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e7087fd885aa735845f10f546d134969",
+    "content-hash": "4cf3f7e74ab893a54c8d2d85966f8344",
     "packages": [
         {
             "name": "brick/math",
@@ -8769,6 +8769,76 @@
                 }
             ],
             "time": "2024-10-09T05:16:32+00:00"
+        },
+        {
+            "name": "sinnbeck/laravel-dom-assertions",
+            "version": "v1.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sinnbeck/laravel-dom-assertions.git",
+                "reference": "ff847b0b9becd8002b077144b8116f8ae944ab89"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sinnbeck/laravel-dom-assertions/zipball/ff847b0b9becd8002b077144b8116f8ae944ab89",
+                "reference": "ff847b0b9becd8002b077144b8116f8ae944ab89",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "illuminate/testing": "^9.0|^10.0|^11.0",
+                "php": "^8.0",
+                "symfony/css-selector": "^6.0|^7.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.2",
+                "nunomaduro/larastan": "^2.2",
+                "orchestra/testbench": "^7.0|^8.0|^9.0",
+                "pestphp/pest": "^1.0|^2.34",
+                "phpstan/extension-installer": "^1.2",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.1",
+                "vimeo/psalm": "^4.29|^5.22"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Sinnbeck\\DomAssertions\\DomAssertionsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sinnbeck\\DomAssertions\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "René Sinnbeck",
+                    "email": "rene.sinnbeck@gmail.com",
+                    "homepage": "https://sinnbeck.dev",
+                    "role": "Developer"
+                }
+            ],
+            "homepage": "https://github.com/sinnbeck/laravel-dom-assertions",
+            "keywords": [
+                "assertions",
+                "blade",
+                "dom",
+                "laravel",
+                "view"
+            ],
+            "support": {
+                "issues": "https://github.com/sinnbeck/laravel-dom-assertions/issues",
+                "source": "https://github.com/sinnbeck/laravel-dom-assertions/tree/v1.5.4"
+            },
+            "time": "2024-08-28T06:25:47+00:00"
         },
         {
             "name": "staabm/side-effects-detector",
