@@ -62,6 +62,16 @@ htmx.on('htmx:beforeSwap', (e) => {
     }
 });
 
+document.addEventListener('htmx:responseError', function (event) {
+    const errors = JSON.parse(event.detail.xhr.response).errors;
+
+    for (const [field, messages] of Object.entries(errors)) {
+        const container = document.querySelector(`#${field}-error`);
+        container.classList.remove('hidden');
+        container.innerHTML = messages[0];
+    }
+});
+
 function initializeTagInput() {
     // Elements
     const elements = {

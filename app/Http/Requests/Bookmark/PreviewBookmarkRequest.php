@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Bookmark;
 
-use Closure;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\View;
-use Illuminate\Validation\ValidationException;
-use Mauricius\LaravelHtmx\Http\HtmxRequest;
-use Mauricius\LaravelHtmx\Http\HtmxResponse;
 
 final class PreviewBookmarkRequest extends FormRequest
 {
@@ -44,35 +41,27 @@ final class PreviewBookmarkRequest extends FormRequest
         return [
             function (Validator $validator) {
                 // Check if website is reachable.
-                try {
-                    Http::get($this->url);
-                } catch (ConnectionException $e) {
-                    $validator->errors()->add(
-                        'url',
-                        __('validation.website_unreachable')
-                    );
+                if ($this->url !== null) {
+                    try {
+                        Http::get($this->url);
+                    } catch (ConnectionException $e) {
+                        $validator->errors()->add(
+                            'url',
+                            __('validation.website_unreachable')
+                        );
+                    }
                 }
             },
         ];
     }
 
-    public function failedValidation(Validator $validator): void
+    /**
+     * Handle failed validation and return validation errors as a JSON response.
+     */
+    protected function failedValidation(Validator $validator): void
     {
-        $request = app()->make(HtmxRequest::class);
-
-        if ($request->isHtmxRequest()) {
-            $view = View::renderFragment('resources.bookmark.create', 'form', [
-                'errors' => $validator->errors(),
-            ]);
-
-            $response = with(new HtmxResponse())
-                ->addRenderedFragment($view)
-                ->reswap('innerHTML')
-                ->retarget('#modal-body');
-
-            throw new ValidationException($validator, $response);
-        }
-
-        parent::failedValidation($validator);
+        throw new HttpResponseException(response()->json([
+            'errors' => $validator->errors(),
+        ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

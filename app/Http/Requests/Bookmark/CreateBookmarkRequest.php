@@ -6,10 +6,8 @@ namespace App\Http\Requests\Bookmark;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\View;
-use Illuminate\Validation\ValidationException;
-use Mauricius\LaravelHtmx\Http\HtmxRequest;
-use Mauricius\LaravelHtmx\Http\HtmxResponse;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Response;
 
 final class CreateBookmarkRequest extends FormRequest
 {
@@ -32,26 +30,18 @@ final class CreateBookmarkRequest extends FormRequest
             'url' => ['required', 'string', 'url', 'min:8'],
             'title' => ['required', 'string', 'max:512'],
             'favicon' => ['required', 'string'],
+            'tags' => ['array'],
+            'tags.*' => ['string', 'distinct'],
         ];
     }
 
-    public function failedValidation(Validator $validator): void
+    /**
+     * Handle failed validation and return validation errors as a JSON response.
+     */
+    protected function failedValidation(Validator $validator): void
     {
-        $request = app()->make(HtmxRequest::class);
-
-        if ($request->isHtmxRequest()) {
-            $view = View::renderFragment('resources.bookmark.create', 'form', [
-                'errors' => $validator->errors(),
-            ]);
-
-            $response = with(new HtmxResponse())
-                ->addRenderedFragment($view)
-                ->reswap('innerHTML')
-                ->retarget('#modal-body');
-
-            throw new ValidationException($validator, $response);
-        }
-
-        parent::failedValidation($validator);
+        throw new HttpResponseException(response()->json([
+            'errors' => $validator->errors(),
+        ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }
