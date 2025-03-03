@@ -35,9 +35,20 @@ final class User extends Authenticatable
         'remember_token',
     ];
 
+    /**
+     * Users bookmarks
+     */
     public function bookmarks(): HasMany
     {
         return $this->hasMany(Bookmark::class);
+    }
+
+    /*
+     * Users tags
+     */
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
     }
 
     /**

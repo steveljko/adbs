@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Controller;
 
 use App\Models\User;
+use Illuminate\Http\Response;
 
 it('renders create bookmark modal successfully', function (): void {
     $user = User::factory()->create();
@@ -38,9 +39,13 @@ it('creates bookmark when correct input is provided', function (): void {
             'url' => 'https://www.youtube.com',
             'title' => 'YouTube',
             'favicon' => 'youtube',
+            'tags' => ['youtube', 'entertainment'],
         ]);
 
-    $response->assertSessionHasNoErrors();
+    $response->assertStatus(Response::HTTP_OK);
+
+    $this->assertDatabaseCount('bookmarks', 1);
+    $this->assertDatabaseCount('tags', 2);
 });
 
 it('fails when invalid url is provided', function (): void {
@@ -51,7 +56,7 @@ it('fails when invalid url is provided', function (): void {
             'url' => 'ww.gooc',
         ]);
 
-    $response->assertSessionHasErrors('url');
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 });
 
 it('fails when website is unreachable', function (): void {
@@ -62,8 +67,27 @@ it('fails when website is unreachable', function (): void {
             'url' => 'https://totallyunreachblewebsite.c',
         ]);
 
-    $response->assertSessionHasErrors('url');
+    $response
+        ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+        ->assertJsonFragment([
+            'url' => [__('validation.website_unreachable')],
+        ]);
+});
 
-    $errors = session('errors')->get('url');
-    expect($errors[0])->toBe(__('validation.website_unreachable'));
+it('fails when bookmark tags are not unique', function (): void {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)
+        ->post(route('bookmarks.create'), [
+            'url' => 'https://www.youtube.com',
+            'title' => 'YouTube',
+            'favicon' => 'youtube',
+            'tags' => ['asd', 'asd'],
+        ]);
+
+    $response
+        ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+        ->assertJsonFragment([
+            'tags' => ['All tags should be unique.'],
+        ]);
 });

@@ -1,4 +1,4 @@
-@props(['tags'])
+@props(['tags', 'error'])
 
 <div>
     <x-form.label name="tags">Tags</x-form.label>
@@ -11,5 +11,6 @@
             </div>
         </div>
         <div id="tags" class="mt-2 flex flex-wrap" data-tags="{{ json_encode($tags) }}"></div>
+        <span id="tags-error" class="hidden text-red-500 block text-sm mt-2"></span>
     </div>
 </div>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Bookmark;
 
+use App\Rules\UniqueArrayElements;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -30,8 +31,7 @@ final class CreateBookmarkRequest extends FormRequest
             'url' => ['required', 'string', 'url', 'min:8'],
             'title' => ['required', 'string', 'max:512'],
             'favicon' => ['required', 'string'],
-            'tags' => ['array'],
-            'tags.*' => ['string', 'distinct'],
+            'tags' => ['array', 'distinct', new UniqueArrayElements()],
         ];
     }
 
