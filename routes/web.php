@@ -36,4 +36,5 @@ Route::group([
     Route::get('/', ShowDashboardController::class);
     Route::post('/search', SearchBookmarksController::class)->name('.search');
     Route::get('/search/tag/{tag}', [SearchBookmarksController::class, 'renderTag'])->name('.search.tag');
+    Route::get('/search/site/{site}', [SearchBookmarksController::class, 'renderSite'])->name('.search.site');
 });

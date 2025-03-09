@@ -15,7 +15,21 @@
                 {{ $tag->name }}
             </li>
         @endforeach
+    @elseif (count($sites) >= 1)
+        @foreach ($sites as $site)
+            <li tabindex="-1" role="option" hx-get="{{ route('dashboard.search.site', $site) }}"
+                hx-trigger="click, keyup[key=='Enter']"
+                class="px-3 py-2 cursor-pointer hover:bg-orange-100 focus:bg-orange-100" hx-target="#filters"
+                hx-swap="afterbegin"
+                hx-on::after-request="
+                    document.getElementById('suggestions-container').innerHTML = '';
+                    document.getElementById('search').value = '';
+                    htmx.trigger('#bookmarks', 'loadBookmarks');
+                ">
+                {{ $site }}
+            </li>
+        @endforeach
     @else
-        <p>No tags found!</p>
+        <p>No found!</p>
     @endif
 </ul>

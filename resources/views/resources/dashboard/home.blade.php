@@ -17,8 +17,8 @@
             <div class="relative">
                 <div class="border border-gray-300 flex items-center justify-between px-3 py-2 rounded">
                     <input type="text" name="search" hx-post="{{ route('dashboard.search') }}"
-                        class="focus:outline-none" hx-trigger="keyup changed delay:500ms" id="search" hx-swap="innerHTML"
-                        hx-include="#filters" hx-target="#suggestions-container" tabindex="-1"
+                        class="w-full focus:outline-none" hx-trigger="keyup changed delay:500ms" id="search"
+                        hx-swap="innerHTML" hx-include="#filters" hx-target="#suggestions-container" tabindex="-1"
                         hx-indicator="#input_spinner" placeholder="Search by tag...">
                     <x-icons.spinner class="animate-spin w-5 h-5 [&.htmx-request]:block hidden" id="input_spinner" />
                 </div>
@@ -27,7 +27,12 @@
             <form id="filters" class="flex mt-3 space-x-2">
                 @if (!empty($queryTags))
                     @foreach ($queryTags as $qtag)
-                        @include('resources.dashboard.tag', ['tag' => $qtag])
+                        @include('resources.dashboard.filters.tag', ['tag' => $qtag])
+                    @endforeach
+                @endif
+                @if (!empty($querySites))
+                    @foreach ($querySites as $qsite)
+                        @include('resources.dashboard.filters.site', ['site' => $qsite])
                     @endforeach
                 @endif
             </form>

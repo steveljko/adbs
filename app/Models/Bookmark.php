@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\BookmarkStatus;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -43,6 +44,26 @@ final class Bookmark extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'bookmarks_tags', 'bookmark_id', 'tag_id');
+    }
+
+    /**
+     * Scope a query to include bookmarks that have specific tags
+     * and match specific site URLs.
+     */
+    public function scopeWithTagsAndSites(Builder $query, array $tags = [], array $sites = []): Builder
+    {
+        return $this
+            ->when($tags, function (Builder $query) use ($tags) {
+                $query->whereHas('tags', function (Builder $query) use ($tags) {
+                    $query->whereIn('name', $tags);
+                });
+            })->when($sites, function (Builder $query) use ($sites) {
+                $query->where(function (Builder $query) use ($sites) {
+                    foreach ($sites as $site) {
+                        $query->orWhere('url', 'LIKE', "%$site%");
+                    }
+                });
+            });
     }
 
     /**
