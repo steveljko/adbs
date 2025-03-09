@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Bookmark\CreateBookmarkController;
 use App\Http\Controllers\Bookmark\PreviewBookmarkController;
+use App\Http\Controllers\Bookmark\UpdateBookmarkController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
 use App\Http\Controllers\Dashboard\ShowDashboardController;
 use Illuminate\Support\Facades\Route;
@@ -23,9 +24,12 @@ Route::group([
     'prefix' => 'bookmarks',
     'middleware' => 'auth',
 ], function () {
-    Route::get('/', [CreateBookmarkController::class, 'render'])->name('.create');
-    Route::post('/', CreateBookmarkController::class)->name('.store');
+    Route::get('/create', [CreateBookmarkController::class, 'render'])->name('.create');
+    Route::post('/store', CreateBookmarkController::class)->name('.store');
     Route::post('/preview', PreviewBookmarkController::class)->name('.preview');
+
+    Route::get('/{bookmark}/edit', [UpdateBookmarkController::class, 'render'])->name('.edit');
+    Route::put('/{bookmark}/update', UpdateBookmarkController::class)->name('.update');
 });
 
 Route::group([
