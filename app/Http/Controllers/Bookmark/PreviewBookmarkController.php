@@ -7,6 +7,8 @@ namespace App\Http\Controllers\Bookmark;
 use App\Http\Actions\Website\GetFaviconAction;
 use App\Http\Actions\Website\GetTitleAction;
 use App\Http\Requests\Bookmark\PreviewBookmarkRequest;
+use App\Models\Tag;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -26,5 +28,17 @@ final class PreviewBookmarkController
             'favicon' => $favicon,
             'tags' => $tags,
         ]);
+    }
+
+    public function tagSuggest(Request $request)
+    {
+        $search = $request->query('search', '');
+        $tags = Tag::whereUserId(Auth::id())
+            ->get()
+            ->filter(function ($tag) use ($search) {
+                return empty($search) || mb_stripos($tag->name, $search) !== false;
+            });
+
+        return view('resources.bookmark.tags-suggestions', compact('tags'));
     }
 }

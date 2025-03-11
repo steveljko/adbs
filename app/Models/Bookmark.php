@@ -43,7 +43,7 @@ final class Bookmark extends Model
      */
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class, 'bookmarks_tags', 'bookmark_id', 'tag_id');
+        return $this->belongsToMany(Tag::class, 'bookmarks_tags', 'bookmark_id', 'tag_id')->latest();
     }
 
     /**

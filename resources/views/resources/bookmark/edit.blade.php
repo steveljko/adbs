@@ -8,7 +8,7 @@
             <img src="{{ asset($bookmark->favicon) }}" alt="favicon">
             <input type="hidden" name="favicon" value="{{ $bookmark->favicon }}">
         </div>
-        <x-form.tags :tags="[]" :selectedTags="$bookmark->tags" />
+        <x-form.tags :selectedTags="$bookmark->tags" />
     </x-modal.body>
     <x-modal.footer>
         <x-button type="submit">Edit Bookmark</x-button>

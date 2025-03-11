@@ -8,6 +8,7 @@ use App\Http\Controllers\Bookmark\PreviewBookmarkController;
 use App\Http\Controllers\Bookmark\UpdateBookmarkController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
 use App\Http\Controllers\Dashboard\ShowDashboardController;
+use App\Http\Controllers\Shared\GetAuthenticatedUserTagsController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -27,6 +28,7 @@ Route::group([
     Route::get('/create', [CreateBookmarkController::class, 'render'])->name('.create');
     Route::post('/store', CreateBookmarkController::class)->name('.store');
     Route::post('/preview', PreviewBookmarkController::class)->name('.preview');
+    Route::get('/preview/tag', [PreviewBookmarkController::class, 'tagSuggest'])->name('.tagSuggest');
 
     Route::get('/{bookmark}/edit', [UpdateBookmarkController::class, 'render'])->name('.edit');
     Route::put('/{bookmark}/update', UpdateBookmarkController::class)->name('.update');
@@ -41,4 +43,13 @@ Route::group([
     Route::post('/search', SearchBookmarksController::class)->name('.search');
     Route::get('/search/tag/{tag}', [SearchBookmarksController::class, 'renderTag'])->name('.search.tag');
     Route::get('/search/site/{site}', [SearchBookmarksController::class, 'renderSite'])->name('.search.site');
+});
+
+Route::group([
+    'as' => 'tags',
+    'prefix' => 'tags',
+    'middleware' => 'auth',
+], function () {
+    Route::get('/', GetAuthenticatedUserTagsController::class);
+    Route::get('/{tag}', [GetAuthenticatedUserTagsController::class, 'renderTag'])->name('.get');
 });
