@@ -3,10 +3,10 @@
 @section('content')
     <div class="container mt-8 mx-auto">
         <div class="flex justify-end">
-            <button class="flex items-center text-md" hx-get="{{ route('bookmarks.create') }}" hx-target="#dialog">
+            <x-button class="flex items-center text-md" hx-get="{{ route('bookmarks.create') }}" hx-target="#dialog">
                 <x-icons.plus class="size-5 mr-2" />
                 Add Bookmark
-            </button>
+            </x-button>
         </div>
         @if (session()->has('message'))
             <div class="border border-red-300 bg-red-50 p-2 rounded text-red-500">
@@ -47,6 +47,8 @@
                             class="text-gray-600 hover:text-orange-500 hover:underline cursor-pointer text-sm">{{ $bookmark->title }}</a>
                         <button type="button" hx-get="{{ route('bookmarks.edit', $bookmark->id) }}" hx-push-url="false"
                             hx-target="#dialog">Edit</button>
+                        <button type="button" hx-get="{{ route('bookmarks.delete', $bookmark->id) }}" hx-push-url="false"
+                            hx-target="#dialog">Delete</button>
                     </li>
                 @endforeach
             @endfragment

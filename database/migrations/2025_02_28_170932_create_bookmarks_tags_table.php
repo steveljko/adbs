@@ -14,8 +14,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bookmarks_tags', function (Blueprint $table) {
-            $table->foreignId('bookmark_id')->constrained();
-            $table->foreignId('tag_id')->constrained();
+            $table->foreignId('bookmark_id')
+                ->constrained()
+                ->onDelete('cascade');
+
+            $table->foreignId('tag_id')
+                ->constrained()
+                ->onDelete('restrict');
         });
     }
 

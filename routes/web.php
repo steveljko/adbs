@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Bookmark\CreateBookmarkController;
+use App\Http\Controllers\Bookmark\DeleteBookmarkController;
 use App\Http\Controllers\Bookmark\PreviewBookmarkController;
 use App\Http\Controllers\Bookmark\UpdateBookmarkController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
@@ -32,6 +33,9 @@ Route::group([
 
     Route::get('/{bookmark}/edit', [UpdateBookmarkController::class, 'render'])->name('.edit');
     Route::put('/{bookmark}/update', UpdateBookmarkController::class)->name('.update');
+
+    Route::get('/{bookmark}/delete', [DeleteBookmarkController::class, 'render'])->name('.delete');
+    Route::delete('/{bookmark}/delete', DeleteBookmarkController::class)->name('.destroy');
 });
 
 Route::group([
