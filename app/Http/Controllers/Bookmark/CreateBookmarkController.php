@@ -16,8 +16,10 @@ final class CreateBookmarkController
     public function __invoke(
         CreateBookmarkRequest $request,
         CreateBookmarkAction $action
-    ): void {
+    ) {
         $bookmark = $action->execute(data: $request->validated());
+
+        return response()->make(null, 200, ['HX-Trigger' => 'loadBookmarks']);
     }
 
     /**

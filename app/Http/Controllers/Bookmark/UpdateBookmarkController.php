@@ -17,6 +17,8 @@ final class UpdateBookmarkController
         Bookmark $bookmark,
     ) {
         $action->execute(bookmark: $bookmark, data: $request->validated());
+
+        return response()->make(null, 200, ['HX-Trigger' => 'loadBookmarks']);
     }
 
     public function render(Bookmark $bookmark): View

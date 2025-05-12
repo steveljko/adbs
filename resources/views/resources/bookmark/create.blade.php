@@ -12,6 +12,7 @@
         @endfragment
     </x-modal.body>
     <x-modal.footer>
+        <x-button.secondary data-hide-modal="true">Cancel</x-button.secondary>
         <x-button type="submit">Save Bookmark</x-button>
     </x-modal.footer>
 </form>
