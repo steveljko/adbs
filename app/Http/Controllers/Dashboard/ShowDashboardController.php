@@ -34,7 +34,9 @@ final class ShowDashboardController
             ->get();
 
         if ($request->isHtmxRequest()) {
-            return view()->renderFragment('resources.dashboard.home', 'bookmark-list', compact('queryTags', 'querySites', 'tags', 'bookmarks'));
+            $type = 'card'; // FIX: hardcoded bookmark representation
+
+            return view()->renderFragment('components.bookmark-list', 'bookmark-list', compact('type', 'bookmarks'));
         }
 
         return view('resources.dashboard.home', compact('queryTags', 'querySites', 'tags', 'bookmarks'));
