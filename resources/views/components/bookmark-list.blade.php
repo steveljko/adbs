@@ -1,16 +1,70 @@
 @props(['type' => 'list', 'bookmarks'])
 
-@fragment('bookmark-list')
+<div id="bookmarks" hx-get="{{ route('dashboard') }}" hx-push-url="true" hx-include="#filters"
+    hx-trigger="loadBookmarks from:body" hx-swap="innerHTML">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-medium text-gray-700">Results</h2>
+        <div class="inline-flex items-center p-1 bg-gray-100 rounded-md">
+            <button id="list-view-btn"
+                class="p-1.5 rounded-md transition-colors duration-200 {{ $type === 'list' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }}"
+                hx-get="{{ route('dashboard') }}" hx-include="#filters" hx-push-url="true"
+                hx-vals='{"view_type": "list"}' hx-target="#bookmarks" title="List view">
+                <x-icons.list />
+            </button>
+            <button id="card-view-btn"
+                class="p-1.5 rounded-md transition-colors duration-200 {{ $type === 'card' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }}"
+                hx-get="{{ route('dashboard') }}" hx-include="#filters" hx-push-url="true"
+                hx-vals='{"view_type": "card"}' hx-target="#bookmarks" title="Card view">
+                <x-icons.card />
+            </button>
+        </div>
+    </div>
+
     @if ($type == 'list')
         @foreach ($bookmarks as $bookmark)
-            <li class="flex items-center space-x-2">
-                <img src="{{ asset($bookmark->favicon) }}" class="w-5 h-5 rounded select-none" alt="website favicon">
-                <a href="{{ $bookmark->url }}"
-                    class="text-gray-600 hover:text-orange-500 hover:underline cursor-pointer text-sm">{{ $bookmark->title }}</a>
-                <button type="button" hx-get="{{ route('bookmarks.edit', $bookmark->id) }}" hx-push-url="false"
-                    hx-target="#dialog">Edit</button>
-                <button type="button" hx-get="{{ route('bookmarks.delete', $bookmark->id) }}" hx-push-url="false"
-                    hx-target="#dialog">Delete</button>
+            <li
+                class="flex items-center justify-between p-3 group hover:bg-orange-50 transition-colors duration-150 rounded-lg">
+                <div class="flex items-center flex-grow min-w-0">
+                    <div class="flex-shrink-0">
+                        @if ($bookmark->favicon)
+                            <img src="{{ asset($bookmark->favicon) }}" class="w-5 h-5 rounded select-none"
+                                alt="Website favicon">
+                        @else
+                            <div
+                                class="w-5 h-5 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
+                                {{ substr($bookmark->title, 0, 1) }}
+                            </div>
+                        @endif
+                    </div>
+
+                    <a href="{{ $bookmark->url }}"
+                        class="ml-3 text-gray-700 hover:text-orange-600 font-medium truncate max-w-sm"
+                        title="{{ $bookmark->title }}">
+                        {{ $bookmark->title }}
+                    </a>
+
+                    @if ($bookmark->description)
+                        <span class="ml-2 text-xs text-gray-400 truncate hidden sm:inline">
+                            {{ $bookmark->description }}
+                        </span>
+                    @endif
+                </div>
+
+                <div class="flex items-center ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <button type="button" hx-get="{{ route('bookmarks.edit', $bookmark->id) }}" hx-push-url="false"
+                        hx-target="#dialog"
+                        class="p-1.5 text-gray-500 hover:text-orange-500 hover:bg-orange-100 rounded transition-colors"
+                        title="Edit bookmark">
+                        <x-icons.edit />
+                    </button>
+
+                    <button type="button" hx-get="{{ route('bookmarks.delete', $bookmark->id) }}" hx-push-url="false"
+                        hx-target="#dialog"
+                        class="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-100 rounded transition-colors ml-1"
+                        title="Delete bookmark">
+                        <x-icons.garbage />
+                    </button>
+                </div>
             </li>
         @endforeach
     @else
@@ -71,4 +125,4 @@
             @endforeach
         </div>
     @endif
-@endfragment
+</div>

@@ -18,6 +18,7 @@ final class ShowDashboardController
     {
         $queryTags = $request->query('tags', []);
         $querySites = $request->query('sites', []);
+        $viewType = $request->query('view_type', 'card');
 
         $tags = $this->getAvailableTags();
         $sites = $this->getAvailableSites();
@@ -34,12 +35,13 @@ final class ShowDashboardController
             ->get();
 
         if ($request->isHtmxRequest()) {
-            $type = 'card'; // FIX: hardcoded bookmark representation
-
-            return view()->renderFragment('components.bookmark-list', 'bookmark-list', compact('type', 'bookmarks'));
+            return view('components.bookmark-list', [
+                'type' => $viewType,
+                'bookmarks' => $bookmarks,
+            ])->render();
         }
 
-        return view('resources.dashboard.home', compact('queryTags', 'querySites', 'tags', 'bookmarks'));
+        return view('resources.dashboard.home', compact('queryTags', 'querySites', 'viewType', 'tags', 'bookmarks'));
     }
 
     /**
