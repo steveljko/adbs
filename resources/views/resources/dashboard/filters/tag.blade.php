@@ -11,10 +11,7 @@
     <input type="text" class="hidden" name="tags[]" value="{{ $tag }}">
     <button type="button"
         class="flex items-center justify-center w-5 h-5 text-orange-500 rounded-full hover:bg-orange-200 hover:text-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors duration-150"
-        onclick="this.parentNode.remove();">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        onclick="this.parentNode.remove(); htmx.trigger('#bookmarks', 'loadBookmarks')">
+        <x-icons.x class="w-4 h-4 text-orange-500" />
     </button>
 </span>
