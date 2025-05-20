@@ -18,6 +18,7 @@ final class ShowDashboardController
     {
         $queryTags = $request->query('tags', []);
         $querySites = $request->query('sites', []);
+        $title = $request->query('title', null);
         $viewType = $request->query('view_type', 'card');
 
         $tags = $this->getAvailableTags();
@@ -31,6 +32,7 @@ final class ShowDashboardController
 
         $bookmarks = Bookmark::query()
             ->withTagsAndSites(tags: $queryTags, sites: $querySites)
+            ->where('title', 'LIKE', "%{$title}%")
             ->latest()
             ->get();
 

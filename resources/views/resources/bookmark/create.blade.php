@@ -3,7 +3,7 @@
     <x-modal.body>
         @fragment('form')
             <x-form.input name="url" label="URL Address" type="text" value="" :error="$errors->first('url')"
-                hx-post="{{ route('bookmarks.preview') }}" hx-trigger="keyup delay:2s" hx-target="#content"
+                hx-post="{{ route('bookmarks.preview') }}" hx-trigger="keyup delay:1s" hx-target="#content"
                 hx-indicator="#content-spinner" />
             <div id="content" class="w-full flex justify-center">
                 <x-icons.spinner class="htmx-indicator animate-spin w-6 h-6 hidden [&.htmx-request]:block"

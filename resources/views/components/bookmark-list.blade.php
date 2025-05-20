@@ -1,9 +1,9 @@
 @props(['type' => 'list', 'bookmarks'])
 
-<div id="bookmarks" hx-get="{{ route('dashboard') }}" hx-push-url="true" hx-include="#filters"
-    hx-trigger="loadBookmarks from:body" hx-swap="innerHTML">
+<div id="bookmarks" hx-get="{{ route('dashboard') }}" hx-include="#filters" hx-trigger="loadBookmarks from:body"
+    hx-swap="innerHTML" hx-push-url="true">
     <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-medium text-gray-700">Results</h2>
+        <h2 class="text-lg font-medium text-gray-700">Results ({{ $bookmarks->count() }})</h2>
         <div class="inline-flex items-center p-1 bg-gray-100 rounded-md">
             <button id="list-view-btn"
                 class="p-1.5 rounded-md transition-colors duration-200 {{ $type === 'list' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }}"

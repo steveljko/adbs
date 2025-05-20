@@ -7,24 +7,33 @@ namespace App\Http\Controllers\Dashboard;
 use App\Models\Bookmark;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 final class SearchBookmarksController
 {
-    public function __invoke(Request $request): ?View
+    public function __invoke(Request $request): Response
     {
-        $input = $request->search;
+        $input = $request->input('search', null);
 
-        if (Str::startsWith($input, 'tag:')) {
-            return $this->handleTagSearch(request: $request, input: $input);
-        }
-        if (Str::startsWith($input, 'site:')) {
-            return $this->handleDomainSearch(request: $request, input: $input);
+        if (Str::startsWith($input, '/')) {
+            if (Str::startsWith($input, '/tag:')) {
+                return $this->handleTagSearch(request: $request, input: $input);
+            }
+
+            if (Str::startsWith($input, '/site:')) {
+                return $this->handleDomainSearch(request: $request, input: $input);
+            }
+        } else {
+            return response(view('resources.dashboard.filters.title', ['title' => $input]))
+                ->header('HX-Retarget', '#title')
+                ->header('HX-Reswap', 'outerHTML')
+                ->header('HX-Trigger-After-Swap', 'loadBookmarks');
         }
 
-        return null;
+        return response()->noContent();
     }
 
     public function renderTag(Tag $tag): View
@@ -37,9 +46,9 @@ final class SearchBookmarksController
         return view('resources.dashboard.filters.site', ['site' => $site]);
     }
 
-    private function handleTagSearch(Request $request, string $input): View
+    private function handleTagSearch(Request $request, string $input): Response
     {
-        $criteria = Str::substr($input, 4);
+        $criteria = Str::substr($input, 5);
         $queryTags = $request->input('tags', []);
         $tags = Tag::query()->where('name', 'LIKE', "%$criteria%")->get();
 
@@ -50,15 +59,17 @@ final class SearchBookmarksController
             });
         }
 
-        return view('resources.dashboard.suggestions', [
+        return response(view('resources.dashboard.suggestions', [
             'tags' => $tags,
             'sites' => [],
-        ]);
+        ]))
+            ->header('HX-Retarget', '#suggestions-container')
+            ->header('HX-Reswap', 'innerHTML');
     }
 
-    private function handleDomainSearch(Request $request, string $input)
+    private function handleDomainSearch(Request $request, string $input): Response
     {
-        $criteria = Str::substr($input, 5);
+        $criteria = Str::substr($input, 6);
         $querySites = $request->input('sites', []);
         $sites = Bookmark::query()
             ->whereUserId(Auth::id())
@@ -66,17 +77,25 @@ final class SearchBookmarksController
             ->get()
             ->map(function ($bookmark) {
                 $urlParts = parse_url($bookmark->url);
+                $host = $urlParts['host'];
 
-                return $urlParts['host'];
+                // remove 'www.' from the beginning if present
+                if (mb_strpos($host, 'www.') === 0) {
+                    $host = mb_substr($host, 4);
+                }
+
+                return $host;
             })
             ->unique()
             ->filter(function ($site) use ($criteria, $querySites) {
                 return mb_strpos($site, $criteria) !== false && ! in_array($site, $querySites);
             });
 
-        return view('resources.dashboard.suggestions', [
+        return response(view('resources.dashboard.suggestions', [
             'tags' => [],
             'sites' => $sites,
-        ]);
+        ]))
+            ->header('HX-Retarget', '#suggestions-container')
+            ->header('HX-Reswap', 'innerHTML');
     }
 }

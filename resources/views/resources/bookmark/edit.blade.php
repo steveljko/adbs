@@ -2,11 +2,13 @@
     <x-modal.header>Edit Bookmark</x-modal.header>
     <x-modal.body>
         <x-form.input name="url" label="Website URL" type="text" value="{{ $bookmark->url }}" />
-        <x-form.input name="title" label="Website Title" type="text" value="{{ $bookmark->title }}" />
-        <div class="mb-2">
-            <x-form.label name="favicon">Favicon</x-form.label>
-            <img src="{{ asset($bookmark->favicon) }}" alt="favicon">
-            <input type="hidden" name="favicon" value="{{ $bookmark->favicon }}">
+        <div class="flex gap-6">
+            <div class="mb-2">
+                <x-form.label name="favicon">Favicon</x-form.label>
+                <img src="{{ asset($bookmark->favicon) }}" alt="favicon">
+                <input type="hidden" name="favicon" value="{{ $bookmark->favicon }}">
+            </div>
+            <x-form.input name="title" label="Website Title" type="text" value="{{ $bookmark->title }}" />
         </div>
         <x-form.tags :selectedTags="$bookmark->tags" />
     </x-modal.body>

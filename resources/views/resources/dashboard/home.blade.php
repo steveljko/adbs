@@ -26,7 +26,7 @@
         @endif
 
         <!-- Search and filter section -->
-        <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200 mb-3">
             <div class="relative">
                 <div
                     class="flex items-center border border-gray-300 rounded-md overflow-hidden bg-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all duration-200">
@@ -39,8 +39,8 @@
                     </div>
                     <input type="text" name="search" hx-post="{{ route('dashboard.search') }}"
                         class="w-full py-2.5 px-3 focus:outline-none text-sm" hx-trigger="keyup changed delay:500ms"
-                        id="search" hx-swap="innerHTML" hx-include="#filters" hx-target="#suggestions-container"
-                        tabindex="-1" hx-indicator="#input_spinner" placeholder="Search bookmarks by tag or title...">
+                        id="search" hx-include="#filters" tabindex="-1" value="{{ request('title') }}"
+                        placeholder="Search bookmarks by tag or title..." hx-indicator="#input_spinner" autocomplete="off">
                     <x-icons.spinner class="animate-spin w-5 h-5 mr-3 [&.htmx-request]:block hidden" id="input_spinner" />
                 </div>
                 <div id="suggestions-container" class="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg"></div>
@@ -48,7 +48,8 @@
         </div>
 
         <!-- Active filters -->
-        <form id="filters" class="flex flex-wrap gap-2 {{ !empty($queryTags) || !empty($querySites) ?: 'mt-2' }}">
+        <form id="filters" class="flex flex-wrap gap-2 mb-3">
+            <input type="text" class="hidden" id="title" name="title" value="{{ request('title') }}">
             @if (!empty($queryTags))
                 @foreach ($queryTags as $qtag)
                     @include('resources.dashboard.filters.tag', ['tag' => $qtag])
