@@ -27,10 +27,11 @@ final class SearchBookmarksController
                 return $this->handleDomainSearch(request: $request, input: $input);
             }
         } else {
-            return response(view('resources.dashboard.filters.title', ['title' => $input]))
-                ->header('HX-Retarget', '#title')
-                ->header('HX-Reswap', 'outerHTML')
-                ->header('HX-Trigger-After-Swap', 'loadBookmarks');
+            return htmx()
+                ->target('#title')
+                ->swap('outerHTML')
+                ->triggerAfterSwap('loadBookmarks')
+                ->response(view('resources.dashboard.filters.title', ['title' => $input]));
         }
 
         return response()->noContent();
@@ -59,12 +60,13 @@ final class SearchBookmarksController
             });
         }
 
-        return response(view('resources.dashboard.suggestions', [
-            'tags' => $tags,
-            'sites' => [],
-        ]))
-            ->header('HX-Retarget', '#suggestions-container')
-            ->header('HX-Reswap', 'innerHTML');
+        return htmx()
+            ->target('#suggestions-container')
+            ->swap('innerHTML')
+            ->response(view('resources.dashboard.suggestions', [
+                'tags' => $tags,
+                'sites' => [],
+            ]));
     }
 
     private function handleDomainSearch(Request $request, string $input): Response
@@ -91,11 +93,12 @@ final class SearchBookmarksController
                 return mb_strpos($site, $criteria) !== false && ! in_array($site, $querySites);
             });
 
-        return response(view('resources.dashboard.suggestions', [
-            'tags' => [],
-            'sites' => $sites,
-        ]))
-            ->header('HX-Retarget', '#suggestions-container')
-            ->header('HX-Reswap', 'innerHTML');
+        return htmx()
+            ->target('#suggestions-container')
+            ->swap('innerHTML')
+            ->response(view('resources.dashboard.suggestions', [
+                'tags' => [],
+                'sites' => $sites,
+            ]));
     }
 }
