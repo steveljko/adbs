@@ -5,7 +5,7 @@
             <img src="{{ asset($favicon) }}" alt="favicon">
             <input type="text" name="favicon" class="hidden" value="{{ $favicon }}">
         </div>
-        <x-form.input type="text" name="title" label="Website Title" value="{{ $title }}" />
+        <x-form.input type="text" name="title" label="Website Title" :value="$title" />
     </div>
     <div>
         <x-form.tags :tags="$tags" />
