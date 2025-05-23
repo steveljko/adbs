@@ -1,4 +1,4 @@
-@props(['type' => 'list', 'bookmarks'])
+@props(['type' => 'card', 'bookmarks'])
 
 <div id="bookmarks" hx-get="{{ route('dashboard') }}" hx-include="#filters"
     hx-vals='{"view_type": "{{ request('view_type', 'card') }}"}' hx-trigger="loadBookmarks from:body" hx-swap="outerHTML"
@@ -113,11 +113,13 @@
 
                         <div class="flex items-center space-x-1">
                             <button type="button" hx-get="{{ route('bookmarks.edit', $bookmark->id) }}"
-                                hx-push-url="false" hx-target="#dialog" class="p-1 rounded hover:bg-gray-200">
+                                hx-push-url="false" hx-swap="innerHTML" hx-target="#dialog"
+                                class="p-1 rounded hover:bg-gray-200">
                                 <x-icons.edit />
                             </button>
                             <button type="button" hx-get="{{ route('bookmarks.delete', $bookmark->id) }}"
-                                hx-push-url="false" hx-target="#dialog" class="p-1 rounded hover:bg-gray-200">
+                                hx-push-url="false" hx-swap="innerHTML" hx-target="#dialog"
+                                class="p-1 rounded hover:bg-gray-200">
                                 <x-icons.garbage />
                             </button>
                         </div>
