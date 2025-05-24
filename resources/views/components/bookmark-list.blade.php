@@ -5,20 +5,7 @@
     hx-push-url="true">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-medium text-gray-700">Results ({{ $bookmarks->count() }})</h2>
-        <div class="inline-flex items-center p-1 bg-gray-100 rounded-md">
-            <button id="list-view-btn"
-                class="p-1.5 rounded-md transition-colors duration-200 {{ $type === 'list' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }}"
-                hx-get="{{ route('dashboard') }}" hx-include="#filters" hx-push-url="true"
-                hx-vals='{"view_type": "list"}' hx-target="#bookmarks" title="List view">
-                <x-icons.list />
-            </button>
-            <button id="card-view-btn"
-                class="p-1.5 rounded-md transition-colors duration-200 {{ $type === 'card' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }}"
-                hx-get="{{ route('dashboard') }}" hx-include="#filters" hx-push-url="true"
-                hx-vals='{"view_type": "card"}' hx-target="#bookmarks" title="Card view">
-                <x-icons.card />
-            </button>
-        </div>
+        <x-view-switch :type="$type" />
     </div>
 
     @if ($type == 'list')
@@ -53,14 +40,14 @@
 
                 <div class="flex items-center ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <button type="button" hx-get="{{ route('bookmarks.edit', $bookmark->id) }}" hx-push-url="false"
-                        hx-target="#dialog"
+                        hx-target="#dialog" hx-swap="innerHTML"
                         class="p-1.5 text-gray-500 hover:text-orange-500 hover:bg-orange-100 rounded transition-colors"
                         title="Edit bookmark">
                         <x-icons.edit />
                     </button>
 
                     <button type="button" hx-get="{{ route('bookmarks.delete', $bookmark->id) }}" hx-push-url="false"
-                        hx-target="#dialog"
+                        hx-target="#dialog" hx-swap="innerHTML"
                         class="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-100 rounded transition-colors ml-1"
                         title="Delete bookmark">
                         <x-icons.garbage />
