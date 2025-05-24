@@ -84,8 +84,14 @@ final class ShowDashboardController
             ->pluck('url')
             ->map(function ($url) {
                 $urlParts = parse_url($url);
+                $host = $urlParts['host'];
 
-                return $urlParts['host'];
+                // remove 'www.' from the beginning if present
+                if (mb_strpos($host, 'www.') === 0) {
+                    $host = mb_substr($host, 4);
+                }
+
+                return $host;
             })
             ->unique()
             ->toArray();

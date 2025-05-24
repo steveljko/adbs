@@ -38,8 +38,8 @@
                         </svg>
                     </div>
                     <input type="text" name="search" hx-post="{{ route('dashboard.search') }}"
-                        class="w-full py-2.5 px-3 focus:outline-none text-sm" hx-trigger="keyup changed delay:500ms"
-                        id="search" hx-include="#filters" tabindex="-1" value="{{ request('title') }}"
+                        class="w-full py-2.5 px-3 focus:outline-none text-sm" hx-trigger="focus, keyup changed delay:250ms"
+                        id="search" hx-include="#filters" value="{{ request('title') }}"
                         placeholder="Search bookmarks by tag or title..." hx-indicator="#input_spinner" autocomplete="off">
                     <x-icons.spinner class="animate-spin w-5 h-5 mr-3 [&.htmx-request]:block hidden" id="input_spinner" />
                 </div>

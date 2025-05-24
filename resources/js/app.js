@@ -71,3 +71,90 @@ document.addEventListener('htmx:responseError', function (event) {
         container.innerHTML = messages[0];
     }
 });
+
+document.addEventListener('htmx:afterSwap', function(event) {
+  const suggestionsContainer = document.getElementById('suggestions-container');
+
+  if (event.target === suggestionsContainer || suggestionsContainer.contains(event.target) || event.target.contains(suggestionsContainer)) {
+        addSearchbarKeyboardAccessibility();
+  }
+});
+
+
+function addSearchbarKeyboardAccessibility() {
+    const elements = {
+        input: document.querySelector('input[name="search"]'),
+        container: document.getElementById('suggestions-container'),
+        items: document.getElementById('suggestions-container').querySelectorAll('ul > li'),
+    }
+
+    if (!elements.container) {
+        console.warn('Suggestions container not found');
+        return;
+    }
+
+    elements.input.addEventListener('keydown', event => {
+        if (event.key == "ArrowDown") {
+            event.preventDefault();
+            elements.items[0].focus();
+        }
+    });
+
+    elements.items.forEach((item, index) => {
+        item.addEventListener('keydown', event => {
+            switch(event.key) {
+                case 'Enter':
+                case ' ':
+                    event.preventDefault();
+                    item.click();
+                    break;
+
+                case 'ArrowDown':
+                    event.preventDefault();
+                    const nextElement = getNextFocusableElement(item);
+                    if (nextElement) nextElement.focus();
+                    break;
+
+                case 'ArrowUp':
+                    event.preventDefault();
+                    const prevElement = getPreviousFocusableElement(item);
+                    if (prevElement) prevElement.focus();
+                    break;
+
+                case 'Escape':
+                    event.preventDefault();
+                    hideSuggestions();
+                    break;
+            }
+        });
+    });
+
+    function getNextFocusableElement(currItem) {
+        const elementsArray = Array.from(elements.items);
+        const currIndex = elementsArray.indexOf(currItem);
+
+        if (currIndex < elementsArray.length - 1) {
+            return elementsArray[currIndex + 1];
+        }
+
+        return elementsArray[0];
+    }
+
+    function getPreviousFocusableElement(currItem) {
+        const elementsArray = Array.from(elements.items);
+        const currIndex = elementsArray.indexOf(currItem);
+
+        if (currIndex > 0) {
+            return elementsArray[currIndex - 1];
+        }
+
+        return elementsArray[elementsArray.length - 1];
+    }
+    function hideSuggestions() {
+        if (elements.container) {
+            if (elements.input) {
+                elements.input.focus();
+            }
+        }
+    }
+}

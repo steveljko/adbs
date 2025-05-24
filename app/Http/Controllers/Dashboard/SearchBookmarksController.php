@@ -26,15 +26,18 @@ final class SearchBookmarksController
             if (Str::startsWith($input, '/site:')) {
                 return $this->handleDomainSearch(request: $request, input: $input);
             }
-        } else {
+
             return htmx()
-                ->target('#title')
-                ->swap('outerHTML')
-                ->triggerAfterSwap('loadBookmarks')
-                ->response(view('resources.dashboard.filters.title', ['title' => $input]));
+                ->target('#suggestions-container')
+                ->swap('innerHTML')
+                ->response('');
         }
 
-        return response()->noContent();
+        return htmx()
+            ->target('#title')
+            ->swap('outerHTML')
+            ->triggerAfterSwap('loadBookmarks')
+            ->response(view('resources.dashboard.filters.title', ['title' => $input]));
     }
 
     public function renderTag(Tag $tag): View
