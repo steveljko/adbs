@@ -9,6 +9,7 @@
         "php": "^8.2",
         "chrome-php/chrome": "^1.13",
         "laravel/framework": "^11.31",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "mauricius/laravel-htmx": "^0.7.0"
     },
