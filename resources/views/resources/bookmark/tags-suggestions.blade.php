@@ -7,6 +7,7 @@
         hx-swap="afterbegin"
         hx-on::after-request="
             document.getElementById('search').value = '';
+            document.getElementById('name').value = '';
             document.getElementById('suggestions-container').innerHTML = '';
         ">
         <span class="flex items-center">
@@ -25,6 +26,7 @@
                 hx-target="#tags" hx-swap="afterbegin"
                 hx-on::after-request="
                     document.getElementById('search').value = '';
+                    document.getElementById('name').value = '';
                     document.getElementById('suggestions-container').innerHTML = '';
                 ">
                 <span class="flex items-center">
