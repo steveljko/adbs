@@ -1,49 +1,94 @@
 FROM php:8.4-apache
 
-# install dependencies
-RUN apt-get update && \
-    apt-get install -y \
+WORKDIR /var/www/html
+
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
     libzip-dev \
-    libsodium-dev \
     libpq-dev \
     zip \
     unzip \
-    git \
-    curl \
     nodejs \
-    npm && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    npm \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# enable mod_rewrite
-RUN a2enmod rewrite
-
-# install PHP extensions
 RUN docker-php-ext-install \
+    pdo_mysql \
     pdo_pgsql \
+    pgsql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
     zip \
-    sodium \
     sockets
 
-# veify extensions
-RUN php -m | grep -E "(pdo_mysql|sodium|zip|sockets)"
+RUN a2enmod rewrite
 
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# copy the application code
-COPY . /var/www/html
+COPY . .
 
-WORKDIR /var/www/html
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
-# install composer & project dependencies
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Install npm dependencies and build assets
-RUN npm install
-RUN npm run build
+RUN npm install && npm run build
 
-RUN php artisan storage:link
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Configure Apache virtual host
+RUN echo '<VirtualHost *:80>\n\
+    DocumentRoot /var/www/html/public\n\
+    <Directory /var/www/html/public>\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
+    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+
+# Create entrypoint script
+RUN echo '#!/bin/bash\n\
+set -e\n\
+\n\
+# Wait for database to be ready (optional)\n\
+if [ -n "$DB_HOST" ] && [ -n "$DB_PORT" ]; then\n\
+    echo "Waiting for database..."\n\
+    while ! nc -z $DB_HOST $DB_PORT; do\n\
+        sleep 1\n\
+    done\n\
+    echo "Database is ready!"\n\
+fi\n\
+\n\
+# Generate application key if not set\n\
+if [ -z "$APP_KEY" ]; then\n\
+    php artisan key:generate --force\n\
+fi\n\
+\n\
+# Run database migrations\n\
+php artisan migrate --force\n\
+\n\
+# Cache configuration\n\
+php artisan config:cache\n\
+php artisan route:cache\n\
+php artisan view:cache\n\
+php artisan storage:link\n\
+\n\
+# Start Apache\n\
+exec apache2-foreground' > /usr/local/bin/entrypoint.sh \
+    && chmod +x /usr/local/bin/entrypoint.sh
+
+# install netcat (for database health check)
+RUN apt-get update && apt-get install -y netcat-traditional && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 80
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
