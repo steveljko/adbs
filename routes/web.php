@@ -13,6 +13,10 @@ use App\Http\Controllers\Dashboard\ShowDashboardController;
 use App\Http\Controllers\Shared\GetAuthenticatedUserTagsController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', function () {
+    return redirect()->route('auth.login');
+});
+
 Route::group([
     'as' => 'auth',
     'prefix' => 'auth',
