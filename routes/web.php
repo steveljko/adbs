@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Bookmark\CreateBookmarkController;
 use App\Http\Controllers\Bookmark\DeleteBookmarkController;
 use App\Http\Controllers\Bookmark\PreviewBookmarkController;
@@ -20,6 +21,8 @@ Route::group([
     Route::view('/login', 'resources.auth.login')->name('.login');
     Route::post('/login', LoginController::class)->name('.login.execute');
 });
+
+Route::delete('/logout', LogoutController::class)->middleware('auth')->name('auth.logout');
 
 Route::group([
     'as' => 'bookmarks',

@@ -158,3 +158,17 @@ function addSearchbarKeyboardAccessibility() {
         }
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const userMenuButton = document.getElementById('userMenuButton');
+    if (userMenuButton) {
+        const dropdown = document.getElementById('userDropdown');
+        userMenuButton.addEventListener('click', () => dropdown.classList.toggle('hidden'));
+
+        document.addEventListener('click', (event) => {
+            if (!dropdown.classList.contains('hidden') && !dropdown.contains(event.target) && event.target !== userMenuButton) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    }
+});
