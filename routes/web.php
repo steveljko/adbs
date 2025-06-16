@@ -18,7 +18,7 @@ Route::group([
     'middleware' => 'guest',
 ], function () {
     Route::view('/login', 'resources.auth.login')->name('.login');
-    Route::post('/login', LoginController::class)->name('.login');
+    Route::post('/login', LoginController::class)->name('.login.execute');
 });
 
 Route::group([
