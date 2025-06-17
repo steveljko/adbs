@@ -160,7 +160,7 @@ function addSearchbarKeyboardAccessibility() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const userMenuButton = document.getElementById('userMenuButton');
+    const userMenuButton = document.getElementById('userMenuBtn');
     if (userMenuButton) {
         const dropdown = document.getElementById('userDropdown');
         userMenuButton.addEventListener('click', () => dropdown.classList.toggle('hidden'));
