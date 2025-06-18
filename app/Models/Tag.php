@@ -16,8 +16,10 @@ final class Tag extends Model
      */
     protected $fillable = [
         'name',
-        'hex_color',
         'key',
+        'background_color',
+        'text_color',
+        'description',
         'user_id',
     ];
 

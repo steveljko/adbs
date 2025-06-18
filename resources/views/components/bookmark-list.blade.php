@@ -77,6 +77,7 @@
                     <div class="flex flex-wrap gap-1">
                         @foreach ($bookmark->tags as $tag)
                             <a
+                                style="background-color: {{ $tag->background_color }}; color: {{ $tag->text_color }}" class="inline-block text-blue-800 text-xs px-2 py-1 rounded cursor-pointer"
                                 href="dashboard?tags[]={{ $tag->name }}"
                             >{{ $tag->name }}</a>
                         @endforeach
