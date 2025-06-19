@@ -11,6 +11,8 @@ use App\Http\Controllers\Bookmark\UpdateBookmarkController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
 use App\Http\Controllers\Dashboard\ShowDashboardController;
 use App\Http\Controllers\Shared\GetAuthenticatedUserTagsController;
+use App\Http\Controllers\Tags\EditTagController;
+use App\Models\Tag;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,6 +28,7 @@ Route::group([
     Route::post('/login', LoginController::class)->name('.login.execute');
 });
 
+Route::view('/settings', 'resources.auth.settings')->middleware('auth')->name('auth.settings');
 Route::delete('/logout', LogoutController::class)->middleware('auth')->name('auth.logout');
 
 Route::group([
@@ -63,4 +66,8 @@ Route::group([
 ], function () {
     Route::get('/', GetAuthenticatedUserTagsController::class);
     Route::get('/{tag}', [GetAuthenticatedUserTagsController::class, 'renderTag'])->name('.get');
+    Route::get('/{tag}/edit', function (Tag $tag) {
+        return view('resources.tags.edit', ['tag' => $tag]);
+    })->name('.edit');
+    Route::put('/{tag}/update', EditTagController::class)->name('.update');
 });

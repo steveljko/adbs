@@ -8,7 +8,6 @@ use App\Models\Bookmark;
 use App\Models\Tag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 final class AttachOrCreateTagsAction
 {
@@ -52,7 +51,6 @@ final class AttachOrCreateTagsAction
                 if (! $tag) {
                     $tag = Tag::create([
                         'name' => $name,
-                        'key' => Str::slug($name),
                         'background_color' => $bgColor,
                         'text_color' => $textColor,
                         'user_id' => Auth::id(),

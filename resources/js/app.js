@@ -6,9 +6,11 @@ class Modal {
         this.modal = document.getElementById('modal-container');
         this.dialog = document.getElementById('dialog');
         this.backdrop = document.getElementById('modal-backdrop');
-        this.modal.addEventListener('keydown', (event) => {
-            if (event.key == 'Escape') this.hide();
-        });
+        if (this.modal) {
+            this.modal.addEventListener('keydown', (event) => {
+                if (event.key == 'Escape') this.hide();
+            });
+        }
     }
 
     toggleModal() {
@@ -75,9 +77,11 @@ document.addEventListener('htmx:responseError', function (event) {
 document.addEventListener('htmx:afterSwap', function(event) {
   const suggestionsContainer = document.getElementById('suggestions-container');
 
-  if (event.target === suggestionsContainer || suggestionsContainer.contains(event.target) || event.target.contains(suggestionsContainer)) {
-        addSearchbarKeyboardAccessibility();
-  }
+    if (suggestionsContainer) {
+        if (event.target === suggestionsContainer || suggestionsContainer.contains(event.target) || event.target.contains(suggestionsContainer)) {
+            addSearchbarKeyboardAccessibility();
+        }
+    }
 });
 
 
@@ -171,4 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    Coloris({
+        el: '#color',
+        theme: 'pill',
+        onChange: (color, input) => {
+            document.getElementById('color-res').style.backgroundColor = color;
+        }
+    });
 });
