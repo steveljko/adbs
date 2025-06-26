@@ -1,6 +1,9 @@
 import htmx from 'htmx.org';
 window.htmx = htmx;
 
+import Notify from 'simple-notify'
+import 'simple-notify/dist/simple-notify.css'
+
 class Modal {
     constructor() {
         this.modal = document.getElementById('modal-container');
@@ -62,6 +65,18 @@ htmx.on('htmx:beforeSwap', (e) => {
 
         e.detail.shouldSwap = false;
     }
+});
+
+htmx.on('hideModal', () => { console.log('a'); window.modal.hide()});
+
+htmx.on("toast", (e) => {
+    const { type, text, altText } = e.detail;
+
+    new Notify({
+        type: type,
+        title: text,
+        text: altText,
+    });
 });
 
 document.addEventListener('htmx:responseError', function (event) {

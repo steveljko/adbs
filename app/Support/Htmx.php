@@ -106,6 +106,38 @@ final class Htmx
         return $this;
     }
 
+    public function toast(string $type, string $text, ?string $altText = '')
+    {
+        $data = [
+            'toast' => [
+                'type' => $type,
+                'text' => $text,
+                'altText' => $altText,
+            ],
+        ];
+
+        // if trigger is present in headers array
+        if (isset($this->headers['HX-Trigger'])) {
+            $existing = $this->headers['HX-Trigger'];
+
+            if (is_string($existing)) {
+                $existing = [$existing => true];
+            } else {
+                $existing = json_decode($this->headers['HX-Trigger'], true);
+            }
+
+            $existing = array_merge($existing, $data);
+
+            $this->headers['HX-Trigger'] = json_encode($existing);
+
+            return $this;
+        }
+
+        $this->headers['HX-Trigger'] = json_encode($data);
+
+        return $this;
+    }
+
     /**
      * Apply headers to response.
      */
