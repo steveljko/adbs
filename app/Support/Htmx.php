@@ -106,7 +106,7 @@ final class Htmx
         return $this;
     }
 
-    public function toast(string $type, string $text, ?string $altText = '')
+    public function toast(string $type, string $text, ?string $altText = '', bool $afterSwap = false)
     {
         $data = [
             'toast' => [
@@ -116,24 +116,26 @@ final class Htmx
             ],
         ];
 
+        $headerName = $afterSwap ? 'HX-Trigger-After-Swap' : 'HX-Trigger';
+
         // if trigger is present in headers array
-        if (isset($this->headers['HX-Trigger'])) {
-            $existing = $this->headers['HX-Trigger'];
+        if (isset($this->headers[$headerName])) {
+            $existing = $this->headers[$headerName];
 
             if (is_string($existing)) {
-                $existing = [$existing => true];
+                $existing = [$existing => null];
             } else {
-                $existing = json_decode($this->headers['HX-Trigger'], true);
+                $existing = json_decode($this->headers[$headerName], true);
             }
 
             $existing = array_merge($existing, $data);
 
-            $this->headers['HX-Trigger'] = json_encode($existing);
+            $this->headers[$headerName] = json_encode($existing);
 
             return $this;
         }
 
-        $this->headers['HX-Trigger'] = json_encode($data);
+        $this->headers[$headerName] = json_encode($data);
 
         return $this;
     }

@@ -23,6 +23,10 @@ final class EditTagController
             'text_color' => $request->text_color,
         ]);
 
+        if (! $tag->isDirty()) {
+            return htmx()->response(null);
+        }
+
         $changedFields = array_keys($tag->getDirty());
 
         $changes = array_map(fn ($field) => $displayNames[$field] ?? $field, $changedFields);
@@ -42,9 +46,11 @@ final class EditTagController
             ->toast(
                 type: 'success',
                 text: 'Succesfully changed tag details.',
-                altText: $altText
+                altText: $altText,
+                afterSwap: true,
             )
             ->target('#tags')
-            ->response(view('resources.auth.settings')->fragment('tags'));
+            ->swap('innerHTML')
+            ->response(view('partials.auth.tags'));
     }
 }

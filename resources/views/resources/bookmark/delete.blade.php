@@ -5,6 +5,6 @@
     </x-modal.body>
     <x-modal.footer>
         <x-button.secondary data-hide-modal="true">Cancel</x-button.secondary>
-        <x-button type="submit">Delete Bookmark</x-button>
+        <x-button type="submit" color="bg-red-500">Delete Bookmark</x-button>
     </x-modal.footer>
 </form>

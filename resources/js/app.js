@@ -67,9 +67,9 @@ htmx.on('htmx:beforeSwap', (e) => {
     }
 });
 
-htmx.on('hideModal', () => { console.log('a'); window.modal.hide()});
+htmx.on('hideModal', () => window.modal.hide());
 
-htmx.on("toast", (e) => {
+htmx.on('toast', (e) => {
     const { type, text, altText } = e.detail;
 
     new Notify({
@@ -77,6 +77,10 @@ htmx.on("toast", (e) => {
         title: text,
         text: altText,
     });
+});
+
+document.addEventListener('toast', (e) => {
+    console.log('🍞 Toast event!', e.detail);
 });
 
 document.addEventListener('htmx:responseError', function (event) {

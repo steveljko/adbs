@@ -1,9 +1,10 @@
-- [ ] add alert notifications
+- [x] add alert notifications
 
 - [ ] add tags section into user settings
-    - [ ] add styling
-    - [ ] add auto reload
-    - [ ] add notification for successful change
+    - [x] add styling
+    - [x] add auto reload
+    - [x] add notification for successful change
+    - [ ] add delete button on edit modal
 
 - [ ] add matching colors for tag component when filtering
 

@@ -11,6 +11,7 @@ use App\Http\Controllers\Bookmark\UpdateBookmarkController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
 use App\Http\Controllers\Dashboard\ShowDashboardController;
 use App\Http\Controllers\Shared\GetAuthenticatedUserTagsController;
+use App\Http\Controllers\Tags\DeleteTagController;
 use App\Http\Controllers\Tags\EditTagController;
 use App\Models\Tag;
 use Illuminate\Support\Facades\Route;
@@ -70,4 +71,5 @@ Route::group([
         return view('resources.tags.edit', ['tag' => $tag]);
     })->name('.edit');
     Route::put('/{tag}/update', EditTagController::class)->name('.update');
+    Route::delete('/{tag}', DeleteTagController::class)->name('.delete');
 });
