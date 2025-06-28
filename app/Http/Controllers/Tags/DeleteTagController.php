@@ -18,6 +18,7 @@ final class DeleteTagController
             ->toast(
                 type: 'success',
                 text: 'Successfully deleted tag.',
+                afterSwap: true,
             )
             ->target('#tags')
             ->swap('innerHTML')
