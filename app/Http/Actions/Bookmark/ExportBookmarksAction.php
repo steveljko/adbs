@@ -10,10 +10,11 @@ use Illuminate\Support\Collection;
 
 final class ExportBookmarksAction
 {
-    public function execute(User $for)
+    public function execute(User $for): array
     {
         $bookmarks = $this->getBookmarks(user: $for);
 
+        return $bookmarks;
     }
 
     private function getBookmarks(User $user): array

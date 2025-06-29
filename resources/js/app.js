@@ -79,10 +79,6 @@ htmx.on('toast', (e) => {
     });
 });
 
-document.addEventListener('toast', (e) => {
-    console.log('🍞 Toast event!', e.detail);
-});
-
 document.addEventListener('htmx:responseError', function (event) {
     const errors = JSON.parse(event.detail.xhr.response).errors;
 

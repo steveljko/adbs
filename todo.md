@@ -11,6 +11,9 @@
 - [ ] add export/import functionality
     - [x] add export functionality
     - [ ] create password protected json export file
+    - [ ] add confirmation for import
+    - [ ] add progress bar for import
+    - [ ] add undo import functionality
 
 - [ ] make searchbar tags case insensitive
 
