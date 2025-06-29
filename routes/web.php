@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Bookmark\CreateBookmarkController;
 use App\Http\Controllers\Bookmark\DeleteBookmarkController;
+use App\Http\Controllers\Bookmark\ExportBookmarksController;
 use App\Http\Controllers\Bookmark\PreviewBookmarkController;
 use App\Http\Controllers\Bookmark\UpdateBookmarkController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
@@ -47,6 +48,8 @@ Route::group([
 
     Route::get('/{bookmark}/delete', [DeleteBookmarkController::class, 'render'])->name('.delete');
     Route::delete('/{bookmark}/delete', DeleteBookmarkController::class)->name('.destroy');
+
+    Route::get('/export', ExportBookmarksController::class)->name('.export');
 });
 
 Route::group([

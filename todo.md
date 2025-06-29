@@ -9,6 +9,8 @@
 - [ ] add matching colors for tag component when filtering
 
 - [ ] add export/import functionality
+    - [x] add export functionality
+    - [ ] create password protected json export file
 
 - [ ] make searchbar tags case insensitive
 
