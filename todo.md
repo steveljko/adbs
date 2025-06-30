@@ -18,3 +18,7 @@
 - [ ] make searchbar tags case insensitive
 
 - [ ] clean blade views and reorganize them
+
+- [ ] refactor dockerfile to use multistage build
+
+- [ ] create application installer
