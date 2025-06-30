@@ -10,11 +10,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Mauricius\LaravelHtmx\Http\HtmxRequest;
 
 final class ShowDashboardController
 {
-    public function __invoke(HtmxRequest $request): View|RedirectResponse|string
+    public function __invoke(Request $request): View|RedirectResponse|string
     {
         $queryTags = $request->query('tags', []);
         $querySites = $request->query('sites', []);
@@ -36,7 +35,7 @@ final class ShowDashboardController
             ->latest()
             ->get();
 
-        if ($request->isHtmxRequest()) {
+        if (htmx()->isRequest()) {
             return view('components.bookmark-list', [
                 'type' => $viewType,
                 'bookmarks' => $bookmarks,

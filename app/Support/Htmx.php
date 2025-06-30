@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Support;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Traits\Macroable;
 
 final class Htmx
@@ -15,6 +16,22 @@ final class Htmx
      * The headers applied to response.
      */
     private array $headers = [];
+
+    /**
+     * Check if the request is an HTMX request.
+     */
+    public function isRequest(): bool
+    {
+        return request()->hasHeader('HX-Request');
+    }
+
+    /*
+     * Get the current URL from the HTMX request header.
+     */
+    public function currentUrl(): string
+    {
+        return request()->header('HX-Current-Url');
+    }
 
     /**
      * Set the HX-Retarget header.
@@ -87,11 +104,11 @@ final class Htmx
     }
 
     /**
-     * Set the HX-Refresh header.
+     * Send page refresh.
      */
-    public function refresh(bool $refresh = true): self
+    public function refresh(): self
     {
-        $this->headers['HX-Refresh'] = $refresh ? 'true' : 'false';
+        $this->headers['HX-Refresh'] = 'true';
 
         return $this;
     }
@@ -102,40 +119,6 @@ final class Htmx
     public function replaceUrl(?string $url = null): self
     {
         $this->headers['HX-Replace-Url'] = $url ?? 'true';
-
-        return $this;
-    }
-
-    public function toast(string $type, string $text, ?string $altText = '', bool $afterSwap = false)
-    {
-        $data = [
-            'toast' => [
-                'type' => $type,
-                'text' => $text,
-                'altText' => $altText,
-            ],
-        ];
-
-        $headerName = $afterSwap ? 'HX-Trigger-After-Swap' : 'HX-Trigger';
-
-        // if trigger is present in headers array
-        if (isset($this->headers[$headerName])) {
-            $existing = $this->headers[$headerName];
-
-            if (is_string($existing)) {
-                $existing = [$existing => null];
-            } else {
-                $existing = json_decode($this->headers[$headerName], true);
-            }
-
-            $existing = array_merge($existing, $data);
-
-            $this->headers[$headerName] = json_encode($existing);
-
-            return $this;
-        }
-
-        $this->headers[$headerName] = json_encode($data);
 
         return $this;
     }

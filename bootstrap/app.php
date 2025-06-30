@@ -6,6 +6,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -18,5 +20,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn (Request $request) => route('auth.login'));
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(static function (ValidationException $exception, Request $request) {
+            if ($request->wantsJson()) {
+                return response()->json(['errors' => $exception->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            return htmx()->isRequest()
+                ? response()->json(['errors' => $exception->errors()], Response::HTTP_UNPROCESSABLE_ENTITY)
+                : back()->withErrors($exception->validator->errors());
+        });
     })->create();
