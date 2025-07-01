@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Support;
 
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Traits\Macroable;
 
 final class Htmx
@@ -23,14 +22,6 @@ final class Htmx
     public function isRequest(): bool
     {
         return request()->hasHeader('HX-Request');
-    }
-
-    /*
-     * Get the current URL from the HTMX request header.
-     */
-    public function currentUrl(): string
-    {
-        return request()->header('HX-Current-Url');
     }
 
     /**
@@ -104,11 +95,11 @@ final class Htmx
     }
 
     /**
-     * Send page refresh.
+     * Set the HX-Refresh header.
      */
-    public function refresh(): self
+    public function refresh(bool $refresh = true): self
     {
-        $this->headers['HX-Refresh'] = 'true';
+        $this->headers['HX-Refresh'] = $refresh ? 'true' : 'false';
 
         return $this;
     }
@@ -119,6 +110,40 @@ final class Htmx
     public function replaceUrl(?string $url = null): self
     {
         $this->headers['HX-Replace-Url'] = $url ?? 'true';
+
+        return $this;
+    }
+
+    public function toast(string $type, string $text, ?string $altText = '', bool $afterSwap = false)
+    {
+        $data = [
+            'toast' => [
+                'type' => $type,
+                'text' => $text,
+                'altText' => $altText,
+            ],
+        ];
+
+        $headerName = $afterSwap ? 'HX-Trigger-After-Swap' : 'HX-Trigger';
+
+        // if trigger is present in headers array
+        if (isset($this->headers[$headerName])) {
+            $existing = $this->headers[$headerName];
+
+            if (is_string($existing)) {
+                $existing = [$existing => null];
+            } else {
+                $existing = json_decode($this->headers[$headerName], true);
+            }
+
+            $existing = array_merge($existing, $data);
+
+            $this->headers[$headerName] = json_encode($existing);
+
+            return $this;
+        }
+
+        $this->headers[$headerName] = json_encode($data);
 
         return $this;
     }
