@@ -1,4 +1,4 @@
-<div id="contnet">
+<div id="content">
     <h1 class="text-2xl text-center">Requirements</h1>
     {{ $phpVersion }}
 
@@ -20,9 +20,8 @@
             @endforeach
         </div>
     </div>
-</div>
 
     <div class="flex">
-        <button hx-get="{{ route('installer.database') }}" hx-target="#content" class="py-3 w-full bg-orange-500 text-white rounded">Next</button>
+        <button hx-get="{{ route('installer.database') }}" hx-target="#content" hx-swap="outerHTML" class="py-3 w-full bg-orange-500 text-white rounded">Next</button>
     </div>
 </div>

@@ -80,6 +80,7 @@ htmx.on('toast', (e) => {
 });
 
 document.addEventListener('htmx:responseError', function (event) {
+    console.log(event.detail.xhr);
     const errors = JSON.parse(event.detail.xhr.response).errors;
 
     for (const [field, messages] of Object.entries(errors)) {

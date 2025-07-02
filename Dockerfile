@@ -42,6 +42,9 @@ RUN chown -R www-data:www-data /var/www/html \
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
+RUN php artisan storage:link
+RUN php artisan key:generate --force
+
 RUN npm install && npm run build
 
 # Configure Apache virtual host
@@ -55,40 +58,4 @@ RUN echo '<VirtualHost *:80>\n\
     CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
 </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-# Create entrypoint script
-RUN echo '#!/bin/bash\n\
-set -e\n\
-\n\
-# Wait for database to be ready (optional)\n\
-if [ -n "$DB_HOST" ] && [ -n "$DB_PORT" ]; then\n\
-    echo "Waiting for database..."\n\
-    while ! nc -z $DB_HOST $DB_PORT; do\n\
-        sleep 1\n\
-    done\n\
-    echo "Database is ready!"\n\
-fi\n\
-\n\
-# Generate application key if not set\n\
-if [ -z "$APP_KEY" ]; then\n\
-    php artisan key:generate --force\n\
-fi\n\
-\n\
-# Run database migrations\n\
-php artisan migrate --force\n\
-\n\
-# Cache configuration\n\
-php artisan config:cache\n\
-php artisan route:cache\n\
-php artisan view:cache\n\
-php artisan storage:link\n\
-\n\
-# Start Apache\n\
-exec apache2-foreground' > /usr/local/bin/entrypoint.sh \
-    && chmod +x /usr/local/bin/entrypoint.sh
-
-# install netcat (for database health check)
-RUN apt-get update && apt-get install -y netcat-traditional && rm -rf /var/lib/apt/lists/*
-
 EXPOSE 80
-
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

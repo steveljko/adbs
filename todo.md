@@ -22,3 +22,6 @@
 - [ ] refactor dockerfile to use multistage build
 
 - [ ] create application installer
+    - [ ] make wizard like styling
+    - [ ] add mysql support for database
+    - [ ] add sqlite support for database

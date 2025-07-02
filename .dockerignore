@@ -1,7 +1,7 @@
 .git
 .gitignore
 README.md
-.env
+# .env
 .env.example
 .env.local
 .env.staging

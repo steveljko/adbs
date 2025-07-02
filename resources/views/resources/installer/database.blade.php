@@ -1,8 +1,6 @@
-<div id="contnet">
+<div id="content">
     <h1 class="text-2xl text-center">Database</h1>
-    <form hx-post="{{ route('installer.database.setup') }}" hx-swap="none" class="space-y-6">
-        @csrf
-
+    <form hx-post="{{ route('installer.database.setup') }}" hx-target="#content" hx-swap="outerHTML" class="space-y-6">
         <div class="grid md:grid-cols-2 gap-6">
             <x-form.input name="db_host" label="Database Host" type="text" value="localhost"></x-form.input>
             <x-form.input name="db_port" label="Database Port" type="number" value="5432"></x-form.input>
