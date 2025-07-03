@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Http\Controllers\Installer\DatabaseController;
 use App\Http\Controllers\Installer\RequirmentsController;
 use App\Http\Controllers\Installer\UserCreationController;
+use App\Http\Controllers\Installer\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,7 +31,8 @@ final class AppServiceProvider extends ServiceProvider
                 'prefix' => 'install',
                 'as' => 'installer.',
             ], function () {
-                Route::view('/', 'resources.installer.welcome')->name('welcome');
+                Route::get('/', WelcomeController::class)->name('welcome');
+                Route::post('/welcome/next', [WelcomeController::class, 'run'])->name('welcome.next');
 
                 Route::get('/requirments', RequirmentsController::class)->name('requirements');
 
@@ -39,6 +41,7 @@ final class AppServiceProvider extends ServiceProvider
 
                 Route::get('/user', UserCreationController::class)->name('user');
                 Route::post('/user/create', [UserCreationController::class, 'run'])->name('user.create');
+                Route::get('/user/skip', [UserCreationController::class, 'skip'])->name('user.skip');
             });
         }
     }

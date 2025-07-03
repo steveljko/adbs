@@ -163,8 +163,8 @@ final class Htmx
     /**
      * Apply all headers to view response
      */
-    public function response(mixed $view): Response
+    public function response(mixed $render = null): Response
     {
-        return $this->apply(response($view));
+        return $this->apply(response($render));
     }
 }

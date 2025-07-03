@@ -12,6 +12,8 @@ final class LogoutController
     {
         $action->execute();
 
-        return response(null)->header('HX-Redirect', route('auth.login'));
+        return htmx()
+            ->redirect(route('auth.login'))
+            ->response();
     }
 }

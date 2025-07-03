@@ -30,9 +30,9 @@ final class ShowDashboardController
         );
 
         $bookmarks = Bookmark::query()
-            ->whereUserId(Auth::id())
             ->withTagsAndSites(tags: $queryTags, sites: $querySites)
             ->where('title', 'LIKE', "%{$title}%")
+            ->whereUserId(Auth::id())
             ->latest()
             ->get();
 

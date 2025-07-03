@@ -12,7 +12,11 @@
         <x-form.input name="password" label="Password" type="password"></x-form.input>
         <x-form.input name="password_confirmation" label="Confirm Password" type="password"></x-form.input>
 
-        <x-button type="submit">Create User</x-button>
+        <div class="flex space-x-4">
+            <x-button hx-get="{{ route('installer.user.skip') }}" class="w-full bg-gray-500"
+                type="button">Skip</x-button>
+            <x-button class="w-full" type="submit">Create User</x-button>
+        </div>
     </form>
 </div>
 @endsection

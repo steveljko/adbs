@@ -1,9 +1,12 @@
+@extends('layouts.installer')
+
+@section('content')
 <div id="content">
     <h1 class="text-2xl text-center">Requirements</h1>
     {{ $phpVersion }}
 
     <div class="bg-gray-50 p-6 rounded-lg">
-<h3 class="text-lg font-semibold mb-4">PHP Extensions</h3>
+        <h3 class="text-lg font-semibold mb-4">PHP Extensions</h3>
         <div class="grid md:grid-cols-2 gap-3">
             @foreach($extensions as $extension => $details)
             <div class="flex items-center justify-between p-3 bg-white rounded border">
@@ -22,6 +25,8 @@
     </div>
 
     <div class="flex">
-        <button hx-get="{{ route('installer.database') }}" hx-target="#content" hx-swap="outerHTML" class="py-3 w-full bg-orange-500 text-white rounded">Next</button>
+        <button hx-get="{{ route('installer.database') }}" hx-target="#content" hx-swap="outerHTML"
+            class="py-3 w-full bg-orange-500 text-white rounded">Next</button>
     </div>
 </div>
+@endsection

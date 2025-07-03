@@ -15,10 +15,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body hx-headers='{"X-CSRF-TOKEN": "{{ csrf_token() }}"}' class="bg-[#fcfcfc]">
+<body hx-headers='{"X-CSRF-TOKEN": "{{ csrf_token() }}"}' class="flex items-center justify-center h-screen bg-[#fcfcfc]">
     <x-htmx-error-handler />
 
-    <div class="w-1/3 mx-auto bg-white shadow">
+    <div class="w-full lg:w-1/3 md:w-3/4 mx-auto bg-white p-6 shadow rounded">
         @yield('content')
     </div>
 </body>
