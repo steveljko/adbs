@@ -100,7 +100,6 @@ document.addEventListener('htmx:afterSwap', function(event) {
     }
 });
 
-
 function addSearchbarKeyboardAccessibility() {
     const elements = {
         input: document.querySelector('input[name="search"]'),

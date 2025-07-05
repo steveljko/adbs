@@ -4,38 +4,65 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Bookmark;
 
-use App\Exceptions\Bookmark\Import\BookmarkImportException;
 use App\Http\Actions\Bookmark\ImportBookmarksAction;
 use App\Http\Requests\Bookmark\ImportBookmarksRequest;
-use Illuminate\Support\Facades\Log;
+use App\Http\Requests\Bookmark\ImportBookmarksWithPasswordRequest;
+use Exception;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
+// TODO: add proper logging
 final class ImportBookmarksController
 {
-    public function __invoke(
-        ImportBookmarksRequest $request,
-        ImportBookmarksAction $importBookmarks,
-    ) {
+    public function __invoke(ImportBookmarksRequest $request, ImportBookmarksAction $importBookmarks)
+    {
+        if ($importBookmarks->isEncrypted($request->file)) {
+            $tempFileName = 'bookmarks_'.Str::uuid().'.json';
+            $tempPath = 'temp/'.$tempFileName;
+
+            Storage::putFileAs('temp', $request->file, $tempFileName);
+
+            return htmx()
+                ->target('#dialog')
+                ->swap('innerHTML')
+                ->response(view('resources.bookmark.import-password', ['tempFile' => $tempFileName]));
+        }
+
         try {
             $imported = $importBookmarks->execute($request->file);
 
-            return htmx()
-                ->toast(
-                    type: 'success',
-                    text: 'Successfully imported bookmarks!',
-                    altText: "$imported bookmarks are imported.",
-                )->response(null);
-        } catch (BookmarkImportException $e) {
-            Log::warning('Bookmark import failed', [
-                'error' => $e->getMessage(),
-                'exception_type' => get_class($e),
-                'user_id' => auth()->id(),
-            ]);
+            return htmx()->toast('success', "Successfully imported $imported bookmarks!")->response();
+        } catch (Exception $e) {
+            return htmx()->toast('error', 'Import failed: '.$e->getMessage())->response();
+        }
+    }
 
-            return htmx()
-                ->toast(
-                    type: 'error',
-                    text: $e->getMessage(),
-                )->response(null);
+    public function decryptAndImport(
+        ImportBookmarksWithPasswordRequest $request,
+        ImportBookmarksAction $importBookmarks
+    ) {
+        $tempFilePath = 'temp/'.$request->get('temp_file', null);
+
+        if (! Storage::exists($tempFilePath)) {
+            return htmx()->toast('error', 'Temporary file not found. Please try uploading again.')->response();
+        }
+
+        try {
+            $fullPath = Storage::path($tempFilePath);
+            $imported = $importBookmarks->execute($fullPath, $request->get('password'));
+
+            Storage::delete($tempFilePath);
+
+            return htmx()->toast('success', "Successfully imported $imported bookmarks!")->response();
+        } catch (DecryptException $e) {
+            Storage::delete($tempFilePath);
+
+            return htmx()->toast('error', 'Invalid password is provided, try again.')->response();
+        } catch (Exception $e) {
+            Storage::delete($tempFilePath);
+
+            return htmx()->toast('error', 'Something wrong happend, try again.')->response();
         }
     }
 }

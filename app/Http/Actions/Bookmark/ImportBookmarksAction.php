@@ -7,10 +7,9 @@ namespace App\Http\Actions\Bookmark;
 use App\Exceptions\Bookmark\Import\EmptyBookmarkFileException;
 use App\Http\Actions\Tag\AttachOrCreateTagsAction;
 use App\Http\Actions\Website\GetFaviconAction;
-use App\Models\Bookmark;
+use App\Jobs\ImportBookmarksJob;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use InvalidBookmarkDataException;
 
 final class ImportBookmarksAction
 {
@@ -19,42 +18,63 @@ final class ImportBookmarksAction
         private GetFaviconAction $getFavicon
     ) {}
 
-    public function execute($file)
+    public function execute($file, ?string $password = null)
     {
-        $content = file_get_contents($file->getRealPath());
+        $content = is_string($file) ? file_get_contents($file) : file_get_contents($file->getRealPath());
         $bookmarks = json_decode($content, true);
 
-        if (! is_array($bookmarks)) {
-            throw new InvalidBookmarkDataException('JSON file must contain array of bookmarks.');
+        if (isset($bookmarks['encrypted']) && $bookmarks['encrypted'] && $password) {
+            $bookmarks = $this->decryptBookmarks($bookmarks, $password);
+        } else {
+            $bookmarks = $bookmarks['data'] ?? $bookmarks;
         }
 
-        if (count($bookmarks) < 1) {
+        if (! is_array($bookmarks) || empty($bookmarks)) {
             throw new EmptyBookmarkFileException;
         }
 
-        $imported = 0;
+        return $this->dispatchImportJob($bookmarks);
+    }
+
+    /*
+     * Checks if json file data is encrypted or not.
+     */
+    public function isEncrypted($file): bool
+    {
+        $content = file_get_contents($file->getRealPath());
+        $data = json_decode($content, true);
+
+        return isset($data['encrypted']) && $data['encrypted'] === true;
+    }
+
+    /**
+     * Runs bookmarks insert job
+     */
+    private function dispatchImportJob(array $bookmarks): void
+    {
         $userId = Auth::id();
+        $chunkSize = 100;
 
-        DB::transaction(function () use ($bookmarks, $userId, &$imported) {
-            foreach ($bookmarks as $bookmark) {
-                $toInsert = [
-                    'url' => $bookmark['url'],
-                    'title' => $bookmark['title'],
-                    'favicon' => $this->getFavicon->execute($bookmark['url'], 32),
-                    'status' => $bookmark['status'],
-                    'user_id' => $userId,
-                ];
-
-                $b = Bookmark::create($toInsert);
-
-                if (isset($bookmark['tags'])) {
-                    $this->attachOrCreateTags->execute(bookmark: $b, tags: $bookmark['tags']);
-                }
-
-                $imported++;
+        if (count($bookmarks) > $chunkSize) {
+            $chunks = array_chunk($bookmarks, $chunkSize);
+            foreach ($chunks as $chunk) {
+                ImportBookmarksJob::dispatch($chunk, $userId);
             }
-        });
+        } else {
+            ImportBookmarksJob::dispatch($bookmarks, $userId);
+        }
+    }
 
-        return $imported;
+    /**
+     * Decrypts data part from JSON file
+     */
+    private function decryptBookmarks(array $encryptedData, string $password): array
+    {
+        $key = hash('sha256', $password, true);
+        $decrypter = new Encrypter($key, 'AES-256-CBC');
+
+        $decryptedJson = $decrypter->decrypt($encryptedData['data']);
+
+        return json_decode($decryptedJson, true);
     }
 }

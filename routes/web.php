@@ -54,6 +54,7 @@ Route::group([
     Route::post('/export/confirm', [ExportBookmarksController::class, 'confirm'])->name('.export.confirm');
     Route::get('/export/download', [ExportBookmarksController::class, 'get'])->name('.export.get');
     Route::post('/import', ImportBookmarksController::class)->name('.import');
+    Route::post('/decryptAndImport', [ImportBookmarksController::class, 'decryptAndImport'])->name('.decryptAndImport');
 });
 
 Route::group([
