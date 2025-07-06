@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Events\ImportProgressUpdated;
 use App\Http\Actions\Tag\AttachOrCreateTagsAction;
 use App\Http\Actions\Website\GetFaviconAction;
 use App\Models\Bookmark;
@@ -22,7 +23,7 @@ final class ImportBookmarksJob implements ShouldQueue
 
     public function __construct(
         private array $bookmarks,
-        private int $userId
+        private int $userId,
     ) {}
 
     /**
@@ -32,7 +33,14 @@ final class ImportBookmarksJob implements ShouldQueue
         AttachOrCreateTagsAction $attachOrCreateTags,
         GetFaviconAction $getFavicon
     ): void {
-        DB::transaction(function () use ($attachOrCreateTags, $getFavicon) {
+        $totalBookmarks = count($this->bookmarks);
+        $processed = 0;
+        $failed = 0;
+        $successful = 0;
+
+        $this->broadcastProgress($processed, $totalBookmarks, $successful, $failed, 'Starting import...');
+
+        DB::transaction(function () use ($attachOrCreateTags, $getFavicon, $totalBookmarks, &$processed, &$failed, &$successful) {
             foreach ($this->bookmarks as $bookmark) {
                 try {
                     // TODO: Implement proper validation
@@ -52,14 +60,73 @@ final class ImportBookmarksJob implements ShouldQueue
                     if (isset($bookmark['tags']) && is_array($bookmark['tags'])) {
                         $attachOrCreateTags->execute(bookmark: $b, tags: $bookmark['tags']);
                     }
+
+                    $successful++;
+                    $processed++;
+
+                    if ($processed % 5 === 0 || $processed === $totalBookmarks) {
+                        $this->broadcastProgress(
+                            $processed,
+                            $totalBookmarks,
+                            $successful,
+                            $failed,
+                            "Processing: {$bookmark['title']}"
+                        );
+                    }
                 } catch (Exception $e) {
+                    $failed++;
+                    $processed++;
+
                     Log::warning('Failed to import bookmark using ImportBookmarksJob', [
                         'bookmark' => $bookmark,
                         'error' => $e->getMessage(),
                         'user_id' => $this->userId,
                     ]);
+
+                    if ($processed % 5 === 0 || $processed === $totalBookmarks) {
+                        $this->broadcastProgress(
+                            $processed,
+                            $totalBookmarks,
+                            $successful,
+                            $failed,
+                            "Error processing: {$bookmark['title']}"
+                        );
+                    }
                 }
             }
         });
+
+        $this->broadcastProgress(
+            $processed,
+            $totalBookmarks,
+            $successful,
+            $failed,
+            'Import completed!',
+            true
+        );
+    }
+
+    private function broadcastProgress(
+        int $processed,
+        int $total,
+        int $successful,
+        int $failed,
+        string $message,
+        bool $completed = false
+    ): void {
+        $percentage = $total > 0 ? round(($processed / $total) * 100, 2) : 0;
+
+        $progressData = [
+            'processed' => $processed,
+            'total' => $total,
+            'successful' => $successful,
+            'failed' => $failed,
+            'percentage' => $percentage,
+            'message' => $message,
+            'completed' => $completed,
+            'updated_at' => now()->toISOString(),
+        ];
+
+        broadcast(new ImportProgressUpdated($this->userId, $progressData));
     }
 }

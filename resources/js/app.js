@@ -4,6 +4,70 @@ window.htmx = htmx;
 import Notify from 'simple-notify'
 import 'simple-notify/dist/simple-notify.css'
 
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+    broadcaster: 'reverb',
+    key: import.meta.env.VITE_REVERB_APP_KEY,
+    wsHost: import.meta.env.VITE_REVERB_HOST,
+    wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
+    wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
+    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+});
+
+console.log(window.userId);
+
+if (window.userId) {
+    window.Echo.private(`import-progress.${window.userId}`)
+        .listen('.progress.updated', (data) => {
+            document.getElementById('progress-section').classList.remove('hidden');
+            document.getElementById('progress-container').innerHTML = `
+                <div id="progress-container">
+                    <div class="progress-info mb-3">
+                        <div class="flex justify-between items-center">
+                            <span id="progress-message" class="text-gray-700">Initializing...</span>
+                            <span id="progress-percentage" class="text-gray-700 font-medium">${data.percentage}%</span>
+                        </div>
+                        <div class="progress-stats mt-2">
+                            <small class="text-gray-500 text-sm">
+                                Processed: <span id="progress-processed" class="font-medium">${data.processed}</span>/<span
+                                    id="progress-total" class="font-medium">${data.total}</span> |
+                                Successful: <span id="progress-successful" class="font-medium text-green-600">${data.successful}</span> |
+                                Failed: <span id="progress-failed" class="font-medium text-red-600">${data.failed}</span>
+                            </small>
+                        </div>
+                    </div>
+                    <div class="progress mb-3 bg-gray-200 rounded-full h-5 overflow-hidden">
+                        <div class="progress-bar bg-blue-500 h-full transition-all duration-300 ease-out"
+                            role="progressbar" id="progress-bar" style="width: ${data.percentage}%" aria-valuenow="0" aria-valuemin="0"
+                            aria-valuemax="100">
+                        </div>
+                    </div>
+                    <div id="progress-status" class="text-center">
+                        <div class="inline-flex items-center">
+                            <div class="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"
+                                role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <small class="text-gray-500 ml-2 text-sm">${data.message}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if (data.percentage === 100 && data.message == "Import completed!") {
+                new Notify({
+                    type: 'success',
+                    title: 'Import successfully finished.',
+                });
+            }
+        })
+}
+
+
 class Modal {
     constructor() {
         this.modal = document.getElementById('modal-container');

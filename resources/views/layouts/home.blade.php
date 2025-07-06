@@ -26,6 +26,10 @@
     <div>
         @yield('content')
     </div>
+
+    <script>
+        window.userId = {{auth() -> id() ?? 'null'}}
+    </script>
 </body>
 
 </html>

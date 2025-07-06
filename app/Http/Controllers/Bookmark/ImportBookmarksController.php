@@ -30,9 +30,9 @@ final class ImportBookmarksController
         }
 
         try {
-            $imported = $importBookmarks->execute($request->file);
+            $importBookmarks->execute($request->file);
 
-            return htmx()->toast('success', "Successfully imported $imported bookmarks!")->response();
+            return htmx()->toast('success', 'Import is starting!')->response();
         } catch (Exception $e) {
             return htmx()->toast('error', 'Import failed: '.$e->getMessage())->response();
         }

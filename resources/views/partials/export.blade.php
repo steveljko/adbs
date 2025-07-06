@@ -50,6 +50,42 @@
                 </div>
             </form>
             @endfragment
+
+            <!-- import progress section -->
+            <div id="progress-section" class="mt-4 hidden">
+                <h5 class="text-lg font-semibold text-blue-700 mb-4">Import Progress</h5>
+                <div id="progress-container">
+                    <div class="progress-info mb-3">
+                        <div class="flex justify-between items-center">
+                            <span id="progress-message" class="text-gray-700">Initializing...</span>
+                            <span id="progress-percentage" class="text-gray-700 font-medium">0%</span>
+                        </div>
+                        <div class="progress-stats mt-2">
+                            <small class="text-gray-500 text-sm">
+                                Processed: <span id="progress-processed" class="font-medium">0</span>/<span
+                                    id="progress-total" class="font-medium">0</span> |
+                                Successful: <span id="progress-successful" class="font-medium text-green-600">0</span> |
+                                Failed: <span id="progress-failed" class="font-medium text-red-600">0</span>
+                            </small>
+                        </div>
+                    </div>
+                    <div class="progress mb-3 bg-gray-200 rounded-full h-5 overflow-hidden">
+                        <div class="progress-bar bg-blue-500 h-full transition-all duration-300 ease-out"
+                            role="progressbar" id="progress-bar" style="width: 0%" aria-valuenow="0" aria-valuemin="0"
+                            aria-valuemax="100">
+                        </div>
+                    </div>
+                    <div id="progress-status" class="text-center">
+                        <div class="inline-flex items-center">
+                            <div class="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"
+                                role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <small class="text-gray-500 ml-2 text-sm">Import in progress...</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
