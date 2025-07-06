@@ -9,6 +9,7 @@ use App\Http\Controllers\Bookmark\DeleteBookmarkController;
 use App\Http\Controllers\Bookmark\ExportBookmarksController;
 use App\Http\Controllers\Bookmark\ImportBookmarksController;
 use App\Http\Controllers\Bookmark\PreviewBookmarkController;
+use App\Http\Controllers\Bookmark\UndoBookmarksImportController;
 use App\Http\Controllers\Bookmark\UpdateBookmarkController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
 use App\Http\Controllers\Dashboard\ShowDashboardController;
@@ -55,6 +56,8 @@ Route::group([
     Route::get('/export/download', [ExportBookmarksController::class, 'get'])->name('.export.get');
     Route::post('/import', ImportBookmarksController::class)->name('.import');
     Route::post('/decryptAndImport', [ImportBookmarksController::class, 'decryptAndImport'])->name('.decryptAndImport');
+    Route::get('/import/undo', UndoBookmarksImportController::class)->name('.import.undo');
+    Route::delete('/import/undo/confirm', [UndoBookmarksImportController::class, 'confirm'])->name('.import.undo.confirm');
 });
 
 Route::group([

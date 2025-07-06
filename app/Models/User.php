@@ -43,6 +43,17 @@ final class User extends Authenticatable
         return $this->hasMany(Bookmark::class);
     }
 
+    /**
+     * Checks if user has undoable import
+     */
+    public function hasUndoableImport(): bool
+    {
+        return $this->bookmarks()
+            ->whereNotNull('imported_at')
+            ->where('recently_imported', true)
+            ->exists();
+    }
+
     /*
      * Users tags
      */

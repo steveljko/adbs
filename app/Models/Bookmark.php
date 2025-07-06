@@ -28,6 +28,8 @@ final class Bookmark extends Model
         'favicon',
         'status',
         'user_id',
+        'imported_at',
+        'recently_imported',
     ];
 
     /**
@@ -86,6 +88,7 @@ final class Bookmark extends Model
     {
         return [
             'status' => BookmarkStatus::class,
+            'recently_imported' => 'boolean',
         ];
     }
 }

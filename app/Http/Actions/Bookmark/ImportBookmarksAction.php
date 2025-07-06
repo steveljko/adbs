@@ -8,6 +8,7 @@ use App\Exceptions\Bookmark\Import\EmptyBookmarkFileException;
 use App\Http\Actions\Tag\AttachOrCreateTagsAction;
 use App\Http\Actions\Website\GetFaviconAction;
 use App\Jobs\ImportBookmarksJob;
+use App\Models\Bookmark;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,6 +55,11 @@ final class ImportBookmarksAction
     {
         $userId = Auth::id();
         $chunkSize = 100;
+
+        /* Bookmark::query() */
+        /*     ->whereUserId($userId) */
+        /*     ->where('recently_imported', true) */
+        /*     ->update(['recently_imported' => false]); */
 
         if (count($bookmarks) > $chunkSize) {
             $chunks = array_chunk($bookmarks, $chunkSize);

@@ -33,7 +33,7 @@ final class ImportBookmarksJob implements ShouldQueue
         GetFaviconAction $getFavicon
     ): void {
         DB::transaction(function () use ($attachOrCreateTags, $getFavicon) {
-            foreach ($this->bookmarks as $index => $bookmark) {
+            foreach ($this->bookmarks as $bookmark) {
                 try {
                     // TODO: Implement proper validation
 
@@ -43,6 +43,8 @@ final class ImportBookmarksJob implements ShouldQueue
                         'favicon' => $getFavicon->execute($bookmark['url'], 32),
                         'status' => $bookmark['status'] ?? 'active',
                         'user_id' => $this->userId,
+                        'imported_at' => now(),
+                        'recently_imported' => true,
                     ];
 
                     $b = Bookmark::create($toInsert);
