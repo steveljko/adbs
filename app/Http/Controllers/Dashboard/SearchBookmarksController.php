@@ -42,7 +42,7 @@ final class SearchBookmarksController
 
     public function renderTag(Tag $tag): View
     {
-        return view('resources.dashboard.filters.tag', ['tag' => $tag->name]);
+        return view('resources.dashboard.filters.tag', compact('tag'));
     }
 
     public function renderSite(string $site): View

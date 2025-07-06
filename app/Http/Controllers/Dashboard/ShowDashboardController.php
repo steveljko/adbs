@@ -17,6 +17,11 @@ final class ShowDashboardController
     {
         $queryTags = $request->query('tags', []);
         $querySites = $request->query('sites', []);
+
+        $queryTags = array_map(function ($tag) {
+            return Tag::where('name', $tag)->first();
+        }, $queryTags);
+
         $title = $request->query('title', null);
         $viewType = $request->query('view_type', 'card');
 
@@ -30,7 +35,7 @@ final class ShowDashboardController
         );
 
         $bookmarks = Bookmark::query()
-            ->withTagsAndSites(tags: $queryTags, sites: $querySites)
+            ->withTagsAndSites(tags: $queryTags, sites: $querySites) // fix this
             ->where('title', 'LIKE', "%{$title}%")
             ->whereUserId(Auth::id())
             ->latest()

@@ -54,10 +54,12 @@ final class Bookmark extends Model
      */
     public function scopeWithTagsAndSites(Builder $query, array $tags = [], array $sites = []): Builder
     {
-        return $this
+        return $query
             ->when($tags, function (Builder $query) use ($tags) {
-                $query->whereHas('tags', function (Builder $query) use ($tags) {
-                    $query->whereIn('name', $tags);
+                $tagsC = collect($tags);
+
+                $query->whereHas('tags', function (Builder $query) use ($tagsC) {
+                    $query->whereIn('name', $tagsC->pluck('name'));
                 });
             })->when($sites, function (Builder $query) use ($sites) {
                 $query->where(function (Builder $query) use ($sites) {

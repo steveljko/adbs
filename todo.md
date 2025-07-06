@@ -6,18 +6,23 @@
     - [x] add notification for successful change
     - [x] add delete button on edit modal
 
-- [ ] add matching colors for tag component when filtering
+- [x] add matching colors for tag component when filtering
 
-- [ ] add export/import functionality
+- [x] add export/import functionality
     - [x] add export functionality
     - [x] create password protected json export file
-    - [ ] add confirmation for import
-    - [ ] add progress bar for import
-    - [ ] add undo import functionality
+    - [x] add confirmation for import
+    - [x] add progress bar for import
+    - [x] add undo import functionality
 
 - [ ] make searchbar tags case insensitive
 
 - [ ] clean blade views and reorganize them
+    - [ ] make form components more customizable
+    - [ ] make form components cleaner
+    - [ ] delete unnecessary components and views
+    - [ ] find better way to store svg icons
+    - [ ] rename unclear view and component names
 
 - [ ] refactor dockerfile to use multistage build
 
@@ -25,3 +30,5 @@
     - [ ] make wizard like styling
     - [ ] add mysql support for database
     - [ ] add sqlite support for database
+
+- [ ] add loading state and eager bookmark loading on frontpage
