@@ -32,3 +32,7 @@
     - [ ] add sqlite support for database
 
 - [ ] add loading state and eager bookmark loading on frontpage
+    - [x] add infinite scroll loading
+    - [ ] add load more button on smaller screens
+    - [x] add skeleton loading state for card type
+    - [ ] finish loading state for list type

@@ -25,6 +25,10 @@ final class ShowDashboardController
         $title = $request->query('title', null);
         $viewType = $request->query('view_type', 'card');
 
+        $page = (int) $request->query('page', 1);
+        $perPage = 35;
+        $offset = ($page - 1) * $perPage;
+
         $tags = $this->getAvailableTags();
         $sites = $this->getAvailableSites();
 
@@ -34,21 +38,48 @@ final class ShowDashboardController
             availableSites: $sites,
         );
 
-        $bookmarks = Bookmark::query()
-            ->withTagsAndSites(tags: $queryTags, sites: $querySites) // fix this
+        $bookmarksQuery = Bookmark::query()
+            ->withTagsAndSites(tags: $queryTags, sites: $querySites)
             ->where('title', 'LIKE', "%{$title}%")
             ->whereUserId(Auth::id())
-            ->latest()
-            ->get();
+            ->latest();
+
+        $totalCount = $bookmarksQuery->count();
+        $bookmarks = $bookmarksQuery->offset($offset)->limit($perPage)->get();
+
+        $hasMore = $totalCount > ($offset + $perPage);
+        $nextPage = $hasMore ? $page + 1 : null;
 
         if (htmx()->isRequest()) {
+            if ($request->has('load_more')) {
+                return view('partials.bookmark.bookmark-items', [
+                    'type' => $viewType,
+                    'bookmarks' => $bookmarks,
+                    'hasMore' => $hasMore,
+                    'nextPage' => $nextPage,
+                    'currentPage' => $page,
+                ])->render();
+            }
+
             return view('components.bookmark-list', [
                 'type' => $viewType,
                 'bookmarks' => $bookmarks,
+                'hasMore' => $hasMore,
+                'nextPage' => $nextPage,
+                'currentPage' => $page,
             ])->render();
         }
 
-        return view('resources.dashboard.home', compact('queryTags', 'querySites', 'viewType', 'tags', 'bookmarks'));
+        return view('resources.dashboard.home', [
+            'queryTags' => $queryTags,
+            'querySites' => $querySites,
+            'viewType' => $viewType,
+            'tags' => $tags,
+            'bookmarks' => $bookmarks,
+            'hasMore' => $hasMore,
+            'nextPage' => $nextPage,
+            'currentPage' => $page,
+        ]);
     }
 
     /**

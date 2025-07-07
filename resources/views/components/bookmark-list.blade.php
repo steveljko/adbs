@@ -53,10 +53,10 @@
         </li>
         @endforeach
         @else
-        <div class="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
-            @foreach ($bookmarks as $index => $bookmark)
-            <div class="bookmark-card relative bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 break-inside-avoid mb-4 group"
-                style="animation-delay: {{ $index * 0.1 }}s;">
+        <div class="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4" id="bookmarks-container">
+            @foreach ($bookmarks as $bookmark)
+            <div
+                class="bookmark-card relative bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 break-inside-avoid mb-4 group">
                 @include('partials.bookmark.card-loading', ['bookmark' => $bookmark])
                 @include('partials.bookmark.card', ['bookmark' => $bookmark])
             </div>
