@@ -13,9 +13,9 @@
         </div>
         <div id="tags" class="mt-2 flex space-x-2 flex-wrap">
             @if (isset($selectedTags))
-                @foreach ($selectedTags as $tag)
-                    @include('resources.dashboard.filters.tag', ['tag' => $tag->name])
-                @endforeach
+            @foreach ($selectedTags as $tag)
+            @include('resources.dashboard.filters.tag', ['tag' => $tag])
+            @endforeach
             @endif
         </div>
         <span id="tags-error" class="hidden text-red-500 block text-sm mt-2"></span>
