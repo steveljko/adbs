@@ -21,9 +21,14 @@
             <x-icons.plus class="w-5 h-5" />
         </button>
 
-        <div class="relative">
-            <div id="userDropdown"
-                class="absolute bottom-full right-[-.35rem] bg-white border border-gray-200 rounded-lg shadow-xl mb-2 hidden z-50 w-52">
+        <div class="relative" x-data="{ dropdownOpen: false }">
+            <div x-show="dropdownOpen" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 transform scale-95"
+                x-transition:enter-end="opacity-100 transform scale-100"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 transform scale-100"
+                x-transition:leave-end="opacity-0 transform scale-95" @click.away="dropdownOpen = false"
+                class="absolute bottom-full right-[-.35rem] bg-white border border-gray-200 rounded-lg shadow-xl mb-2 z-50 w-52">
                 <div class="p-3">
                     <div class="space-y-1">
                         <a class="px-3 py-2 hover:bg-gray-50 rounded-md cursor-pointer text-sm flex items-center gap-3 transition-colors"
@@ -32,13 +37,23 @@
                         </a>
                         <a class="px-3 py-2 hover:bg-gray-50 rounded-md cursor-pointer text-sm flex items-center gap-3 transition-colors"
                             href="{{ route('auth.settings') }}">
-                            <x-icons.settings />
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
                             <span>Settings</span>
                         </a>
                         <div class="border-t border-gray-100 my-1"></div>
                         <div class="px-3 py-2 hover:bg-red-50 hover:text-red-600 rounded-md cursor-pointer text-sm flex items-center gap-3 transition-colors"
                             hx-delete="{{ route('auth.logout') }}">
-                            <x-icons.logout />
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                </path>
+                            </svg>
                             <span>Logout</span>
                         </div>
                     </div>
@@ -48,12 +63,11 @@
                 </div>
             </div>
 
-            <button id="userMenuBtn"
+            <button @click="dropdownOpen = !dropdownOpen"
                 class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-semibold hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md">
                 <!-- TODO: implement here real avatar later -->
                 VS
             </button>
         </div>
     </div>
-</div>
 </div>

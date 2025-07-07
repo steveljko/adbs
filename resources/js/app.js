@@ -111,18 +111,6 @@ document.addEventListener('htmx:responseError', function (event) {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const userMenuButton = document.getElementById('userMenuBtn');
-    if (userMenuButton) {
-        const dropdown = document.getElementById('userDropdown');
-        userMenuButton.addEventListener('click', () => dropdown.classList.toggle('hidden'));
-
-        document.addEventListener('click', (event) => {
-            if (!dropdown.classList.contains('hidden') && !dropdown.contains(event.target) && event.target !== userMenuButton) {
-                dropdown.classList.add('hidden');
-            }
-        });
-    }
-
     Coloris({
         el: '#color',
         theme: 'pill',
