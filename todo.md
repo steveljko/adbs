@@ -36,3 +36,9 @@
     - [ ] add load more button on smaller screens
     - [x] add skeleton loading state for card type
     - [ ] finish loading state for list type
+
+- [ ] clean js files
+    - [ ] move classes into seperate classes
+    - [ ] refactor suggestions to use alpine
+    - [ ] clean 'app.js' file
+    - [ ] refactor bottombar menu to use alpinejs

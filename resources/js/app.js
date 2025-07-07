@@ -141,7 +141,7 @@ htmx.on('toast', (e) => {
     const { type, text, altText } = e.detail;
 
     new Notify({
-        type: type,
+        status: type,
         title: text,
         text: altText,
     });
