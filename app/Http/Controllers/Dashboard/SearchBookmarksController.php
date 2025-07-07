@@ -54,7 +54,10 @@ final class SearchBookmarksController
     {
         $criteria = Str::substr($input, 5);
         $queryTags = $request->input('tags', []);
-        $tags = Tag::query()->where('name', 'LIKE', "%$criteria%")->get();
+        $tags = Tag::query()
+            ->whereUserId(Auth::id())
+            ->whereRaw('LOWER(name) LIKE LOWER(?)', ["%$criteria%"])
+            ->get();
 
         // Filter out tags that are already selected in the query parameters
         if ($request->tags) {

@@ -15,7 +15,7 @@
     - [x] add progress bar for import
     - [x] add undo import functionality
 
-- [ ] make searchbar tags case insensitive
+- [x] make searchbar tags case insensitive
 
 - [ ] clean blade views and reorganize them
     - [ ] make form components more customizable
