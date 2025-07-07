@@ -18,7 +18,11 @@ window.Echo = new Echo({
     forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
 });
 
-console.log(window.userId);
+import Alpine from 'alpinejs'
+
+window.Alpine = Alpine
+
+Alpine.start()
 
 if (window.userId) {
     window.Echo.private(`import-progress.${window.userId}`)
