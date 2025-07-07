@@ -32,9 +32,9 @@ final class ImportBookmarksController
         try {
             $importBookmarks->execute($request->file);
 
-            return htmx()->toast('success', 'Import is starting!')->response();
+            return htmx()->toast(type: 'info', text: 'Import is starting!')->response();
         } catch (Exception $e) {
-            return htmx()->toast('error', 'Import failed: '.$e->getMessage())->response();
+            return htmx()->toast(type: 'error', text: 'Import failed')->response();
         }
     }
 
@@ -54,15 +54,15 @@ final class ImportBookmarksController
 
             Storage::delete($tempFilePath);
 
-            return htmx()->toast('success', "Successfully imported $imported bookmarks!")->response();
+            return htmx()->toast(type: 'info', text: 'Import is stating')->response();
         } catch (DecryptException $e) {
             Storage::delete($tempFilePath);
 
-            return htmx()->toast('error', 'Invalid password is provided, try again.')->response();
+            return htmx()->toast(type: 'error', text: 'Invalid password is provided, try again.')->response();
         } catch (Exception $e) {
             Storage::delete($tempFilePath);
 
-            return htmx()->toast('error', 'Something wrong happend, try again.')->response();
+            return htmx()->toast(type: 'error', text: 'Something wrong happend, try again.')->response();
         }
     }
 }

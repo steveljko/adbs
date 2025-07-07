@@ -11,9 +11,10 @@
         </div>
     </x-modal.body>
     <x-modal.footer class="flex justify-between border-t border-gray-200 p-4">
-        <x-button class="bg-red-500" hx-delete="{{ route('tags.delete', $tag) }}" type="button">Delete Bookmark</x-button>
+        <x-button class="bg-red-500" hx-delete="{{ route('tags.delete', $tag) }}" type="button">Delete
+            Bookmark</x-button>
         <div class="flex space-x-2">
-            <x-button.secondary data-hide-modal="true">Cancel</x-button.secondary>
+            <x-button.secondary type="button" @click="$store.modal.hide()">Cancel</x-button.secondary>
             <x-button type="submit">Edit Bookmark</x-button>
         </div>
     </x-modal.footer>

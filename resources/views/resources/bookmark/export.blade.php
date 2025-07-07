@@ -5,7 +5,7 @@
         <span class="text-gray-500 text-sm">Let password field blank if you wan't unencrypted file</span>
     </x-modal.body>
     <x-modal.footer>
-        <x-button.secondary data-hide-modal="true">Cancel</x-button.secondary>
+        <x-button.secondary type="button" @click="$store.modal.hide()">Cancel</x-button.secondary>
         <x-button type="submit">Download</x-button>
     </x-modal.footer>
     <script>

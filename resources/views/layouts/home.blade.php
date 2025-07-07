@@ -18,9 +18,7 @@
 <body hx-headers='{"X-CSRF-TOKEN": "{{ csrf_token() }}"}' class="bg-[#fcfcfc]">
     <x-htmx-error-handler />
 
-    <x-modal.container />
-    <x-modal.backdrop />
-
+    <x-modal />
     <x-bottombar />
 
     <div>

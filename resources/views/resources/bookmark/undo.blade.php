@@ -9,7 +9,7 @@
         </p>
     </x-modal.body>
     <x-modal.footer>
-        <x-button.secondary data-hide-modal="true">Cancel</x-button.secondary>
+        <x-button.secondary type="button" @click="$store.modal.hide()">Cancel</x-button.secondary>
         <x-button type="button" hx-delete="{{ route('bookmarks.import.undo.confirm') }}"
             class="bg-red-500">Confirm</x-button>
     </x-modal.footer>

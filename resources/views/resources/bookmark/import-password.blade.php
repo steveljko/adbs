@@ -7,7 +7,7 @@
         <input type="hidden" name="temp_file" value="{{ basename($tempFile) }}" />
     </x-modal.body>
     <x-modal.footer>
-        <x-button.secondary data-hide-modal="true">Cancel</x-button.secondary>
+        <x-button.secondary type="button" @click="$store.modal.hide()">Cancel</x-button.secondary>
         <x-button type="submit">Decrypt and Import</x-button>
     </x-modal.footer>
 </form>
