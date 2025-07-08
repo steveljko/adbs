@@ -70,7 +70,7 @@ final class ShowDashboardController
             ])->render();
         }
 
-        return view('resources.dashboard.home', [
+        return view('pages.dashboard.home', [
             'queryTags' => $queryTags,
             'querySites' => $querySites,
             'viewType' => $viewType,

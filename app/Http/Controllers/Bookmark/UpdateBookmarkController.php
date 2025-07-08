@@ -25,6 +25,6 @@ final class UpdateBookmarkController
     {
         $bookmark->load('tags');
 
-        return view('resources.bookmark.edit', compact('bookmark'));
+        return view('partials.bookmark.edit', compact('bookmark'));
     }
 }

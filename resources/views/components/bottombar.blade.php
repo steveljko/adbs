@@ -39,6 +39,7 @@
                     <div class="space-y-1">
                         <a class="px-3 py-2 hover:bg-gray-50 rounded-md cursor-pointer text-sm flex items-center gap-3 transition-colors"
                             href="{{ route('dashboard') }}">
+                            <x-icon name="dashboard" class="w-4 h-4 stroke-[1.75px] text-gray-600" />
                             <span>Dashboard</span>
                         </a>
                         <a class="px-3 py-2 hover:bg-gray-50 rounded-md cursor-pointer text-sm flex items-center gap-3 transition-colors"

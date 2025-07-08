@@ -13,7 +13,7 @@ final class UndoBookmarksImportController
 {
     public function __invoke(): View
     {
-        return view('resources.bookmark.undo');
+        return view('partials.bookmark.import-export.undo');
     }
 
     public function confirm(): Response

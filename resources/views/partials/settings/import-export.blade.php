@@ -51,7 +51,7 @@
             </form>
             @endfragment
 
-            @include('partials.settings.import-progress')
+            @include('partials.bookmark.import-export.import-progress')
         </div>
     </div>
 </div>

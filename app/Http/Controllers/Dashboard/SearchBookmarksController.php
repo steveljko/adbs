@@ -37,17 +37,17 @@ final class SearchBookmarksController
             ->target('#title')
             ->swap('outerHTML')
             ->triggerAfterSwap('loadBookmarks')
-            ->response(view('resources.dashboard.filters.title', ['title' => $input]));
+            ->response(view('partials.dashboard.filters.title', ['title' => $input]));
     }
 
     public function renderTag(Tag $tag): View
     {
-        return view('resources.dashboard.filters.tag', compact('tag'));
+        return view('partials.dashboard.filters.tag', compact('tag'));
     }
 
     public function renderSite(string $site): View
     {
-        return view('resources.dashboard.filters.site', ['site' => $site]);
+        return view('partials.dashboard.filters.site', ['site' => $site]);
     }
 
     private function handleTagSearch(Request $request, string $input): Response
@@ -69,7 +69,7 @@ final class SearchBookmarksController
         return htmx()
             ->target('#suggestions-container')
             ->swap('outerHTML')
-            ->response(view('resources.dashboard.suggestions', [
+            ->response(view('partials.dashboard.suggestions', [
                 'tags' => $tags,
                 'sites' => [],
             ]));
@@ -102,7 +102,7 @@ final class SearchBookmarksController
         return htmx()
             ->target('#suggestions-container')
             ->swap('outerHTML')
-            ->response(view('resources.dashboard.suggestions', [
+            ->response(view('partials.dashboard.suggestions', [
                 'tags' => [],
                 'sites' => $sites,
             ]));

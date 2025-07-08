@@ -32,7 +32,7 @@ Route::group([
     Route::post('/login', LoginController::class)->name('.login.execute');
 });
 
-Route::view('/settings', 'resources.auth.settings')->middleware('auth')->name('auth.settings');
+Route::view('/settings', 'pages.auth.settings')->middleware('auth')->name('auth.settings');
 Route::delete('/logout', LogoutController::class)->middleware('auth')->name('auth.logout');
 
 Route::group([
@@ -78,8 +78,9 @@ Route::group([
 ], function () {
     Route::get('/', GetAuthenticatedUserTagsController::class);
     Route::get('/{tag}', [GetAuthenticatedUserTagsController::class, 'renderTag'])->name('.get');
+    // MOVE THIS
     Route::get('/{tag}/edit', function (Tag $tag) {
-        return view('resources.tags.edit', ['tag' => $tag]);
+        return view('partials.tag.edit', ['tag' => $tag]);
     })->name('.edit');
     Route::put('/{tag}/update', EditTagController::class)->name('.update');
     Route::delete('/{tag}', DeleteTagController::class)->name('.delete');

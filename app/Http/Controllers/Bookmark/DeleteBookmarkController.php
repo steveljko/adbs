@@ -21,6 +21,6 @@ final class DeleteBookmarkController
      */
     public function render(Bookmark $bookmark): View
     {
-        return view('resources.bookmark.delete', compact('bookmark'));
+        return view('partials.bookmark.delete', compact('bookmark'));
     }
 }

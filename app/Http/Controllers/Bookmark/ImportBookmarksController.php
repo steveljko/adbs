@@ -26,7 +26,7 @@ final class ImportBookmarksController
             return htmx()
                 ->target('#dialog')
                 ->swap('innerHTML')
-                ->response(view('resources.bookmark.import-password', ['tempFile' => $tempFileName]));
+                ->response(view('partials.bookmark.import-export.import-password', ['tempFile' => $tempFileName]));
         }
 
         try {

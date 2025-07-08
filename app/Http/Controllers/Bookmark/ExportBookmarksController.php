@@ -16,7 +16,7 @@ final class ExportBookmarksController
 {
     public function __invoke(): View
     {
-        return view('resources.bookmark.export');
+        return view('partials.bookmark.import-export.export');
     }
 
     public function confirm(Request $request, ExportBookmarksAction $exportBookmarks)

@@ -21,8 +21,9 @@
     - [ ] make form components more customizable
     - [ ] make form components cleaner
     - [ ] delete unnecessary components and views
-    - [ ] find better way to store svg icons
-    - [ ] rename unclear view and component names
+    - [x] find better way to store svg icons
+    - [x] rename unclear view and component names
+    - [x] restructure pages and partials
 
 - [ ] refactor dockerfile to use multistage build
 

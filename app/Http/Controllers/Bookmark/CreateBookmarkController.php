@@ -27,6 +27,6 @@ final class CreateBookmarkController
      */
     public function render(): View
     {
-        return view('resources.bookmark.create');
+        return view('partials.bookmark.create');
     }
 }

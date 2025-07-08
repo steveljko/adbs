@@ -51,6 +51,6 @@ final class EditTagController
             )
             ->target('#tags')
             ->swap('innerHTML')
-            ->response(view('partials.auth.tags'));
+            ->response(view('partials.tag.show'));
     }
 }

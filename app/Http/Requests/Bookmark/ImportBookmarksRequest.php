@@ -54,7 +54,7 @@ final class ImportBookmarksRequest extends FormRequest
         $request = app()->make(HtmxRequest::class);
 
         if ($request->isHtmxRequest()) {
-            $view = View::renderFragment('partials.export', 'form', [
+            $view = View::renderFragment('partials.bookmark.import-export.export', 'form', [
                 'errors' => $validator->errors(),
             ]);
 

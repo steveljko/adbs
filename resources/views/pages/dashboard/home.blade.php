@@ -6,12 +6,12 @@
         <input type="text" class="hidden" id="title" name="title" value="{{ request('title') }}">
         @if (!empty($queryTags))
         @foreach ($queryTags as $qtag)
-        @include('resources.dashboard.filters.tag', ['tag' => $qtag])
+        @include('partials.dashboard.filters.tag', ['tag' => $qtag])
         @endforeach
         @endif
         @if (!empty($querySites))
         @foreach ($querySites as $qsite)
-        @include('resources.dashboard.filters.site', ['site' => $qsite])
+        @include('partials.dashboard.filters.site', ['site' => $qsite])
         @endforeach
         @endif
     </form>

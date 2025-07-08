@@ -23,7 +23,7 @@ final class PreviewBookmarkController
         $favicon = $getFaviconAction->execute(url: $request->url, size: 32);
         $tags = Auth::user()->tags()->pluck('name')->toArray();
 
-        return view('resources.bookmark.preview', [
+        return view('partials.bookmark.preview', [
             'title' => $title,
             'favicon' => $favicon,
             'tags' => $tags,
@@ -39,6 +39,6 @@ final class PreviewBookmarkController
                 return empty($search) || mb_stripos($tag->name, $search) !== false;
             });
 
-        return view('resources.bookmark.tags-suggestions', compact('tags'));
+        return view('partials.tag.tags-suggestions', compact('tags'));
     }
 }

@@ -22,11 +22,11 @@ final class GetAuthenticatedUserTagsController
                 return ! in_array($tag->name, $queryTags);
             });
 
-        return view('resources.bookmark.tags-suggestions', compact('tags', 'name'));
+        return view('partials.tag.tags-suggestions', compact('tags', 'name'));
     }
 
     public function renderTag(string $tag): View
     {
-        return view('resources.bookmark.tag', compact('tag'));
+        return view('partials.tag.unstored-tag', compact('tag'));
     }
 }
