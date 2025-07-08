@@ -17,6 +17,7 @@
         "vite": "^6.0.11"
     },
     "dependencies": {
+        "@melloware/coloris": "^0.25.0",
         "alpinejs": "^3.14.9",
         "htmx.org": "^1.9.12",
         "simple-notify": "^1.0.6"

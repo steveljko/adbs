@@ -3,11 +3,16 @@
     <x-modal.body>
         <x-form.input name="name" label="Tag name" type="text" :value="$tag->name" />
         <x-form.input name="description" label="Tag description" type="text" :value="$tag->description" />
-        <div class="flex items-center space-x-2">
+        <div>
             <label for="color" class="mb-3 block text-sm font-medium text-gray-500">Tag Color</label>
-            <div id="color-res" style="background-color: {{ $tag->text_color }};" class="w-4 h-4 rounded-full mr-2">
+            <div class="flex items-center">
+                <input type="text" name="text_color" id="color" value="{{ $tag->text_color }}" x-init="
+                   Coloris({
+                       el: $el,
+                       theme: 'pill',
+                   });
+               ">
             </div>
-            <input type="text" name="text_color" value="{{ $tag->text_color }}" id="color">
         </div>
     </x-modal.body>
     <x-modal.footer class="flex justify-between border-t border-gray-200 p-4">

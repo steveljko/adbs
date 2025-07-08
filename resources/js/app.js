@@ -2,21 +2,21 @@ import './echo';
 import htmx from 'htmx.org';
 import Notify from 'simple-notify'
 import 'simple-notify/dist/simple-notify.css'
+import Coloris from "@melloware/coloris";
+import "@melloware/coloris/dist/coloris.css";
 import Alpine from 'alpinejs'
 
 window.htmx = htmx;
 window.Alpine = Alpine
+Coloris.init();
+window.Coloris = Coloris;
 
 // fix focus only
 document.addEventListener('alpine:init', () => {
     Alpine.store('modal', {
         open: false,
-        show() {
-            this.open = true;
-        },
-        hide() {
-            this.open = false;
-        }
+        show() { this.open = true },
+        hide() { this.open = false }
     });
 
     window.modal = Alpine.store('modal');
@@ -34,7 +34,6 @@ htmx.on('htmx:beforeSwap', (e) => {
 htmx.on('hideModal', () => window.modal.hide());
 
 Alpine.start();
-
 
 htmx.on('toast', (e) => {
     const { type, text, altText } = e.detail;
@@ -55,14 +54,4 @@ document.addEventListener('htmx:responseError', function (event) {
         container.classList.remove('hidden');
         container.innerHTML = messages[0];
     }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    Coloris({
-        el: '#color',
-        theme: 'pill',
-        onChange: (color, input) => {
-            document.getElementById('color-res').style.backgroundColor = color;
-        }
-   });
 });
