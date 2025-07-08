@@ -41,4 +41,5 @@
     - [x] refactor suggestions to use alpine js
     - [x] refactor modal to use alpine js
     - [x] refactor bottombar menu to use alpine js
+    - [x] refactor import progress to use alpine js
     - [ ] clean 'app.js' file

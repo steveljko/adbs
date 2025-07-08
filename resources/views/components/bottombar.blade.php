@@ -33,7 +33,8 @@
                 x-transition:leave="transition ease-in duration-150"
                 x-transition:leave-start="opacity-100 transform scale-100"
                 x-transition:leave-end="opacity-0 transform scale-95" @click.away="dropdownOpen = false"
-                class="absolute bottom-full right-[-.35rem] bg-white border border-gray-200 rounded-lg shadow-xl mb-2 z-50 w-52">
+                class="absolute bottom-full right-[-.35rem] bg-white border border-gray-200 rounded-lg shadow-xl mb-2 z-50 w-52"
+                x-cloak>
                 <div class="p-3">
                     <div class="space-y-1">
                         <a class="px-3 py-2 hover:bg-gray-50 rounded-md cursor-pointer text-sm flex items-center gap-3 transition-colors"
