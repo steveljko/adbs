@@ -74,11 +74,7 @@ document.addEventListener('alpine:init', () => {
 
 Alpine.start()
 
-htmx.on('htmx:afterSwap', (e) => {
-    if (e.detail.target.id == 'dialog') {
-        window.modal.show();
-    }
-});
+htmx.on('htmx:afterSwap', (e) => { if (e.detail.target.id == 'dialog') window.modal.show() });
 
 htmx.on('htmx:beforeSwap', (e) => {
     if (e.detail.target.id == 'dialog' && !e.detail.xhr.response) {

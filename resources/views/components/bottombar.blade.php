@@ -4,7 +4,12 @@
             <div id="suggestions-container"></div>
 
             <input type="text" placeholder="Search bookmarks..." name="search" id="search" hx-post="/dashboard/search"
-                hx-trigger="focus, keyup changed delay:250ms" hx-include="#filters" value=""
+                hx-trigger="focus, keyup changed delay:250ms" hx-include="#filters" x-data="" @keydown.arrow-up="if (document.getElementById('suggestions-container')) {
+                    $event.preventDefault();
+                    const sc = Alpine.$data(document.getElementById('suggestions-container'));
+                    sc.setFocusIndex(sc.suggestions.length - 1);
+                    sc.updateFocus();
+                }"
                 class="w-full h-full px-3 py-2 pr-10 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 autocomplete="off">
             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">

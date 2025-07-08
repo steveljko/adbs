@@ -68,7 +68,7 @@ final class SearchBookmarksController
 
         return htmx()
             ->target('#suggestions-container')
-            ->swap('innerHTML')
+            ->swap('outerHTML')
             ->response(view('resources.dashboard.suggestions', [
                 'tags' => $tags,
                 'sites' => [],
@@ -101,7 +101,7 @@ final class SearchBookmarksController
 
         return htmx()
             ->target('#suggestions-container')
-            ->swap('innerHTML')
+            ->swap('outerHTML')
             ->response(view('resources.dashboard.suggestions', [
                 'tags' => [],
                 'sites' => $sites,
