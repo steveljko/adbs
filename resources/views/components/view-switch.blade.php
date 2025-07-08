@@ -5,14 +5,14 @@
         class="flex items-center space-x-1 p-1.5 rounded-md transition-colors duration-200 {{ request()->view_type === 'list' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }}"
         hx-get="{{ route('dashboard') }}" hx-include="#filters" hx-push-url="true" hx-vals='{"view_type": "list"}'
         hx-target="#bookmarks" title="List view">
-        <x-icons.list />
+        <x-icon name="list" />
         <span class="text-sm font-medium">List</span>
     </button>
     <button id="card-view-btn"
         class="flex items-center space-x-1 p-1.5 rounded-md transition-colors duration-200 {{ request()->view_type === 'card' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }}"
         hx-get="{{ route('dashboard') }}" hx-include="#filters" hx-push-url="true" hx-vals='{"view_type": "card"}'
         hx-target="#bookmarks" title="Card view">
-        <x-icons.card />
+        <x-icon name="card" />
         <span class="text-sm font-medium">Card</span>
     </button>
 </div>

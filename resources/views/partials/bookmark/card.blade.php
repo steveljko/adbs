@@ -44,7 +44,7 @@
         <div class="flex items-center">
             @if ($bookmark->created_at)
             <span class="inline-flex items-center transition-colors duration-200">
-                <x-icons.clock />
+                <x-icon name="clock" class="w-3.5 h-3.5 mr-1" />
                 {{ $bookmark->created_at->diffForHumans() }}
             </span>
             @endif
@@ -53,12 +53,12 @@
             <button type="button" hx-get="{{ route('bookmarks.edit', $bookmark->id) }}" hx-push-url="false"
                 hx-swap="innerHTML" hx-target="#dialog"
                 class="p-1 rounded hover:bg-gray-200 transition-all duration-200 hover:scale-110">
-                <x-icons.edit />
+                <x-icon name="edit" class="w-3.5 h-3.5 text-gray-600" />
             </button>
             <button type="button" hx-get="{{ route('bookmarks.delete', $bookmark->id) }}" hx-push-url="false"
                 hx-swap="innerHTML" hx-target="#dialog"
                 class="p-1 rounded hover:bg-gray-200 transition-all duration-200 hover:scale-110">
-                <x-icons.garbage />
+                <x-icon name="garbage" class="w-3.5 h-3.5 text-gray-600" />
             </button>
         </div>
     </div>

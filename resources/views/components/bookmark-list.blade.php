@@ -40,14 +40,14 @@
                     hx-target="#dialog" hx-swap="innerHTML"
                     class="p-1.5 text-gray-500 hover:text-orange-500 hover:bg-orange-100 rounded transition-colors"
                     title="Edit bookmark">
-                    <x-icons.edit />
+                    <x-icon name="edit" class="w-3.5 h-3.5 text-gray-600" />
                 </button>
 
                 <button type="button" hx-get="{{ route('bookmarks.delete', $bookmark->id) }}" hx-push-url="false"
                     hx-target="#dialog" hx-swap="innerHTML"
                     class="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-100 rounded transition-colors ml-1"
                     title="Delete bookmark">
-                    <x-icons.garbage />
+                    <x-icon name="garbage" class="w-3.5 h-3.5 text-gray-600" />
                 </button>
             </div>
         </li>
