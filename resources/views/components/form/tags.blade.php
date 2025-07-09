@@ -14,7 +14,7 @@
         <div id="tags" class="mt-2 flex space-x-2 flex-wrap">
             @if (isset($selectedTags))
             @foreach ($selectedTags as $tag)
-            @include('resources.dashboard.filters.tag', ['tag' => $tag])
+            @include('partials.dashboard.filters.tag', ['tag' => $tag])
             @endforeach
             @endif
         </div>
