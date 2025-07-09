@@ -21,7 +21,7 @@ final class PreviewBookmarkController
     ): View {
         $title = $getTitleAction->execute(url: $request->url);
         $favicon = $getFaviconAction->execute(url: $request->url, size: 32);
-        $tags = Tag::whereUserId(Auth::user())->pluck('name')->toArray();
+        $tags = Tag::whereUserId(Auth::id())->pluck('name')->toArray();
 
         return view('partials.bookmark.preview', [
             'title' => $title,
