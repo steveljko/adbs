@@ -6,17 +6,20 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Bookmark\CreateBookmarkController;
 use App\Http\Controllers\Bookmark\DeleteBookmarkController;
+use App\Http\Controllers\Bookmark\DestroyBookmarkController;
+use App\Http\Controllers\Bookmark\EditBookmarkController;
 use App\Http\Controllers\Bookmark\ExportBookmarksController;
 use App\Http\Controllers\Bookmark\ImportBookmarksController;
 use App\Http\Controllers\Bookmark\PreviewBookmarkController;
+use App\Http\Controllers\Bookmark\StoreBookmarkController;
 use App\Http\Controllers\Bookmark\UndoBookmarksImportController;
 use App\Http\Controllers\Bookmark\UpdateBookmarkController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
 use App\Http\Controllers\Dashboard\ShowDashboardController;
 use App\Http\Controllers\Shared\GetAuthenticatedUserTagsController;
-use App\Http\Controllers\Tags\DeleteTagController;
-use App\Http\Controllers\Tags\EditTagController;
-use App\Models\Tag;
+use App\Http\Controllers\Tag\DeleteTagController;
+use App\Http\Controllers\Tag\EditTagController;
+use App\Http\Controllers\Tag\UpdateTagController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -28,7 +31,7 @@ Route::group([
     'prefix' => 'auth',
     'middleware' => 'guest',
 ], function () {
-    Route::view('/login', 'resources.auth.login')->name('.login');
+    Route::view('/login', 'pages.auth.login')->name('.login');
     Route::post('/login', LoginController::class)->name('.login.execute');
 });
 
@@ -40,16 +43,16 @@ Route::group([
     'prefix' => 'bookmarks',
     'middleware' => 'auth',
 ], function () {
-    Route::get('/create', [CreateBookmarkController::class, 'render'])->name('.create');
-    Route::post('/store', CreateBookmarkController::class)->name('.store');
+    Route::get('/create', CreateBookmarkController::class)->name('.create');
+    Route::post('/store', StoreBookmarkController::class)->name('.store');
     Route::post('/preview', PreviewBookmarkController::class)->name('.preview');
     Route::get('/preview/tag', [PreviewBookmarkController::class, 'tagSuggest'])->name('.tagSuggest');
 
-    Route::get('/{bookmark}/edit', [UpdateBookmarkController::class, 'render'])->name('.edit');
+    Route::get('/{bookmark}/edit', EditBookmarkController::class)->name('.edit');
     Route::put('/{bookmark}/update', UpdateBookmarkController::class)->name('.update');
 
-    Route::get('/{bookmark}/delete', [DeleteBookmarkController::class, 'render'])->name('.delete');
-    Route::delete('/{bookmark}/delete', DeleteBookmarkController::class)->name('.destroy');
+    Route::get('/{bookmark}/delete', DeleteBookmarkController::class)->name('.delete');
+    Route::delete('/{bookmark}/delete', DestroyBookmarkController::class)->name('.destroy');
 
     Route::get('/export', ExportBookmarksController::class)->name('.export');
     Route::post('/export/confirm', [ExportBookmarksController::class, 'confirm'])->name('.export.confirm');
@@ -78,10 +81,7 @@ Route::group([
 ], function () {
     Route::get('/', GetAuthenticatedUserTagsController::class);
     Route::get('/{tag}', [GetAuthenticatedUserTagsController::class, 'renderTag'])->name('.get');
-    // MOVE THIS
-    Route::get('/{tag}/edit', function (Tag $tag) {
-        return view('partials.tag.edit', ['tag' => $tag]);
-    })->name('.edit');
-    Route::put('/{tag}/update', EditTagController::class)->name('.update');
+    Route::get('/{tag}/edit', EditTagController::class)->name('.edit');
+    Route::put('/{tag}/update', UpdateTagController::class)->name('.update');
     Route::delete('/{tag}', DeleteTagController::class)->name('.delete');
 });

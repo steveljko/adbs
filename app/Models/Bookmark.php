@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\BookmarkStatus;
+use App\Traits\Updatable;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,8 @@ final class Bookmark extends Model
 {
     /** @use HasFactory<\Database\Factories\BookmarkFactory> */
     use HasFactory;
+
+    use Updatable;
 
     /**
      * The attributes that are mass assignable.

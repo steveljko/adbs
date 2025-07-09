@@ -7,13 +7,12 @@ namespace App\Http\Controllers\Bookmark;
 use App\Models\Bookmark;
 use Illuminate\View\View;
 
-final class DeleteBookmarkController
+final class EditBookmarkController
 {
-    /**
-     * Render modal for new boomark creation
-     */
     public function __invoke(Bookmark $bookmark): View
     {
-        return view('partials.bookmark.delete', compact('bookmark'));
+        $bookmark->load('tags');
+
+        return view('partials.bookmark.edit', compact('bookmark'));
     }
 }

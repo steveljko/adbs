@@ -7,24 +7,27 @@ namespace App\Http\Controllers\Bookmark;
 use App\Http\Actions\Bookmark\UpdateBookmarkAction;
 use App\Http\Requests\Bookmark\UpdateBookmarkRequest;
 use App\Models\Bookmark;
-use Illuminate\View\View;
+use Illuminate\Http\Response;
 
 final class UpdateBookmarkController
 {
     public function __invoke(
         UpdateBookmarkRequest $request,
-        UpdateBookmarkAction $action,
+        UpdateBookmarkAction $updateBookmark,
         Bookmark $bookmark,
-    ) {
-        $action->execute(bookmark: $bookmark, data: $request->validated());
+    ): Response {
+        [$isChanged, $message] = array_values($updateBookmark->execute(
+            bookmark: $bookmark,
+            data: $request->validated()
+        ));
 
-        return response()->make(null, 200, ['HX-Trigger' => 'loadBookmarks']);
-    }
+        if (! $isChanged) {
+            return htmx()->response();
+        }
 
-    public function render(Bookmark $bookmark): View
-    {
-        $bookmark->load('tags');
-
-        return view('partials.bookmark.edit', compact('bookmark'));
+        return htmx()
+            ->trigger('loadBookmarks')
+            ->toast(type: 'success', text: 'Bookmark successfully updated!', altText: $message)
+            ->response();
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Tags;
+namespace App\Http\Controllers\Tag;
 
 use App\Models\Tag;
 
@@ -22,6 +22,6 @@ final class DeleteTagController
             )
             ->target('#tags')
             ->swap('innerHTML')
-            ->response(view('partials.auth.tags'));
+            ->response(view('partials.settings.tags'));
     }
 }

@@ -13,7 +13,7 @@ final class DatabaseController
 {
     public function __invoke(): View
     {
-        return view('resources.installer.database');
+        return view('pages.installer.database');
     }
 
     public function run(

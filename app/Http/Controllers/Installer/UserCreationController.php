@@ -14,7 +14,7 @@ final class UserCreationController
 {
     public function __invoke(): View
     {
-        return view('resources.installer.user');
+        return view('pages.installer.user');
     }
 
     public function run(CreateUserRequest $request): Response

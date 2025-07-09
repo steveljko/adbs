@@ -12,7 +12,7 @@ final class WelcomeController
 {
     public function __invoke()
     {
-        return view('resources.installer.welcome');
+        return view('pages.installer.welcome');
     }
 
     public function run(Request $request)

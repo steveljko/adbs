@@ -37,7 +37,7 @@ final class RequirmentsController
             ];
         }
 
-        return view('resources.installer.requirements', compact(
+        return view('pages.installer.requirements', compact(
             'phpVersion',
             'extensions',
         ));
