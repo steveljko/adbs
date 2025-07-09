@@ -19,8 +19,8 @@
 
 - [ ] clean blade views and reorganize them
     - [ ] make form components more customizable
-    - [ ] make form components cleaner
-    - [ ] delete unnecessary components and views
+    - [x] make form components cleaner
+    - [x] delete unnecessary components and views
     - [x] find better way to store svg icons
     - [x] rename unclear view and component names
     - [x] restructure pages and partials
@@ -38,9 +38,9 @@
     - [x] add skeleton loading state for card type
     - [ ] finish loading state for list type
 
-- [ ] refactor js file to support alpine js
+- [x] refactor js file to support alpine js
     - [x] refactor suggestions to use alpine js
     - [x] refactor modal to use alpine js
     - [x] refactor bottombar menu to use alpine js
     - [x] refactor import progress to use alpine js
-    - [ ] clean 'app.js' file
+    - [x] clean 'app.js' file

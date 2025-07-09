@@ -1,9 +1,9 @@
-<div id="export" class="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-    <div class="flex justify-between p-4 bg-gray-100">
-        <h4>Export/Import Bookmarks</h4>
-    </div>
+<x-card>
+    <x-slot name="header">
+        <h3 class="font-semibold text-gray-800">Import/Export Bookmarks</h3>
+    </x-slot>
 
-    <div class="p-6 space-y-6">
+    <div class="space-y-6">
         <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
             <h5 class="font-medium text-orange-800 mb-3 flex items-center">
                 Export Bookmarks
@@ -54,4 +54,4 @@
             @include('partials.bookmark.import-export.import-progress')
         </div>
     </div>
-</div>
+</x-card>

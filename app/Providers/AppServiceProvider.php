@@ -8,7 +8,9 @@ use App\Http\Controllers\Installer\DatabaseController;
 use App\Http\Controllers\Installer\RequirmentsController;
 use App\Http\Controllers\Installer\UserCreationController;
 use App\Http\Controllers\Installer\WelcomeController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -44,5 +46,11 @@ final class AppServiceProvider extends ServiceProvider
                 Route::get('/user/skip', [UserCreationController::class, 'skip'])->name('user.skip');
             });
         }
+
+        View::composer(['pages.auth.settings'], function ($view) {
+            if (Auth::check()) {
+                $view->with('tags', Auth::user()->tags()->orderBy('created_at', 'desc')->get());
+            }
+        });
     }
 }
