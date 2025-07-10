@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\AddonClients;
 
+use App\Enums\ApiResponseStatus;
 use App\Models\AddonClients;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ final class LoginAndGenerateTokenController
     {
         if (empty($request->header('X-Addon-Version'))) {
             return new JsonResponse([
-                'status' => 'failed',
+                'status' => ApiResponseStatus::FAILED,
             ], Response::HTTP_FORBIDDEN);
         }
 
@@ -29,7 +30,7 @@ final class LoginAndGenerateTokenController
 
         if (! Auth::attempt($data)) {
             return new JsonResponse([
-                'status' => 'failed',
+                'status' => ApiResponseStatus::FAILED,
             ], Response::HTTP_FORBIDDEN);
         }
 
@@ -46,10 +47,11 @@ final class LoginAndGenerateTokenController
         $ac->addon_version = $request->header('X-Addon-Version', null);
         $ac->ip_address = $request->ip();
         $ac->status = 'unaccepted';
+        $ac->user_id = Auth::id();
         $ac->save();
 
         return new JsonResponse([
-            'status' => 'ok',
+            'status' => ApiResponseStatus::SUCCESS,
             'token' => $token,
         ], Response::HTTP_OK);
     }

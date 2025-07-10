@@ -6,6 +6,8 @@
         @include('partials.settings.tags')
 
         @include('partials.settings.import-export')
+
+        @include('partials.settings.clients')
     </div>
 </div>
 @endsection

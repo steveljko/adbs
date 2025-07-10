@@ -8,6 +8,7 @@ use App\Http\Controllers\Installer\DatabaseController;
 use App\Http\Controllers\Installer\RequirmentsController;
 use App\Http\Controllers\Installer\UserCreationController;
 use App\Http\Controllers\Installer\WelcomeController;
+use App\Models\AddonClients;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
@@ -50,6 +51,7 @@ final class AppServiceProvider extends ServiceProvider
         View::composer(['pages.auth.settings'], function ($view) {
             if (Auth::check()) {
                 $view->with('tags', Auth::user()->tags()->orderBy('created_at', 'desc')->get());
+                $view->with('clients', AddonClients::all());
             }
         });
     }

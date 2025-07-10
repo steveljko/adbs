@@ -44,3 +44,7 @@
     - [x] refactor bottombar menu to use alpine js
     - [x] refactor import progress to use alpine js
     - [x] clean 'app.js' file
+
+- [x] finish api endpoints for addon
+    - [x] add endpoint for storing new bookmarks
+    - [x] add middleware for checking if token is valid
