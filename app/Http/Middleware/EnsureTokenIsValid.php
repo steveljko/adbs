@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Enums\AddonClientStatus;
 use App\Enums\ApiResponseStatus;
 use App\Models\AddonClients;
 use Closure;
@@ -42,7 +43,7 @@ final class EnsureTokenIsValid
             ], HttpResponse::HTTP_UNAUTHORIZED);
         }
 
-        if ($addonClient->status === 'revoked') {
+        if ($addonClient->status === AddonClientStatus::REVOKED || $addonClient->status === AddonClientStatus::INACTIVE) {
             return new JsonResponse([
                 'status' => ApiResponseStatus::FAILED,
                 'message' => 'Token has been revoked or blocked',

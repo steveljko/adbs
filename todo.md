@@ -48,3 +48,8 @@
 - [x] finish api endpoints for addon
     - [x] add endpoint for storing new bookmarks
     - [x] add middleware for checking if token is valid
+
+- [x] create token part in settings page
+    - [x] create card and show all tokens
+    - [x] create endpoint for activating token
+    - [x] create endpoint for deactivating token

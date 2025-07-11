@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\AddonClients;
 
+use App\Enums\AddonClientStatus;
 use App\Enums\ApiResponseStatus;
 use App\Models\AddonClients;
 use Illuminate\Http\JsonResponse;
@@ -46,13 +47,14 @@ final class LoginAndGenerateTokenController
         $ac->user_agent = $userAgent;
         $ac->addon_version = $request->header('X-Addon-Version', null);
         $ac->ip_address = $request->ip();
-        $ac->status = 'unaccepted';
+        $ac->status = AddonClientStatus::PENDING;
         $ac->user_id = Auth::id();
         $ac->save();
 
         return new JsonResponse([
             'status' => ApiResponseStatus::SUCCESS,
             'token' => $token,
+            'user_name' => Auth::user()->name,
         ], Response::HTTP_OK);
     }
 

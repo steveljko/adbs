@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\AddonClientStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -22,14 +23,6 @@ final class AddonClients extends Model
         'user_id',
     ];
 
-    protected $casts = [
-        'last_activity_at' => 'datetime',
-    ];
-
-    protected $attributes = [
-        'status' => 'active',
-    ];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -39,5 +32,13 @@ final class AddonClients extends Model
     public function scopeUnaccepted($query)
     {
         return $query->where('status', 'unaccepted');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'status' => AddonClientStatus::class,
+            'last_activity_at' => 'datetime',
+        ];
     }
 }

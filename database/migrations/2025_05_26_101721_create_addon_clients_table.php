@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\AddonClientStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->string('addon_version')->nullable();
             $table->string('user_agent')->nullable();
             $table->ipAddress('ip_address')->nullable();
-            $table->string('status', 20)->default('active');
+            $table->string('status', 20)->default(AddonClientStatus::PENDING);
             $table->timestamp('last_activity_at')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();

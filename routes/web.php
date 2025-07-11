@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\AddonClients\ActivateTokenController;
+use App\Http\Controllers\AddonClients\DeactivateTokenController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Bookmark\CreateBookmarkController;
@@ -84,4 +86,13 @@ Route::group([
     Route::get('/{tag}/edit', EditTagController::class)->name('.edit');
     Route::put('/{tag}/update', UpdateTagController::class)->name('.update');
     Route::delete('/{tag}', DeleteTagController::class)->name('.delete');
+});
+
+Route::group([
+    'as' => 'token',
+    'prefix' => 'token',
+    'middleware' => 'auth',
+], function () {
+    Route::patch('/{addonClient}/activate', ActivateTokenController::class)->name('.activate');
+    Route::patch('/{addonClient}/deactivate', DeactivateTokenController::class)->name('.deactivate');
 });
