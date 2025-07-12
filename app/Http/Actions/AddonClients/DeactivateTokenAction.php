@@ -11,8 +11,7 @@ final class DeactivateTokenAction
 {
     public function execute(AddonClients $addonClient): bool
     {
-        if ($addonClient->status === AddonClientStatus::ACTIVE) {
-
+        if ($addonClient->isActive()) {
             $addonClient->update(['status' => AddonClientStatus::INACTIVE]);
 
             return true;

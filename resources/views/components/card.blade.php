@@ -1,6 +1,6 @@
 @props(['header' => null, 'footer' => null])
 
-<div {{ $attributes->merge(['class' => 'bg-white rounded-lg shadow-md overflow-hidden']) }}>
+<div {{ $attributes->merge(['class' => 'bg-white rounded-lg shadow-md']) }}>
     @if($header || isset($header))
     <div class="flex items-center justify-between p-4 bg-gray-100 border-b border-gray-200">
         {{ $header }}

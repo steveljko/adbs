@@ -11,4 +11,9 @@ enum AddonClientStatus: string
     case PENDING = 'pending';
     case REVOKED = 'revoked';
     case SUSPENDED = 'suspended';
+
+    public function label(): string
+    {
+        return ucfirst($this->value);
+    }
 }

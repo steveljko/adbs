@@ -1,4 +1,4 @@
-<x-card class="h-[500px]">
+<x-card id="clients" class="z-5">
     <x-slot name="header">
         <h3 class="font-semibold text-gray-800">Browser Extensions</h3>
     </x-slot>
@@ -36,11 +36,11 @@
                                 bg-red-100 text-red-800
                             @endif
                         ">
-                        {{ $client->status->value }}
+                        {{ $client->status->label() }}
                     </span>
                 </div>
 
-                @if($client->status === App\Enums\AddonClientStatus::PENDING)
+                @if($client->isPending())
                 <button hx-patch="{{ route('token.activate', $client->id) }}" hx-swap="none" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium
                         rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2
                         focus:ring-offset-2 focus:ring-blue-500 transition-colors">
@@ -66,21 +66,20 @@
                         x-transition:leave="transition ease-in duration-75"
                         x-transition:leave-start="transform opacity-100 scale-100"
                         x-transition:leave-end="transform opacity-0 scale-95" @click.away="openDropdown = null"
-                        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200"
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-[999] border border-gray-200"
                         x-cloak>
                         <div class="py-1">
-                            @if($client->status === App\Enums\AddonClientStatus::ACTIVE || $client->status ===
-                            App\Enums\AddonClientStatus::PENDING)
+                            @if($client->isActive() || $client->isPending())
                             <button hx-patch="{{ route('token.deactivate', $client) }}" hx-swap="none"
                                 @click="openDropdown = null"
-                                class="revoke block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Deactivate
                             </button>
                             @endif
-                            @if($client->status === App\Enums\AddonClientStatus::INACTIVE)
+                            @if($client->isInactive())
                             <button hx-patch="{{ route('token.activate', $client) }}" hx-swap="none"
                                 @click="openDropdown = null"
-                                class="revoke block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Activate
                             </button>
                             @endif

@@ -7,7 +7,11 @@
 
         @include('partials.settings.import-export')
 
+        @fragment('clients')
         @include('partials.settings.clients')
+        @endfragment
+
+        <div class="h-16"></div>
     </div>
 </div>
 @endsection

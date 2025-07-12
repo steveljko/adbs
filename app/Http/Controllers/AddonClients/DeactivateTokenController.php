@@ -20,6 +20,10 @@ final class DeactivateTokenController
             return htmx()->toast(type: 'warning', text: 'Token cannot be deactivated from current status.')->response();
         }
 
-        return htmx()->toast(type: 'success', text: 'Token has been deactivated!')->response();
+        return htmx()
+            ->toast(type: 'success', text: 'Token has been deactivated!', afterSwap: true)
+            ->target('#clients')
+            ->swap('outerHTML')
+            ->response(view('partials.settings.clients')->fragment('clients'));
     }
 }

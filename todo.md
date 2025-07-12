@@ -53,3 +53,9 @@
     - [x] create card and show all tokens
     - [x] create endpoint for activating token
     - [x] create endpoint for deactivating token
+    - [x] reload card when token state changes
+    - [x] fix dropdown not overlaping card
+    - [ ] add details modal for token
+    - [ ] add delete token
+
+- [ ] fix modal not focusing on open

@@ -11,9 +11,7 @@ final class ActivateTokenAction
 {
     public function execute(AddonClients $addonClient): bool
     {
-        if ($addonClient->status === AddonClientStatus::PENDING ||
-            $addonClient->status === AddonClientStatus::INACTIVE) {
-
+        if ($addonClient->isPending() || $addonClient->isInactive()) {
             $addonClient->update(['status' => AddonClientStatus::ACTIVE]);
 
             return true;

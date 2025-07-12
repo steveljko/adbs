@@ -28,12 +28,29 @@ final class AddonClients extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Scopes
+    // Query scopes
     public function scopeUnaccepted($query)
     {
         return $query->where('status', 'unaccepted');
     }
 
+    // Status helper methods
+    public function isActive(): bool
+    {
+        return $this->status === AddonClientStatus::ACTIVE;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === AddonClientStatus::PENDING;
+    }
+
+    public function isInactive(): bool
+    {
+        return $this->status === AddonClientStatus::INACTIVE;
+    }
+
+    // Attribute casting
     protected function casts(): array
     {
         return [

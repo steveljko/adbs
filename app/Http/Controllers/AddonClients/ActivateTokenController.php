@@ -20,6 +20,10 @@ final class ActivateTokenController
             return htmx()->toast(type: 'warning', text: 'Token cannot be activated from current status')->response();
         }
 
-        return htmx()->toast(type: 'success', text: 'Token is active now!')->response();
+        return htmx()
+            ->toast(type: 'success', text: 'Token is active now!', afterSwap: true)
+            ->target('#clients')
+            ->swap('outerHTML')
+            ->response(view('partials.settings.clients')->fragment('clients'));
     }
 }
