@@ -41,7 +41,7 @@
                 </div>
 
                 @if($client->isPending())
-                <button hx-patch="{{ route('token.activate', $client->id) }}" hx-swap="none" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium
+                <button hx-patch="{{ route('client.activate', $client->id) }}" hx-swap="none" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium
                         rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2
                         focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,20 +70,20 @@
                         x-cloak>
                         <div class="py-1">
                             @if($client->isActive() || $client->isPending())
-                            <button hx-patch="{{ route('token.deactivate', $client) }}" hx-swap="none"
+                            <button hx-patch="{{ route('client.deactivate', $client) }}" hx-swap="none"
                                 @click="openDropdown = null"
                                 class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Deactivate
                             </button>
                             @endif
                             @if($client->isInactive())
-                            <button hx-patch="{{ route('token.activate', $client) }}" hx-swap="none"
+                            <button hx-patch="{{ route('client.activate', $client) }}" hx-swap="none"
                                 @click="openDropdown = null"
                                 class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Activate
                             </button>
                             @endif
-                            <button
+                            <button hx-get="{{ route('client.delete', $client) }}" hx-target="#dialog"
                                 class="inline-flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50"
                                 @click="openDropdown = null">
                                 <x-icon name="garbage" class="w-3.5 h-3.5 mr-2" />

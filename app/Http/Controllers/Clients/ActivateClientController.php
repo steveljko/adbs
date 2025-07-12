@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\AddonClients;
+namespace App\Http\Controllers\Clients;
 
-use App\Http\Actions\AddonClients\ActivateTokenAction;
+use App\Http\Actions\AddonClients\ActivateClientAction;
 use App\Models\AddonClients;
 use Illuminate\Support\Facades\Auth;
 
-final class ActivateTokenController
+final class ActivateClientController
 {
-    public function __invoke(AddonClients $addonClient, ActivateTokenAction $activateToken)
+    public function __invoke(AddonClients $addonClient, ActivateClientAction $activateClient)
     {
         if (! $addonClient->user()->is(Auth::user())) {
             return htmx()->toast(type: 'warning', text: 'Not authorized to activate this token.')->response();
         }
 
-        if (! $activateToken->execute($addonClient)) {
+        if (! $activateClient->execute($addonClient)) {
             return htmx()->toast(type: 'warning', text: 'Token cannot be activated from current status')->response();
         }
 

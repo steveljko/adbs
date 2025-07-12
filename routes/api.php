@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Actions\Bookmark\CreateBookmarkAction;
-use App\Http\Controllers\AddonClients\LoginAndGenerateTokenController;
+use App\Http\Controllers\Clients\LoginAndGenerateTokenController;
 use App\Http\Middleware\EnsureTokenIsValid;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

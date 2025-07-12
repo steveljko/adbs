@@ -7,12 +7,12 @@ namespace App\Http\Actions\AddonClients;
 use App\Enums\AddonClientStatus;
 use App\Models\AddonClients;
 
-final class DeactivateTokenAction
+final class DeactivateClientAction
 {
-    public function execute(AddonClients $addonClient): bool
+    public function execute(AddonClients $client): bool
     {
-        if ($addonClient->isActive()) {
-            $addonClient->update(['status' => AddonClientStatus::INACTIVE]);
+        if ($client->isActive()) {
+            $client->update(['status' => AddonClientStatus::INACTIVE]);
 
             return true;
         }

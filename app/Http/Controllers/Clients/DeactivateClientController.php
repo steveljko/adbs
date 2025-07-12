@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\AddonClients;
+namespace App\Http\Controllers\Clients;
 
-use App\Http\Actions\AddonClients\DeactivateTokenAction;
+use App\Http\Actions\AddonClients\DeactivateClientAction;
 use App\Models\AddonClients;
 use Illuminate\Support\Facades\Auth;
 
-final class DeactivateTokenController
+final class DeactivateClientController
 {
-    public function __invoke(AddonClients $addonClient, DeactivateTokenAction $deactivateToken)
+    public function __invoke(AddonClients $addonClient, DeactivateClientAction $deactivateClient)
     {
         if (! $addonClient->user()->is(Auth::user())) {
             return htmx()->toast(type: 'warning', text: 'Not authorized to deactivate this token.')->response();
         }
 
-        if (! $deactivateToken->execute($addonClient)) {
+        if (! $deactivateClient->execute($addonClient)) {
             return htmx()->toast(type: 'warning', text: 'Token cannot be deactivated from current status.')->response();
         }
 

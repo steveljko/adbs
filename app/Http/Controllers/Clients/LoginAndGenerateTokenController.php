@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\AddonClients;
+namespace App\Http\Controllers\Clients;
 
 use App\Enums\AddonClientStatus;
 use App\Enums\ApiResponseStatus;
