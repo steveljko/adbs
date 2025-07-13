@@ -4,101 +4,73 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Exception;
+use App\Support\Database\DatabaseConnectionStrategy;
+use App\Support\Database\DatabaseConnectionStrategyFactory;
+use App\Support\Database\DatabaseConnectionTester;
+use App\Support\Database\SQLiteConnectionStrategy;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 
-// TODO: add mysql and sqlite support
 final class DatabaseManager
 {
-    public function testAndSetConnection(array $data)
-    {
-        try {
-            $this->testConnection($data);
-            $this->setConnection($data);
-        } catch (Exception $e) {
-            throw $e;
-        }
+    private DatabaseConnectionTester $connectionTester;
+
+    private EnvironmentManager $environmentManager;
+
+    public function __construct(
+        DatabaseConnectionTester $connectionTester,
+        EnvironmentManager $environmentManager,
+    ) {
+        $this->connectionTester = $connectionTester;
+        $this->environmentManager = $environmentManager;
     }
 
-    /**
-     * Tests database connection using provided connection params.
-     */
-    public function testConnection(array $conn): void
+    public function install(string $driver, array $connectionData): void
     {
-        Config::set('database.connections.test', [
-            'driver' => 'pgsql',
-            'host' => $conn['db_host'],
-            'port' => $conn['db_port'],
-            'database' => $conn['db_database'],
-            'username' => $conn['db_username'],
-            'password' => $conn['db_password'],
-        ]);
+        $strategy = DatabaseConnectionStrategyFactory::create($driver);
 
-        $connection = DB::connection('test');
-        $connection->getPdo();
+        $this->connectionTester->testConnection($connectionData, $strategy);
 
-        if (! $connection->getDatabaseName()) {
-            throw new Exception('Unable to connect to the specified database.');
-        }
+        $this->setupConnection($driver, $connectionData, $strategy);
 
-        DB::purge('test');
-    }
+        $this->updateEnvironment($driver, $connectionData);
 
-    /**
-     * Sets production database connection.
-     */
-    private function setConnection(array $conn)
-    {
+        Artisan::call('migrate', ['--force' => true]);
+
         Artisan::call('config:clear');
-
-        DB::purge('pgsql');
-
-        Config::set('database.connections.pgsql', [
-            'driver' => 'pgsql',
-            'host' => $conn['db_host'],
-            'port' => $conn['db_port'],
-            'database' => $conn['db_database'],
-            'username' => $conn['db_username'],
-            'password' => $conn['db_password'],
-        ]);
-
-        $this->migrate();
-
-        $this->updateEnv([
-            'DB_HOST' => $conn['db_host'],
-            'DB_PORT' => $conn['db_port'],
-            'DB_DATABASE' => $conn['db_database'],
-            'DB_USERNAME' => $conn['db_username'],
-            'DB_PASSWORD' => $conn['db_password'],
-        ]);
-
         Artisan::call('config:cache');
     }
 
-    private function updateEnv(array $data): void
+    private function setupConnection(string $driver, array $connectionData, DatabaseConnectionStrategy $strategy): void
     {
-        $envFile = base_path('.env');
-        $envContent = File::get($envFile);
+        $config = $strategy->buildConfig($connectionData);
 
-        foreach ($data as $key => $value) {
-            $pattern = "/^{$key}=.*/m";
-            $replacement = "{$key}={$value}";
-
-            if (preg_match($pattern, $envContent)) {
-                $envContent = preg_replace($pattern, $replacement, $envContent);
-            } else {
-                $envContent .= "\n{$replacement}";
-            }
-        }
-
-        File::put($envFile, $envContent);
+        Artisan::call('config:clear');
+        DB::purge($driver);
+        Config::set("database.connections.{$driver}", $config);
     }
 
-    private function migrate()
+    private function updateEnvironment(string $driver, array $connectionData): void
     {
-        Artisan::call('migrate', ['--force' => true]);
+        $envData = ['DB_CONNECTION' => $driver];
+
+        switch ($driver) {
+            case 'sqlite':
+                $envData['DB_DATABASE'] = SQLiteConnectionStrategy::DBPATH;
+                break;
+            case 'pgsql':
+            case 'mysql':
+                $envData = array_merge($envData, [
+                    'DB_HOST' => $connectionData['db_host'],
+                    'DB_PORT' => $connectionData['db_port'] ?? DatabaseConnectionStrategyFactory::create($driver)->getDefaultPort(),
+                    'DB_DATABASE' => $connectionData['db_database'],
+                    'DB_USERNAME' => $connectionData['db_username'],
+                    'DB_PASSWORD' => $connectionData['db_password'],
+                ]);
+                break;
+        }
+
+        $this->environmentManager->updateEnvironment($envData);
     }
 }
