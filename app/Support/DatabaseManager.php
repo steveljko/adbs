@@ -60,6 +60,13 @@ final class DatabaseManager
                 $envData['DB_DATABASE'] = SQLiteConnectionStrategy::DBPATH;
                 break;
             case 'pgsql':
+                $envData = array_merge($envData, [
+                    'DB_HOST' => $connectionData['db_host'],
+                    'DB_PORT' => $connectionData['db_port'] ?? DatabaseConnectionStrategyFactory::create($driver)->getDefaultPort(),
+                    'DB_DATABASE' => $connectionData['db_database'],
+                    'DB_USERNAME' => $connectionData['db_username'],
+                    'DB_PASSWORD' => $connectionData['db_password'],
+                ]);
             case 'mysql':
                 $envData = array_merge($envData, [
                     'DB_HOST' => $connectionData['db_host'],

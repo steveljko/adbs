@@ -29,8 +29,8 @@
 
 - [ ] create application installer
     - [ ] make wizard like styling
-    - [ ] add mysql support for database
-    - [ ] add sqlite support for database
+    - [x] add mysql support for database
+    - [x] add sqlite support for database
 
 - [ ] add loading state and eager bookmark loading on frontpage
     - [x] add infinite scroll loading
@@ -61,3 +61,5 @@
 - [ ] fix modal not focusing on open
 
 - [ ] add model policies for crud operations
+
+- [ ] add view type switch in settings page

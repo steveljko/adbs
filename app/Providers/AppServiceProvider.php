@@ -40,6 +40,7 @@ final class AppServiceProvider extends ServiceProvider
                 Route::get('/requirments', RequirmentsController::class)->name('requirements');
 
                 Route::get('/database', DatabaseController::class)->name('database');
+                Route::get('/database/select', [DatabaseController::class, 'select'])->name('database.select');
                 Route::post('/database/setup', [DatabaseController::class, 'run'])->name('database.setup');
 
                 Route::get('/user', UserCreationController::class)->name('user');

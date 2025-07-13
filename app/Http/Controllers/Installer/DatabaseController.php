@@ -5,23 +5,61 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Installer;
 
 use App\Http\Requests\Installer\DatabaseConnectionRequest;
+use App\Support\Database\DatabaseConnectionStrategyFactory;
 use App\Support\DatabaseManager;
+use App\ValueObjects\DatabaseConnectionInfo;
 use Exception;
 use Illuminate\View\View;
 
 final class DatabaseController
 {
-    public function __invoke(): View
+    private DatabaseManager $databaseManager;
+
+    public function __construct(DatabaseManager $manager)
     {
-        return view('pages.installer.database');
+        $this->databaseManager = $manager;
     }
 
-    public function run(
-        DatabaseConnectionRequest $request,
-        DatabaseManager $dbManager,
-    ) {
+    public function __invoke(): View
+    {
+        $supportedDrivers = DatabaseConnectionStrategyFactory::getSupportedDrivers();
+
+        $options = [];
+        foreach ($supportedDrivers as $driver) {
+            $extensionName = "pdo_{$driver}";
+            $options[$driver] = [
+                'label' => $this->getDriverLabel($driver).
+                    (! extension_loaded($extensionName) ? ' (Extension not installed)' : ''),
+                'disabled' => ! extension_loaded($extensionName),
+            ];
+        }
+
+        return view('pages.installer.database', compact('options'));
+    }
+
+    public function select(): View
+    {
+        $dbDriver = request()->query('db_driver');
+
+        if (! in_array($dbDriver, DatabaseConnectionStrategyFactory::getSupportedDrivers())) {
+            abort(400, 'Invalid database driver');
+        }
+
+        return view("pages.installer.database_{$dbDriver}");
+    }
+
+    public function run(DatabaseConnectionRequest $request)
+    {
         try {
-            $dbManager->testAndSetConnection($request->validated());
+            $connectionInfo = new DatabaseConnectionInfo(
+                $request->input('db_driver'),
+                $request->validated()
+            );
+
+            $this->databaseManager->install(
+                $connectionInfo->getDriver(),
+                $connectionInfo->getConnectionData()
+            );
 
             return htmx()
                 ->redirect(route('installer.user'))
@@ -51,5 +89,15 @@ final class DatabaseController
         }
 
         return 'Database connection failed';
+    }
+
+    private function getDriverLabel(string $driver): string
+    {
+        return match ($driver) {
+            'pgsql' => 'PostgreSQL',
+            'mysql' => 'MySQL',
+            'sqlite' => 'SQLite',
+            default => ucfirst($driver),
+        };
     }
 }
