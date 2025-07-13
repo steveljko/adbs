@@ -8,7 +8,6 @@ use App\Enums\BookmarkStatus;
 use App\Http\Actions\Tag\AttachOrCreateTagsAction;
 use App\Http\Actions\Website\GetFaviconAction;
 use App\Models\Bookmark;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -22,7 +21,7 @@ final class CreateBookmarkAction
     /**
      * Create bookmark
      */
-    public function execute(array $data): Bookmark
+    public function execute(array $data, int $userId): Bookmark
     {
         if (! isset($data['favicon'])) {
             $data['favicon'] = $this->getFaviconAction->execute($data['url'], 32);
@@ -30,7 +29,7 @@ final class CreateBookmarkAction
 
         $data = array_merge($data, [
             'status' => BookmarkStatus::PUBLISHED,
-            'user_id' => request()->user->id,
+            'user_id' => $userId,
         ]);
 
         $bookmark = DB::transaction(function () use ($data) {
@@ -46,7 +45,7 @@ final class CreateBookmarkAction
 
         Log::info('New bookmark has been created', [
             'bookmark_id' => $bookmark->id,
-            'executed_by' => Auth::id(),
+            'executed_by' => $userId,
         ]);
 
         return $bookmark;

@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Bookmark;
 use App\Http\Actions\Bookmark\CreateBookmarkAction;
 use App\Http\Requests\Bookmark\CreateBookmarkRequest;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 final class StoreBookmarkController
 {
@@ -17,7 +18,7 @@ final class StoreBookmarkController
         CreateBookmarkRequest $request,
         CreateBookmarkAction $action
     ): Response {
-        $action->execute(data: $request->validated());
+        $action->execute(data: $request->validated(), userId: Auth::id());
 
         return htmx()->trigger('loadBookmarks')->response();
     }

@@ -19,5 +19,5 @@ Route::get('/ping', function () {
 Route::post('/login', LoginAndGenerateTokenController::class);
 
 Route::post('/bookmark', function (Request $request) {
-    return app(CreateBookmarkAction::class)->execute(data: $request->all());
+    return app(CreateBookmarkAction::class)->execute(data: $request->all(), userId: $request->user->id);
 })->middleware(EnsureTokenIsValid::class);
