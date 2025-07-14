@@ -53,31 +53,22 @@ final class DatabaseManager
 
     private function updateEnvironment(string $driver, array $connectionData): void
     {
-        $envData = ['DB_CONNECTION' => $driver];
+        $config = $this->normalizeConnectionData($driver, $connectionData);
+        $this->environmentManager->updateDatabaseEnvironment($driver, $config);
+    }
 
-        switch ($driver) {
-            case 'sqlite':
-                $envData['DB_DATABASE'] = SQLiteConnectionStrategy::DBPATH;
-                break;
-            case 'pgsql':
-                $envData = array_merge($envData, [
-                    'DB_HOST' => $connectionData['db_host'],
-                    'DB_PORT' => $connectionData['db_port'] ?? DatabaseConnectionStrategyFactory::create($driver)->getDefaultPort(),
-                    'DB_DATABASE' => $connectionData['db_database'],
-                    'DB_USERNAME' => $connectionData['db_username'],
-                    'DB_PASSWORD' => $connectionData['db_password'],
-                ]);
-            case 'mysql':
-                $envData = array_merge($envData, [
-                    'DB_HOST' => $connectionData['db_host'],
-                    'DB_PORT' => $connectionData['db_port'] ?? DatabaseConnectionStrategyFactory::create($driver)->getDefaultPort(),
-                    'DB_DATABASE' => $connectionData['db_database'],
-                    'DB_USERNAME' => $connectionData['db_username'],
-                    'DB_PASSWORD' => $connectionData['db_password'],
-                ]);
-                break;
+    private function normalizeConnectionData(string $driver, array $connectionData): array
+    {
+        if ($driver === 'sqlite') {
+            return ['database' => base_path(SQLiteConnectionStrategy::DBPATH)];
         }
 
-        $this->environmentManager->updateEnvironment($envData);
+        return [
+            'host' => $connectionData['db_host'],
+            'port' => $connectionData['db_port'] ?? DatabaseConnectionStrategyFactory::create($driver)->getDefaultPort(),
+            'database' => $connectionData['db_database'],
+            'username' => $connectionData['db_username'],
+            'password' => $connectionData['db_password'],
+        ];
     }
 }
