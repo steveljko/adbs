@@ -14,10 +14,10 @@ use App\Http\Controllers\Bookmark\PreviewBookmarkController;
 use App\Http\Controllers\Bookmark\StoreBookmarkController;
 use App\Http\Controllers\Bookmark\UndoBookmarksImportController;
 use App\Http\Controllers\Bookmark\UpdateBookmarkController;
-use App\Http\Controllers\Clients\ActivateClientController as ClientsActivateClientController;
-use App\Http\Controllers\Clients\DeactivateClientController as ClientsDeactivateClientController;
-use App\Http\Controllers\Clients\DeleteClientController as ClientsDeleteClientController;
-use App\Http\Controllers\Clients\DestroyClientController as ClientsDestroyClientController;
+use App\Http\Controllers\Clients\ActivateClientController;
+use App\Http\Controllers\Clients\DeactivateClientController;
+use App\Http\Controllers\Clients\DeleteClientController;
+use App\Http\Controllers\Clients\DestroyClientController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
 use App\Http\Controllers\Dashboard\ShowDashboardController;
 use App\Http\Controllers\Shared\GetAuthenticatedUserTagsController;
@@ -95,8 +95,8 @@ Route::group([
     'prefix' => 'client',
     'middleware' => 'auth',
 ], function () {
-    Route::get('/{addonClient}/delete', ClientsDeleteClientController::class)->name('.delete');
-    Route::delete('/{addonClient}/destroy', ClientsDestroyClientController::class)->name('.destroy');
-    Route::patch('/{addonClient}/activate', ClientsActivateClientController::class)->name('.activate');
-    Route::patch('/{addonClient}/deactivate', ClientsDeactivateClientController::class)->name('.deactivate');
+    Route::get('/{addonClient}/delete', DeleteClientController::class)->name('.delete');
+    Route::delete('/{addonClient}/destroy', DestroyClientController::class)->name('.destroy');
+    Route::patch('/{addonClient}/activate', ActivateClientController::class)->name('.activate');
+    Route::patch('/{addonClient}/deactivate', DeactivateClientController::class)->name('.deactivate');
 });
