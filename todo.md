@@ -55,8 +55,8 @@
     - [x] create endpoint for deactivating token
     - [x] reload card when token state changes
     - [x] fix dropdown not overlaping card
-    - [ ] add details modal for token
-    - [ ] add delete token
+    - [x] add details modal for token
+    - [x] add delete token
 
 - [x] fix modal not focusing on open
 

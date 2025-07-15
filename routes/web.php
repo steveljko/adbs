@@ -18,6 +18,7 @@ use App\Http\Controllers\Clients\ActivateClientController;
 use App\Http\Controllers\Clients\DeactivateClientController;
 use App\Http\Controllers\Clients\DeleteClientController;
 use App\Http\Controllers\Clients\DestroyClientController;
+use App\Http\Controllers\Clients\ShowClientController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
 use App\Http\Controllers\Dashboard\ShowDashboardController;
 use App\Http\Controllers\Shared\GetAuthenticatedUserTagsController;
@@ -97,6 +98,7 @@ Route::group([
     'prefix' => 'client',
     'middleware' => 'auth',
 ], function () {
+    Route::get('/{addonClient}', ShowClientController::class)->name('.show');
     Route::get('/{addonClient}/delete', DeleteClientController::class)->name('.delete');
     Route::delete('/{addonClient}/destroy', DestroyClientController::class)->name('.destroy');
     Route::patch('/{addonClient}/activate', ActivateClientController::class)->name('.activate');

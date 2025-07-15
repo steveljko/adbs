@@ -69,6 +69,11 @@
                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-[999] border border-gray-200"
                         x-cloak>
                         <div class="py-1">
+                            <button hx-get="{{ route('client.show', $client) }}" hx-target="#dialog"
+                                @click="openDropdown = null"
+                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Show
+                            </button>
                             @if($client->isActive() || $client->isPending())
                             <button hx-patch="{{ route('client.deactivate', $client) }}" hx-swap="none"
                                 @click="openDropdown = null"
