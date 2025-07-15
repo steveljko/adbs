@@ -8,7 +8,7 @@ route('installer.user') => 3,
 
 $currentStep = array_search(url()->current(), array_keys($step));
 @endphp
-<div class="flex-shrink-0">
+<div class="hidden sm:block">
     <ul class="relative space-y-8">
         <div class="absolute left-2.5 top-8 bottom-0 w-0.5 bg-gray-200"></div>
 

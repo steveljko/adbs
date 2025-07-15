@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Installer;
 
 use App\Http\Requests\User\CreateUserRequest;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\View\View;
@@ -19,11 +20,15 @@ final class UserCreationController
 
     public function run(CreateUserRequest $request): Response
     {
-        User::create($request->only('name', 'email', 'password'));
+        try {
+            User::create($request->only('name', 'email', 'password'));
 
-        $this->createInstalledFile();
+            $this->createInstalledFile();
 
-        return htmx()->redirect(route('auth.login'))->response(null);
+            return htmx()->redirect(route('auth.login'))->response(null);
+        } catch (Exception $e) {
+            dd($e);
+        }
     }
 
     public function skip(): Response

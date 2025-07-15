@@ -17,8 +17,8 @@
 
 - [x] make searchbar tags case insensitive
 
-- [ ] clean blade views and reorganize them
-    - [ ] make form components more customizable
+- [x] clean blade views and reorganize them
+    - [x] make form components more customizable
     - [x] make form components cleaner
     - [x] delete unnecessary components and views
     - [x] find better way to store svg icons
@@ -27,8 +27,8 @@
 
 - [ ] refactor dockerfile to use multistage build
 
-- [ ] create application installer
-    - [ ] make wizard like styling
+- [x] create application installer
+    - [x] make wizard like styling
     - [x] add mysql support for database
     - [x] add sqlite support for database
 

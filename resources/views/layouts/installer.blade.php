@@ -16,20 +16,20 @@
 </head>
 
 <body hx-headers='{"X-CSRF-TOKEN": "{{ csrf_token() }}"}'
-    class="flex items-center justify-center h-screen bg-[#fcfcfc]">
+    class="block sm:flex items-center justify-center h-screen bg-[#fcfcfc]">
     <x-htmx-error-handler />
 
-    <div class="w-full lg:w-1/2 md:w-3/4 mx-auto bg-white p-6 shadow rounded-lg">
+    <div class="w-full md:w-10/12 lg:w-8/12 mx-auto bg-white p-6 shadow rounded-lg">
         @yield('header')
 
         <div class="w-full flex gap-12 items-start">
-            <x-steps />
+            <x-steps class="hidden" />
 
             @yield('content')
         </div>
 
-        <!-- Footer Info -->
-        <div class="mt-12 pt-6 border-t border-gray-200">
+        <!-- Installation Footer -->
+        <div class="mt-6 pt-6 border-t border-gray-200">
             <div class="flex items-center justify-center text-sm text-gray-500">
                 <i class="fa fa-info-circle mr-2"></i>
                 <span>This setup wizard will guide you through the installation process step by step.</span>

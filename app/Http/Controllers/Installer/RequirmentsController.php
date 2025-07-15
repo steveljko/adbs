@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Installer;
 
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 final class RequirmentsController
 {
-    public function __invoke(): View
+    public function __invoke(): View|Response
     {
         $phpVersion = PHP_VERSION;
 
@@ -25,16 +26,20 @@ final class RequirmentsController
             'cURL',
             'GD',
             'Zip',
-            'pdo_pgsql',
         ];
 
         $extensions = [];
         foreach ($ext as $extension) {
             $extensions[$extension] = [
                 'required' => true,
-                'current' => extension_loaded(mb_strtolower($extension)) ? 'Enabled' : 'Disabled',
                 'satisfied' => extension_loaded(mb_strtolower($extension)),
             ];
+        }
+
+        if (htmx()->isRequest()) {
+            return htmx()
+                ->redirect(route('installer.database'))
+                ->response();
         }
 
         return view('pages.installer.requirements', compact(
