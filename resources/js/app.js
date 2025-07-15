@@ -11,11 +11,19 @@ window.Alpine = Alpine
 Coloris.init();
 window.Coloris = Coloris;
 
-// fix focus only
 document.addEventListener('alpine:init', () => {
     Alpine.store('modal', {
         open: false,
-        show() { this.open = true },
+        show() {
+            this.open = true
+
+            Alpine.nextTick(() => {
+                const modalContainer = document.getElementById('modal-container');
+                if (modalContainer) {
+                    modalContainer.focus();
+                }
+            });
+        },
         hide() { this.open = false }
     });
 

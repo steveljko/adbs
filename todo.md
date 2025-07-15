@@ -58,7 +58,7 @@
     - [ ] add details modal for token
     - [ ] add delete token
 
-- [ ] fix modal not focusing on open
+- [x] fix modal not focusing on open
 
 - [ ] add model policies for crud operations
 
