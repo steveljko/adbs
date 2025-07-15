@@ -49,7 +49,11 @@ final class AppServiceProvider extends ServiceProvider
             });
         }
 
-        View::composer(['pages.auth.settings', 'partials.settings.clients'], function ($view) {
+        View::composer([
+            'pages.auth.settings',
+            'partials.settings.tags',
+            'partials.settings.clients',
+        ], function ($view) {
             if (Auth::check()) {
                 $view->with('tags', Auth::user()->tags()->orderBy('created_at', 'desc')->get());
                 $view->with('clients', AddonClients::whereUserId(Auth::id())->orderBy('created_at', 'desc')->get());

@@ -25,9 +25,9 @@ final class UserCreationController
 
             $this->createInstalledFile();
 
-            return htmx()->redirect(route('auth.login'))->response(null);
+            return htmx()->redirect(route('auth.login'))->response();
         } catch (Exception $e) {
-            dd($e);
+            return htmx()->toast(type: 'error', text: 'Something wrong happend, try again!')->response();
         }
     }
 
@@ -35,7 +35,7 @@ final class UserCreationController
     {
         $this->createInstalledFile();
 
-        return htmx()->redirect(route('auth.login'))->response(null);
+        return htmx()->redirect(route('auth.login'))->response();
     }
 
     private function createInstalledFile(): void

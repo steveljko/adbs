@@ -60,6 +60,6 @@
 
 - [x] fix modal not focusing on open
 
-- [ ] add model policies for crud operations
+- [x] add model policies for crud operations
 
 - [ ] add view type switch in settings page

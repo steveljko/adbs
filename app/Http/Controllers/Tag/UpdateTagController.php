@@ -8,6 +8,7 @@ use App\Http\Actions\Tag\EditTagAction;
 use App\Http\Requests\Tag\EditTagRequest;
 use App\Models\Tag;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 final class UpdateTagController
 {
@@ -16,6 +17,10 @@ final class UpdateTagController
         EditTagAction $editTag,
         Tag $tag
     ): Response {
+        if (Auth::user()->cannot('update', $tag)) {
+            abort(403);
+        }
+
         [$isChanged, $message] = array_values($editTag->execute(request: $request, tag: $tag));
 
         if (! $isChanged) {

@@ -52,11 +52,13 @@ Route::group([
     Route::post('/preview', PreviewBookmarkController::class)->name('.preview');
     Route::get('/preview/tag', [PreviewBookmarkController::class, 'tagSuggest'])->name('.tagSuggest');
 
-    Route::get('/{bookmark}/edit', EditBookmarkController::class)->name('.edit');
+    Route::get('/{bookmark}/edit', EditBookmarkController::class)
+        ->name('.edit')
+        ->middleware('can:update,bookmark');
     Route::put('/{bookmark}/update', UpdateBookmarkController::class)->name('.update');
 
-    Route::get('/{bookmark}/delete', DeleteBookmarkController::class)->name('.delete');
-    Route::delete('/{bookmark}/delete', DestroyBookmarkController::class)->name('.destroy');
+    Route::get('/{bookmark}/delete', DeleteBookmarkController::class)->name('.delete')->middleware('can:delete,bookmark');
+    Route::delete('/{bookmark}/destroy', DestroyBookmarkController::class)->name('.destroy');
 
     Route::get('/export', ExportBookmarksController::class)->name('.export');
     Route::post('/export/confirm', [ExportBookmarksController::class, 'confirm'])->name('.export.confirm');
@@ -85,7 +87,7 @@ Route::group([
 ], function () {
     Route::get('/', GetAuthenticatedUserTagsController::class);
     Route::get('/{tag}', [GetAuthenticatedUserTagsController::class, 'renderTag'])->name('.get');
-    Route::get('/{tag}/edit', EditTagController::class)->name('.edit');
+    Route::get('/{tag}/edit', EditTagController::class)->name('.edit')->middleware('can:update,tag');
     Route::put('/{tag}/update', UpdateTagController::class)->name('.update');
     Route::delete('/{tag}', DeleteTagController::class)->name('.delete');
 });

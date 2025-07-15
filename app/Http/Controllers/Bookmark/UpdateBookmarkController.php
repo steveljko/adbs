@@ -8,6 +8,7 @@ use App\Http\Actions\Bookmark\UpdateBookmarkAction;
 use App\Http\Requests\Bookmark\UpdateBookmarkRequest;
 use App\Models\Bookmark;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 final class UpdateBookmarkController
 {
@@ -16,6 +17,10 @@ final class UpdateBookmarkController
         UpdateBookmarkAction $updateBookmark,
         Bookmark $bookmark,
     ): Response {
+        if (Auth::user()->cannot('update', $bookmark)) {
+            abort(403);
+        }
+
         [$isChanged, $message] = array_values($updateBookmark->execute(
             bookmark: $bookmark,
             data: $request->validated()
