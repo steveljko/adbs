@@ -63,14 +63,25 @@ Route::group([
     Route::get('/{bookmark}/delete', DeleteBookmarkController::class)->name('.delete')->middleware('can:delete,bookmark');
     Route::delete('/{bookmark}/destroy', DestroyBookmarkController::class)->name('.destroy');
 
-    Route::get('/export', ExportBookmarksController::class)->name('.export');
-    Route::post('/export/confirm', [ExportBookmarksController::class, 'confirm'])->name('.export.confirm');
-    Route::get('/export/download', [ExportBookmarksController::class, 'get'])->name('.export.get');
-    Route::post('/import', RequestBookmarkImportController::class)->name('.import');
-    Route::post('/import/confirm', ConfirmBookmarkImportController::class)->name('.import.confirm');
-    Route::post('/import/decrypt', DecryptAndImportBookmarksController::class)->name('.import.decrypt');
-    Route::get('/import/undo', UndoBookmarksImportController::class)->name('.import.undo');
-    Route::delete('/import/undo/confirm', [UndoBookmarksImportController::class, 'confirm'])->name('.import.undo.confirm');
+    Route::group([
+        'as' => '.export',
+        'prefix' => 'export',
+    ], function () {
+        Route::get('/', ExportBookmarksController::class);
+        Route::post('/confirm', [ExportBookmarksController::class, 'confirm'])->name('.confirm');
+        Route::get('/download', [ExportBookmarksController::class, 'get'])->name('.get');
+    });
+
+    Route::group([
+        'as' => '.import',
+        'prefix' => 'import',
+    ], function () {
+        Route::post('/', RequestBookmarkImportController::class);
+        Route::post('/confirm', ConfirmBookmarkImportController::class)->name('.confirm');
+        Route::post('/decrypt', DecryptAndImportBookmarksController::class)->name('.decrypt');
+        Route::get('/undo', UndoBookmarksImportController::class)->name('.undo');
+        Route::delete('/undo/confirm', [UndoBookmarksImportController::class, 'confirm'])->name('.undo.confirm');
+    });
 });
 
 Route::group([
