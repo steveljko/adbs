@@ -24,6 +24,7 @@ $variantClasses = [
 'success' => 'bg-green-500 hover:bg-green-600 text-white focus:ring-green-500',
 'danger' => 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-500',
 'warning' => 'bg-yellow-500 hover:bg-yellow-600 text-white focus:ring-yellow-500',
+'blue' => 'bg-blue-600 hover:bg-blue-800 text-white focus:ring-blue-500',
 ];
 
 $spinnerSizes = [

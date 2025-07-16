@@ -9,6 +9,8 @@ use App\Http\Requests\Bookmark\ImportBookmarksRequest;
 use App\Http\Requests\Bookmark\ImportBookmarksWithPasswordRequest;
 use Exception;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -19,8 +21,6 @@ final class ImportBookmarksController
     {
         if ($importBookmarks->isEncrypted($request->file)) {
             $tempFileName = 'bookmarks_'.Str::uuid().'.json';
-            $tempPath = 'temp/'.$tempFileName;
-
             Storage::putFileAs('temp', $request->file, $tempFileName);
 
             return htmx()
@@ -29,11 +29,27 @@ final class ImportBookmarksController
                 ->response(view('partials.bookmark.import-export.import-password', ['tempFile' => $tempFileName]));
         }
 
+        $tempFileName = 'bookmarks_'.Str::uuid().'.json';
+        Storage::putFileAs('temp', $request->file, $tempFileName);
+
+        return htmx()
+            ->target('#dialog')
+            ->swap('innerHTML')
+            ->response(view('partials.bookmark.import-export.import-confirm', ['tempFile' => $tempFileName]));
+    }
+
+    public function confirm(Request $request, ImportBookmarksAction $importBookmarks): Response
+    {
+        $tempFilePath = 'temp/'.$request->get('temp_file', null);
+
         try {
-            $importBookmarks->execute($request->file);
+            $fullPath = Storage::path($tempFilePath);
+            $importBookmarks->execute($fullPath);
 
             return htmx()->toast(type: 'info', text: 'Import is starting!')->response();
         } catch (Exception $e) {
+            dd($e);
+
             return htmx()->toast(type: 'error', text: 'Import failed')->response();
         }
     }
@@ -50,7 +66,7 @@ final class ImportBookmarksController
 
         try {
             $fullPath = Storage::path($tempFilePath);
-            $imported = $importBookmarks->execute($fullPath, $request->get('password'));
+            $importBookmarks->execute($fullPath, $request->get('password'));
 
             Storage::delete($tempFilePath);
 

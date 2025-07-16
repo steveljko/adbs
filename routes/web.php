@@ -65,7 +65,8 @@ Route::group([
     Route::post('/export/confirm', [ExportBookmarksController::class, 'confirm'])->name('.export.confirm');
     Route::get('/export/download', [ExportBookmarksController::class, 'get'])->name('.export.get');
     Route::post('/import', ImportBookmarksController::class)->name('.import');
-    Route::post('/decryptAndImport', [ImportBookmarksController::class, 'decryptAndImport'])->name('.decryptAndImport');
+    Route::post('/import/confirm', [ImportBookmarksController::class, 'confirm'])->name('.import.confirm');
+    Route::post('/import/decrypt', [ImportBookmarksController::class, 'decryptAndImport'])->name('.import.decrypt');
     Route::get('/import/undo', UndoBookmarksImportController::class)->name('.import.undo');
     Route::delete('/import/undo/confirm', [UndoBookmarksImportController::class, 'confirm'])->name('.import.undo.confirm');
 });

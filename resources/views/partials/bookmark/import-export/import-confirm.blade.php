@@ -1,13 +1,13 @@
 @props(['tempFile' => null])
 
-<form hx-post="{{ route('bookmarks.import.decrypt') }}" id="modal-content">
-    <x-modal.header>Enter password to decrypt bookmarks</x-modal.header>
+<form hx-post="{{ route('bookmarks.import.confirm') }}" id="modal-content">
+    <x-modal.header>Confirm Import</x-modal.header>
     <x-modal.body>
-        <x-form.input name="password" label="Password" type="password" />
         <input type="hidden" name="temp_file" value="{{ basename($tempFile) }}" />
+        <p>Are you sure you wan't to import?</p>
     </x-modal.body>
     <x-modal.footer>
         <x-button.secondary type="button" @click="$store.modal.hide()">Cancel</x-button.secondary>
-        <x-button variant="blue" type="submit">Decrypt and Import</x-button>
+        <x-button variant="blue" type="submit">Confirm Import</x-button>
     </x-modal.footer>
 </form>
