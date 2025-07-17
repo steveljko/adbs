@@ -26,7 +26,7 @@ final class ShowDashboardController
         $viewType = $request->query('view_type', 'card');
 
         $page = (int) $request->query('page', 1);
-        $perPage = 35;
+        $perPage = 32;
         $offset = ($page - 1) * $perPage;
 
         $tags = $this->getAvailableTags();
@@ -63,6 +63,7 @@ final class ShowDashboardController
 
             return view('components.bookmark-list', [
                 'type' => $viewType,
+                'showSwitch' => 'true',
                 'bookmarks' => $bookmarks,
                 'hasMore' => $hasMore,
                 'nextPage' => $nextPage,

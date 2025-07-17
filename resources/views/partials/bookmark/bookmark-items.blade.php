@@ -45,8 +45,7 @@
 @endforeach
 @else
 @foreach ($bookmarks as $bookmark)
-<div
-    class="bookmark-card relative bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 break-inside-avoid mb-4 group">
+<div class="bookmark-card mb-4 shadow" style="width: calc(33% - 16px)">
     @include('partials.bookmark.card-loading', ['bookmark' => $bookmark])
     @include('partials.bookmark.card', ['bookmark' => $bookmark])
 </div>

@@ -21,9 +21,9 @@
         </div>
 
         <button id="addBookmarkBtn"
-            class="flex-shrink-0 w-10 h-10 flex justify-center items-center border border-gray-200 hover:border-orange-500 text-gray-600 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-all duration-200"
+            class="flex-shrink-0 w-10 h-10 flex justify-center items-center border border-gray-300 hover:border-orange-500 text-gray-600 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-all duration-200 group"
             hx-get="{{ route('bookmarks.create') }}" hx-target="#dialog" title="Add Bookmark">
-            <x-icon name="plus" class="w-5 h-5 text-gray-800" />
+            <x-icon name="plus" class="stroke-2 w-5 h-5 text-gray-500 group-hover:text-orange-600" />
         </button>
 
         <div class="relative" x-data="{ dropdownOpen: false }">
@@ -48,9 +48,9 @@
                             <span>Settings</span>
                         </a>
                         <div class="border-t border-gray-100 my-1"></div>
-                        <div class="px-3 py-2 hover:bg-red-50 hover:text-red-600 rounded-md cursor-pointer text-sm flex items-center gap-3 transition-colors"
+                        <div class="group px-3 py-2 hover:bg-red-50 hover:text-red-600 rounded-md cursor-pointer text-sm flex items-center gap-3 transition-colors"
                             hx-delete="{{ route('auth.logout') }}">
-                            <x-icon name="logout" class="h-4 h-4 text-gray-600" />
+                            <x-icon name="logout" class="h-4 h-4 text-gray-600 group-hover:text-red-600" />
                             <span>Logout</span>
                         </div>
                     </div>
@@ -67,4 +67,5 @@
             </button>
         </div>
     </div>
+    <x-view-switch />
 </div>

@@ -5,6 +5,7 @@ import 'simple-notify/dist/simple-notify.css'
 import Coloris from "@melloware/coloris";
 import "@melloware/coloris/dist/coloris.css";
 import Alpine from 'alpinejs'
+import Masonry from "masonry-layout";
 
 window.htmx = htmx;
 window.Alpine = Alpine
@@ -62,4 +63,18 @@ document.addEventListener('htmx:responseError', function (event) {
         container.classList.remove('hidden');
         container.innerHTML = messages[0];
     }
+});
+
+
+function initMasonry() {
+    new Masonry(document.getElementById('bookmarks-container'), {
+        itemSelector: '.bookmark-card',
+        gutter: 16,
+        horizontalOrder: true
+    });
+}
+initMasonry();
+
+document.addEventListener('htmx:afterSwap', function(event) {
+    if (event.target.id === 'bookmarks-container') initMasonry();
 });

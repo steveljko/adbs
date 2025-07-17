@@ -16,12 +16,12 @@
         @endif
     </form>
 
-    <x-bookmark-list :type="$viewType" :bookmarks="$bookmarks" />
+    <x-bookmark-list :type="$viewType" :bookmarks="$bookmarks" :showSwitch="false" />
 
     @if($hasMore && $nextPage)
     <div class="h-1 w-full" hx-get="{{ route('dashboard') }}" hx-include="#filters" hx-vals='{"view_type": "{{ request('
         view_type', 'card' ) }}", "page" : {{ $nextPage }}, "load_more" : "1" }' hx-trigger="intersect once"
-        hx-target="#bookmarks-container" hx-swap="beforeend" hx-indicator="#loading-state">
+        hx-target="#bookmarks-container" hx-swap="beforeend">
     </div>
     @endif
 </div>

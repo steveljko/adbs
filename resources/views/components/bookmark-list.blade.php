@@ -1,4 +1,4 @@
-@props(['type' => 'card', 'bookmarks'])
+@props(['type' => 'card', 'bookmarks', 'showSwitch' => false])
 
 <div id="bookmarks" hx-get="{{ route('dashboard') }}" hx-include="#filters" hx-vals='{"view_type": "{{ request('
     view_type', 'card' ) }}"}' hx-trigger="loadBookmarks from:body" hx-swap="outerHTML" hx-push-url="true">
@@ -53,10 +53,9 @@
         </li>
         @endforeach
         @else
-        <div class="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4" id="bookmarks-container">
+        <div id="bookmarks-container" class="w-full">
             @foreach ($bookmarks as $bookmark)
-            <div
-                class="bookmark-card relative bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 break-inside-avoid mb-4 group">
+            <div class="bookmark-card mb-4 shadow" style="width: calc(33% - 16px)">
                 @include('partials.bookmark.card-loading', ['bookmark' => $bookmark])
                 @include('partials.bookmark.card', ['bookmark' => $bookmark])
             </div>
@@ -65,3 +64,6 @@
         @endif
     </div>
 </div>
+@if ($showSwitch)
+<x-view-switch />
+@endif
