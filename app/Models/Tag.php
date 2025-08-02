@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Auth;
 
 #[ObservedBy(TagObserver::class)]
 #[UsePolicy(TagPolicy::class)]
@@ -32,6 +33,16 @@ final class Tag extends Model
         'description',
         'user_id',
     ];
+
+    /**
+     * Get all tag names for the authenticated user
+     */
+    public static function getForUser(): array
+    {
+        return self::where('user_id', Auth::id())
+            ->pluck('name')
+            ->toArray();
+    }
 
     public function bookmarks(): BelongsToMany
     {

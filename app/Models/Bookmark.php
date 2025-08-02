@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Auth;
 
 #[UsePolicy(BookmarkPolicy::class)]
 final class Bookmark extends Model
@@ -37,6 +38,23 @@ final class Bookmark extends Model
         'imported_at',
         'recently_imported',
     ];
+
+    /**
+     * Get unique site domains for the authenticated user
+     */
+    public static function getSitesForUser(): array
+    {
+        return self::where('user_id', Auth::id())
+            ->get()
+            ->map(function ($bookmark) {
+                $parsed = parse_url($bookmark->url);
+
+                return $parsed['host'] ?? $bookmark->url;
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+    }
 
     /**
      * User that created this bookmark
