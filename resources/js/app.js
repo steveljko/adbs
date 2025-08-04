@@ -65,16 +65,44 @@ document.addEventListener('htmx:responseError', function (event) {
     }
 });
 
+let masonry;
+document.addEventListener('htmx:afterSettle', (e) => {
+    const viewType = e.detail.requestConfig.parameters?.view_type ||
+                     new URLSearchParams(window.location.search).get('view_type') || 'card';
+
+    if (viewType === 'card') {
+        setTimeout(() => {
+            initMasonry();
+        }, 250);
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('view_type') === 'card' || !urlParams.get('view_type')) {
+        setTimeout(() => {
+            initMasonry();
+        }, 250);
+    }
+});
+
+document.addEventListener('htmx:afterRequest', (e) => {
+    if (e.detail.requestConfig.parameters?.load_more === '1') {
+        const viewType = e.detail.requestConfig.parameters?.view_type || 'card';
+        setTimeout(() => {
+            initMasonry();
+        }, 250);
+    }
+});
+
 
 function initMasonry() {
-    new Masonry(document.getElementById('bookmarks-container'), {
-        itemSelector: '.bookmark-card',
-        gutter: 16,
-        horizontalOrder: true
-    });
+    const container = document.getElementById('bookmarks-container');
+    if (container) {
+        masonry = new Masonry(container, {
+            itemSelector: '.bookmark-card',
+            gutter: 16,
+            horizontalOrder: true
+        });
+    }
 }
-initMasonry();
-
-document.addEventListener('htmx:afterSwap', function(event) {
-    if (event.target.id === 'bookmarks-container') initMasonry();
-});

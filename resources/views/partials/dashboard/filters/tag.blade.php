@@ -1,14 +1,31 @@
 <span
-    class="inline-flex items-center justify-between gap-2 px-2 py-1 text-sm font-medium border rounded-full group hover:bg-orange-100 transition-colors duration-150"
-    style="background-color: {{ $tag->background_color }}; color: {{ $tag->text_color }}">
-    <span class="flex items-center gap-1.5">
-        <x-icon name="tag" class="w-3.5 h-3.5" />
+    class="group inline-flex items-center justify-between gap-2 rounded-full border px-2 py-1 text-sm font-medium transition-colors duration-150 hover:bg-orange-100"
+    style="background-color: {{ $tag->background_color }}; color: {{ $tag->text_color }}"
+>
+    <span
+        class="flex items-center gap-1.5"
+    >
+        <x-icon
+            class="h-3.5 w-3.5"
+            name="tag"
+        />
         {{ $tag->name }}
     </span>
-    <input type="text" class="hidden" name="tags[]" value="{{ $tag->name }}">
-    <button type="button"
-        class="flex items-center justify-center w-5 h-5 text-orange-500 rounded-full focus:outline-none focus:ring-2 transition-colors duration-150"
-        onclick="this.parentNode.remove(); htmx.trigger('#bookmarks', 'loadBookmarks')">
-        <x-icon name="x" class="w-3.5 h-3.5 stroke-2" style="color: {{ $tag->text_color }}" />
+    <input
+        class="hidden"
+        name="tags[]"
+        type="text"
+        value="{{ $tag->name }}"
+    >
+    <button
+        class="flex h-5 w-5 items-center justify-center rounded-full text-orange-500 transition-colors duration-150 focus:outline-none focus:ring-2"
+        onclick="this.parentNode.remove(); htmx.trigger('#bookmarks-container', 'loadBookmarks')"
+        type="button"
+    >
+        <x-icon
+            class="h-3.5 w-3.5 stroke-2"
+            name="x"
+            style="color: {{ $tag->text_color }}"
+        />
     </button>
 </span>

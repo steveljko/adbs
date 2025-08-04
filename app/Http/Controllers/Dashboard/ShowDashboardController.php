@@ -13,124 +13,143 @@ use Illuminate\View\View;
 
 final class ShowDashboardController
 {
+    private const PER_PAGE = 30;
+
     public function __invoke(Request $request): View|RedirectResponse|string
+    {
+        $filters = $this->extractFilters($request);
+        $pagination = $this->extractPagination($request);
+
+        $this->validateQueryParams($request);
+
+        $bookmarksData = $this->getBookmarksData($filters, $pagination);
+
+        if ($request->expectsJson() || htmx()->isRequest()) {
+            return $this->handleHtmxRequest($request, $filters['viewType'], $bookmarksData, $pagination, $filters);
+        }
+
+        return $this->renderFullPage($filters, $bookmarksData, $pagination);
+    }
+
+    private function extractFilters(Request $request): array
     {
         $queryTags = $request->query('tags', []);
         $querySites = $request->query('sites', []);
 
-        $queryTags = array_map(function ($tag) {
-            return Tag::where('name', $tag)->first();
-        }, $queryTags);
+        // convert tag names to Tag models
+        $tagModels = array_filter(array_map(
+            fn ($tagName) => Tag::where('name', $tagName)->first(),
+            $queryTags
+        ));
 
-        $title = $request->query('title', null);
-        $viewType = $request->query('view_type', 'card');
+        return [
+            'tags' => $tagModels,
+            'sites' => $querySites,
+            'title' => $request->query('title'),
+            'viewType' => $request->query('view_type', 'card'),
+        ];
+    }
 
-        $page = (int) $request->query('page', 1);
-        $perPage = 32;
-        $offset = ($page - 1) * $perPage;
+    private function extractPagination(Request $request): array
+    {
+        $page = max(1, (int) $request->query('page', 1));
+        $offset = ($page - 1) * self::PER_PAGE;
 
-        $tags = $this->getAvailableTags();
-        $sites = $this->getAvailableSites();
+        return [
+            'page' => $page,
+            'perPage' => self::PER_PAGE,
+            'offset' => $offset,
+        ];
+    }
 
-        $this->validateQueryParams(
-            request: $request,
-            availableTags: $tags,
-            availableSites: $sites,
-        );
-
-        $bookmarksQuery = Bookmark::query()
-            ->withTagsAndSites(tags: $queryTags, sites: $querySites)
-            ->where('title', 'LIKE', "%{$title}%")
+    private function getBookmarksData(array $filters, array $pagination): array
+    {
+        $query = Bookmark::query()
+            ->withTagsAndSites($filters['tags'], $filters['sites'])
             ->whereUserId(Auth::id())
             ->latest();
 
-        $totalCount = $bookmarksQuery->count();
-        $bookmarks = $bookmarksQuery->offset($offset)->limit($perPage)->get();
-
-        $hasMore = $totalCount > ($offset + $perPage);
-        $nextPage = $hasMore ? $page + 1 : null;
-
-        if (htmx()->isRequest()) {
-            if ($request->has('load_more')) {
-                return view('partials.bookmark.bookmark-items', [
-                    'type' => $viewType,
-                    'bookmarks' => $bookmarks,
-                    'hasMore' => $hasMore,
-                    'nextPage' => $nextPage,
-                    'currentPage' => $page,
-                ])->render();
-            }
-
-            return view('components.bookmark-list', [
-                'type' => $viewType,
-                'showSwitch' => 'true',
-                'bookmarks' => $bookmarks,
-                'hasMore' => $hasMore,
-                'nextPage' => $nextPage,
-                'currentPage' => $page,
-            ])->render();
+        // apply title filter if provided
+        if ($filters['title']) {
+            $query->where('title', 'LIKE', '%'.addcslashes($filters['title'], '%_\\').'%');
         }
 
-        return view('pages.dashboard.home', [
-            'queryTags' => $queryTags,
-            'querySites' => $querySites,
-            'viewType' => $viewType,
-            'tags' => $tags,
+        $totalCount = $query->count();
+        $bookmarks = $query->offset($pagination['offset'])
+            ->limit($pagination['perPage'])
+            ->get();
+
+        $hasMore = $totalCount > ($pagination['offset'] + $pagination['perPage']);
+
+        return [
             'bookmarks' => $bookmarks,
+            'totalCount' => $totalCount,
             'hasMore' => $hasMore,
-            'nextPage' => $nextPage,
-            'currentPage' => $page,
+            'nextPage' => $hasMore ? $pagination['page'] + 1 : null,
+        ];
+    }
+
+    private function handleHtmxRequest(
+        Request $request,
+        string $viewType,
+        array $bookmarksData,
+        array $pagination,
+        array $filters
+    ): string {
+        $viewData = [
+            'type' => $viewType,
+            'bookmarks' => $bookmarksData['bookmarks'],
+            'hasMore' => $bookmarksData['hasMore'],
+            'nextPage' => $bookmarksData['nextPage'],
+            'currentPage' => $pagination['page'],
+            // Pass filters to maintain state
+            'queryTags' => $filters['tags'],
+            'querySites' => $filters['sites'],
+            'title' => $filters['title'],
+        ];
+
+        if ($request->has('load_more')) {
+            // handle infinite scroll loading - return only the bookmarks
+            return view('components.bookmarks', $viewData)->fragment('bookmarks');
+        }
+
+        return view('components.bookmarks', array_merge($viewData, [
+            'showSwitch' => 'true',
+        ]))->render();
+    }
+
+    private function renderFullPage(array $filters, array $bookmarksData, array $pagination): View
+    {
+        return view('pages.dashboard.home', [
+            'queryTags' => $filters['tags'],
+            'querySites' => $filters['sites'],
+            'viewType' => $filters['viewType'],
+            'title' => $filters['title'],
+            'tags' => Tag::getForUser(),
+            'bookmarks' => $bookmarksData['bookmarks'],
+            'hasMore' => $bookmarksData['hasMore'],
+            'nextPage' => $bookmarksData['nextPage'],
+            'currentPage' => $pagination['page'],
         ]);
     }
 
-    /**
-     * Validate URL query parameters
-     */
-    private function validateQueryParams(
-        Request $request,
-        array $availableTags,
-        array $availableSites
-    ) {
-        $invalidTags = array_diff($request->query('tags', []), $availableTags);
-        $invalidSites = array_diff($request->query('sites', []), $availableSites);
+    private function validateQueryParams(Request $request): void
+    {
+        $queryTags = $request->query('tags', []);
+        $querySites = $request->query('sites', []);
 
-        if ($invalidTags || $invalidSites) {
-            abort(403, 'Invalid tags or site URLs are provided.');
+        if (empty($queryTags) && empty($querySites)) {
+            return;
         }
-    }
 
-    /**
-     * Get all tags for authenticated user
-     */
-    private function getAvailableTags(): array
-    {
-        return Tag::query()
-            ->whereUserId(Auth::id())
-            ->pluck('name')
-            ->toArray();
-    }
+        $availableTags = Tag::getForUser();
+        $availableSites = Bookmark::getSitesForUser();
 
-    /**
-     * Get all sites for authenticated user
-     * TODO: Cache website urls
-     */
-    private function getAvailableSites(): array
-    {
-        return Bookmark::query()
-            ->whereUserId(Auth::id())
-            ->pluck('url')
-            ->map(function ($url) {
-                $urlParts = parse_url($url);
-                $host = $urlParts['host'];
+        $invalidTags = array_diff($queryTags, $availableTags);
+        $invalidSites = array_diff($querySites, $availableSites);
 
-                // remove 'www.' from the beginning if present
-                if (mb_strpos($host, 'www.') === 0) {
-                    $host = mb_substr($host, 4);
-                }
-
-                return $host;
-            })
-            ->unique()
-            ->toArray();
+        if (! empty($invalidTags) || ! empty($invalidSites)) {
+            abort(403, 'Invalid tags or site URLs provided.');
+        }
     }
 }
