@@ -67,28 +67,20 @@ document.addEventListener('htmx:responseError', function (event) {
 
 let masonry;
 document.addEventListener('htmx:afterSettle', (e) => {
-    const viewType = e.detail.requestConfig.parameters?.view_type ||
-                     new URLSearchParams(window.location.search).get('view_type') || 'card';
-
-    if (viewType === 'card') {
-        setTimeout(() => {
-            initMasonry();
-        }, 250);
+    if (e.target.id === 'bookmarks-container') {
+        const viewType = e.detail.requestConfig.parameters?.view_type ||
+                         new URLSearchParams(window.location.search).get('view_type') || 'card';
+        if (viewType === 'card') {
+            setTimeout(() => {
+                initMasonry();
+            }, 250);
+        }
     }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('view_type') === 'card' || !urlParams.get('view_type')) {
-        setTimeout(() => {
-            initMasonry();
-        }, 250);
-    }
-});
-
-document.addEventListener('htmx:afterRequest', (e) => {
-    if (e.detail.requestConfig.parameters?.load_more === '1') {
-        const viewType = e.detail.requestConfig.parameters?.view_type || 'card';
         setTimeout(() => {
             initMasonry();
         }, 250);

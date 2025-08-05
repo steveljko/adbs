@@ -13,5 +13,13 @@
             :bookmarks="$bookmarks"
             :type="$viewType"
         />
+
+        <x-loadmore
+            :hasMore="$hasMore"
+            :nextPage="$nextPage"
+            x-data='{ loading: false }'
+            x-init="setTimeout(() => loading = true, 500)"
+            x-show="loading"
+        />
     </div>
 @endsection

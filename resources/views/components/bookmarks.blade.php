@@ -1,6 +1,7 @@
 @props([
     'type' => 'card',
     'bookmarks',
+    'showSwitch' => false,
 ])
 
 <div
@@ -26,7 +27,7 @@
                         class="bookmark-card mb-4 shadow"
                         style="width: calc(33% - 16px)"
                         x-data="{ 'loading': true }"
-                        x-init="setTimeout(() => loading = false, 200)"
+                        x-init="setTimeout(() => loading = false, 50)"
                     >
                         <template
                             x-if="loading"
@@ -48,3 +49,6 @@
         </div>
     @endfragment
 </div>
+@if ($showSwitch)
+    <x-view-switch />
+@endif

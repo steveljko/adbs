@@ -96,26 +96,28 @@ final class ShowDashboardController
         array $pagination,
         array $filters
     ): string {
-        $viewData = [
+        $data = [
             'type' => $viewType,
             'bookmarks' => $bookmarksData['bookmarks'],
             'hasMore' => $bookmarksData['hasMore'],
             'nextPage' => $bookmarksData['nextPage'],
             'currentPage' => $pagination['page'],
-            // Pass filters to maintain state
             'queryTags' => $filters['tags'],
             'querySites' => $filters['sites'],
             'title' => $filters['title'],
         ];
 
         if ($request->has('load_more')) {
-            // handle infinite scroll loading - return only the bookmarks
-            return view('components.bookmarks', $viewData)->fragment('bookmarks');
+            $bookmarks = view('components.bookmarks', $data)->fragment('bookmarks');
+            $loadMore = view('components.loadmore', $data)->render();
+
+            return $bookmarks.$loadMore;
         }
 
-        return view('components.bookmarks', array_merge($viewData, [
-            'showSwitch' => 'true',
-        ]))->render();
+        $bookmarks = view('components.bookmarks', array_merge($data, ['showSwitch' => 'true']))->render();
+        $loadMore = view('components.loadmore', $data)->render();
+
+        return $bookmarks.$loadMore;
     }
 
     private function renderFullPage(array $filters, array $bookmarksData, array $pagination): View
