@@ -1,4 +1,10 @@
-<div x-data="{
+<div
+    @keydown="handleKeydown"
+    aria-label="Search suggestions"
+    class="absolute bottom-full left-0 right-0 z-50 mb-2 rounded-lg border border-gray-200 bg-white shadow-lg"
+    id="suggestions-container"
+    role="listbox"
+    x-data="{
         focusedIndex: -1,
         suggestions: [],
 
@@ -7,7 +13,7 @@
         },
 
         handleKeydown(event) {
-            switch(event.key) {
+            switch (event.key) {
                 case 'ArrowDown':
                     event.preventDefault();
                     if (this.focusedIndex < this.suggestions.length - 1) {
@@ -62,43 +68,59 @@
             this.focusedIndex = index;
             this.updateFocus();
         }
-    }" @keydown="handleKeydown" id="suggestions-container" x-ref="suggestions"
-    class="absolute bottom-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mb-2 z-50"
-    role="listbox" aria-label="Search suggestions">
+    }"
+    x-ref="suggestions"
+>
     <div class="p-2">
-        <div class="space-y-1 mb-1.5">
+        <div class="mb-1.5 space-y-1">
             @if (count($tags))
-            <div class="text-xs text-gray-500 font-medium mb-2">Tags</div>
-            @foreach ($tags as $index => $tag)
-            <div class="px-3 py-2 hover:bg-orange-100 focus:bg-orange-100 rounded cursor-pointer text-sm" tabindex="0"
-                role="option" @mouseenter="setFocusIndex({{ $loop->index }})"
-                hx-get="{{ route('dashboard.search.tag', $tag) }}" hx-trigger="click, keyup[key=='Enter']"
-                hx-target="#filters" hx-swap="afterbegin" hx-on::after-request="
+                <div class="mb-2 text-xs font-medium text-gray-500">Tags</div>
+                @foreach ($tags as $index => $tag)
+                    <div
+                        :aria-selected="focusedIndex === {{ $loop->index }}"
+                        @mouseenter="setFocusIndex({{ $loop->index }})"
+                        class="cursor-pointer rounded px-3 py-2 text-sm hover:bg-orange-100 focus:bg-orange-100"
+                        hx-get="{{ route('dashboard.search.tag', $tag) }}"
+                        hx-on::after-request="
                             document.getElementById('suggestions-container').remove();
                             document.getElementById('search').value = '';
-                            htmx.trigger('#bookmarks', 'loadBookmarks');
-                        " :aria-selected="focusedIndex === {{ $loop->index }}">
-                {{ $tag->name }}
-            </div>
-            @endforeach
+                            htmx.trigger('#bookmarks-container', 'loadBookmarks');
+                        "
+                        hx-swap="afterbegin"
+                        hx-target="#filters"
+                        hx-trigger="click, keyup[key=='Enter']"
+                        role="option"
+                        tabindex="0"
+                    >
+                        {{ $tag->name }}
+                    </div>
+                @endforeach
             @endif
             @if (count($sites))
-            <div class="text-xs text-gray-500 font-medium mb-2">Sites</div>
-            @foreach ($sites as $site)
-            <div class="px-3 py-2 hover:bg-orange-100 focus:bg-orange-100 rounded cursor-pointer text-sm" tabindex="0"
-                role="option" @mouseenter="setFocusIndex({{ count($tags) + $loop->index }})"
-                hx-get="{{ route('dashboard.search.site', $site) }}" hx-trigger="click, keyup[key=='Enter']"
-                hx-target="#filters" hx-swap="afterbegin" hx-on::after-request="
+                <div class="mb-2 text-xs font-medium text-gray-500">Sites</div>
+                @foreach ($sites as $site)
+                    <div
+                        :aria-selected="focusedIndex === {{ count($tags) + $loop->index }}"
+                        @mouseenter="setFocusIndex({{ count($tags) + $loop->index }})"
+                        class="cursor-pointer rounded px-3 py-2 text-sm hover:bg-orange-100 focus:bg-orange-100"
+                        hx-get="{{ route('dashboard.search.site', $site) }}"
+                        hx-on::after-request="
                             document.getElementById('suggestions-container').innerHTML = '';
                             document.getElementById('search').value = '';
-                            htmx.trigger('#bookmarks', 'loadBookmarks');
-                        " :aria-selected="focusedIndex === {{ count($tags) + $loop->index }}">
-                {{ $site }}
-            </div>
-            @endforeach
+                            htmx.trigger('#bookmarks-container', 'loadBookmarks');
+                        "
+                        hx-swap="afterbegin"
+                        hx-target="#filters"
+                        hx-trigger="click, keyup[key=='Enter']"
+                        role="option"
+                        tabindex="0"
+                    >
+                        {{ $site }}
+                    </div>
+                @endforeach
             @endif
         </div>
     </div>
     <!-- arrow pointing down -->
-    <div class="absolute -bottom-2 left-6 w-4 h-4 bg-white border-r border-b border-gray-200 transform rotate-45"></div>
+    <div class="absolute -bottom-2 left-6 h-4 w-4 rotate-45 transform border-b border-r border-gray-200 bg-white"></div>
 </div>
