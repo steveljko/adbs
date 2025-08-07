@@ -29,8 +29,8 @@ final class SearchBookmarksController
 
             return htmx()
                 ->target('#suggestions-container')
-                ->swap('innerHTML')
-                ->response('');
+                ->swap('outerHTML')
+                ->response('<div class="hidden" id="suggestions-container"></div>');
         }
 
         return htmx()

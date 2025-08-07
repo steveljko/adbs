@@ -1,13 +1,8 @@
-<div
-    class="fixed bottom-4 left-4 right-4 z-40"
->
-    <div
-        class="relative mx-auto flex max-w-lg gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-lg"
-    >
-        <div
-            class="min-w-0 flex-1"
-        >
+<div class="fixed bottom-4 left-4 right-4 z-40">
+    <div class="relative mx-auto flex max-w-lg gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-lg">
+        <div class="min-w-0 flex-1">
             <div
+                class="hidden"
                 id="suggestions-container"
             ></div>
 
@@ -22,16 +17,14 @@
                 class="h-full w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                 hx-include="#filters"
                 hx-post="/dashboard/search"
-                hx-trigger="focus, keyup changed delay:250ms"
+                hx-trigger="keyup changed delay:500ms"
                 id="search"
                 name="search"
                 placeholder="Search bookmarks..."
                 type="text"
                 x-data=""
             >
-            <div
-                class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3"
-            >
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                 <svg
                     class="h-4 w-4 text-gray-400"
                     fill="none"
@@ -77,12 +70,8 @@
                 x-transition:leave-start="opacity-100 transform scale-100"
                 x-transition:leave="transition ease-in duration-150"
             >
-                <div
-                    class="p-3"
-                >
-                    <div
-                        class="space-y-1"
-                    >
+                <div class="p-3">
+                    <div class="space-y-1">
                         <a
                             class="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-gray-50"
                             href="{{ route('dashboard') }}"
@@ -103,9 +92,7 @@
                             />
                             <span>Settings</span>
                         </a>
-                        <div
-                            class="my-1 border-t border-gray-100"
-                        ></div>
+                        <div class="my-1 border-t border-gray-100"></div>
                         <div
                             class="group flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-red-50 hover:text-red-600"
                             hx-delete="{{ route('auth.logout') }}"
@@ -119,8 +106,7 @@
                     </div>
                 </div>
                 <div
-                    class="absolute -bottom-2 right-4 h-4 w-4 rotate-45 transform border-b border-r border-gray-200 bg-white"
-                >
+                    class="absolute -bottom-2 right-4 h-4 w-4 rotate-45 transform border-b border-r border-gray-200 bg-white">
                 </div>
             </div>
 

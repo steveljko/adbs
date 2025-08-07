@@ -8,6 +8,7 @@
     hx-get="{{ route('dashboard') }}"
     hx-include="#filters"
     hx-push-url="true"
+    hx-swap="outerHTML"
     hx-trigger="loadBookmarks from:body"
     id="bookmarks-container"
 >
@@ -29,17 +30,11 @@
                         x-data="{ 'loading': true }"
                         x-init="setTimeout(() => loading = false, 50)"
                     >
-                        <template
-                            x-if="loading"
-                        >
+                        <template x-if="loading">
                             @include('partials.bookmark.card-loading', ['bookmark' => $bookmark])
                         </template>
-                        <template
-                            x-if="!loading"
-                        >
-                            <div
-                                x-init="$nextTick(() => htmx.process($el))"
-                            >
+                        <template x-if="!loading">
+                            <div x-init="$nextTick(() => htmx.process($el))">
                                 @include('partials.bookmark.card', ['bookmark' => $bookmark])
                             </div>
                         </template>

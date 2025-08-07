@@ -6,10 +6,9 @@
     role="listbox"
     x-data="{
         focusedIndex: -1,
-        suggestions: [],
 
-        init() {
-            this.suggestions = [...this.$el.querySelectorAll('[role=option]')];
+        get suggestions() {
+            return [...this.$el.querySelectorAll('[role=option]')];
         },
 
         handleKeydown(event) {
@@ -40,7 +39,7 @@
                     }
                     break;
                 case 'Enter':
-                    if (this.focusedIndex >= 0) {
+                    if (this.focusedIndex >= 0 && this.suggestions[this.focusedIndex]) {
                         event.preventDefault();
                         this.suggestions[this.focusedIndex].click();
                     }
@@ -55,6 +54,7 @@
 
         updateFocus() {
             this.suggestions.forEach((el, index) => {
+                if (!el) return; // Safety check
                 if (index === this.focusedIndex) {
                     el.classList.add('focus:bg-orange-100');
                     el.focus();
@@ -70,6 +70,7 @@
         }
     }"
     x-ref="suggestions"
+    x-show="suggestions.length > 0"
 >
     <div class="p-2">
         <div class="mb-1.5 space-y-1">
@@ -82,7 +83,8 @@
                         class="cursor-pointer rounded px-3 py-2 text-sm hover:bg-orange-100 focus:bg-orange-100"
                         hx-get="{{ route('dashboard.search.tag', $tag) }}"
                         hx-on::after-request="
-                            document.getElementById('suggestions-container').remove();
+                            document.getElementById('suggestions-container').innerHTML = '';
+                            Alpine.$data(document.getElementById('suggestions-container')).focusedIndex = -1;
                             document.getElementById('search').value = '';
                             htmx.trigger('#bookmarks-container', 'loadBookmarks');
                         "
