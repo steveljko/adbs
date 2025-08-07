@@ -36,7 +36,7 @@ final class Bookmark extends Model
         'status',
         'user_id',
         'imported_at',
-        'recently_imported',
+        'can_undo',
     ];
 
     /**

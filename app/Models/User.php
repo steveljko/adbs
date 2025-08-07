@@ -50,7 +50,7 @@ final class User extends Authenticatable
     {
         return $this->bookmarks()
             ->whereNotNull('imported_at')
-            ->where('recently_imported', true)
+            ->where('can_undo', true)
             ->exists();
     }
 

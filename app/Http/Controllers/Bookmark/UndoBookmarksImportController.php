@@ -21,12 +21,14 @@ final class UndoBookmarksImportController
         $latestImportedAt = Bookmark::query()
             ->whereUserId(Auth::id())
             ->whereNotNull('imported_at')
+            ->where('can_undo', true)
             ->max('imported_at');
 
         if ($latestImportedAt) {
             Bookmark::query()
                 ->whereUserId(Auth::id())
                 ->where('imported_at', $latestImportedAt)
+                ->where('can_undo', true)
                 ->delete();
 
             return htmx()->toast('success', 'Successfully undo latest import')->response();

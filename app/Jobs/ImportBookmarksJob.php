@@ -45,14 +45,20 @@ final class ImportBookmarksJob implements ShouldQueue
                 try {
                     // TODO: Implement proper validation
 
+                    Bookmark::query()
+                        ->whereUserId($this->userId)
+                        ->whereNotNull('imported_at')
+                        ->where('can_undo', true)
+                        ->update(['can_undo' => false]);
+
                     $toInsert = [
                         'url' => $bookmark['url'],
                         'title' => $bookmark['title'],
                         'favicon' => $getFavicon->execute($bookmark['url'], 32),
                         'status' => $bookmark['status'] ?? 'active',
                         'user_id' => $this->userId,
+                        'can_undo' => true,
                         'imported_at' => now(),
-                        'recently_imported' => true,
                     ];
 
                     $b = Bookmark::create($toInsert);
