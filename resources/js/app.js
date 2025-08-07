@@ -109,3 +109,42 @@ function initMasonry() {
         });
     }
 }
+
+// used for showing dark background for white favicons
+function checkFaviconBrightness(img) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+
+    ctx.drawImage(img, 0, 0);
+
+
+    // extract pixel data from the canvas as array of RGBA values
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    let totalBrightness = 0;
+    let pixelCount = 0;
+
+    for (let i = 0; i < data.length; i += 4) {
+        const alpha = data[i + 3];
+
+        // only analyze visible pixels (alpha > 0 means not fully transparent)
+        if (alpha > 0) {
+            const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
+            totalBrightness += brightness;
+            pixelCount++;
+        }
+    }
+
+    const avgBrightness = totalBrightness / pixelCount;
+
+    // if average brightness is high or mostly transparent
+    if (avgBrightness > 200 || pixelCount < (canvas.width * canvas.height * 0.1)) {
+        img.classList.add('bg-gray-500', 'p-1');
+    }
+}
+
+window.checkFaviconBrightness = checkFaviconBrightness;

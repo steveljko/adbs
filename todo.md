@@ -63,3 +63,5 @@
 - [x] add model policies for crud operations
 
 - [ ] add view type switch in settings page
+
+- [x] add wrapper around favicon if icon is white
