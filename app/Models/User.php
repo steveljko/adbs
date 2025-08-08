@@ -63,6 +63,14 @@ final class User extends Authenticatable
     }
 
     /**
+     * Get user preferences
+     */
+    public function preferences(): HasMany
+    {
+        return $this->hasMany(UserPreference::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

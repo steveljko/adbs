@@ -62,6 +62,19 @@
 
 - [x] add model policies for crud operations
 
+- [ ] add user preferences manager
+    - [x] add table and model
+    - [x] add preferences manager
+    - [ ] register as service provider and 'preferences()' helper
+    - [ ] move allowed preferences inside 'config' directory
+    - [ ] create global request validation
+
 - [ ] add view type switch in settings page
+    - [ ] add option to disable bottom right switch
+    - [ ] apply in settings page
 
 - [x] add wrapper around favicon if icon is white
+
+- [ ] create 'low performance' mode
+
+- [ ] apply new button components in all modals
