@@ -21,7 +21,7 @@ final class ActivateClientController
         }
 
         return htmx()
-            ->toast(type: 'success', text: 'Token is active now!', afterSwap: true)
+            ->toast(type: 'success', text: 'Token is active now!')
             ->target('#clients')
             ->swap('outerHTML')
             ->response(view('partials.settings.clients')->fragment('clients'));

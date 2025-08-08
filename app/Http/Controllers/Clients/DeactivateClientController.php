@@ -21,7 +21,7 @@ final class DeactivateClientController
         }
 
         return htmx()
-            ->toast(type: 'success', text: 'Token has been deactivated!', afterSwap: true)
+            ->toast(type: 'success', text: 'Token has been deactivated!')
             ->target('#clients')
             ->swap('outerHTML')
             ->response(view('partials.settings.clients')->fragment('clients'));

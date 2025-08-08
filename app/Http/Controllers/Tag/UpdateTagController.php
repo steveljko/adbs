@@ -33,7 +33,6 @@ final class UpdateTagController
                 type: 'success',
                 text: 'Succesfully changed tag details.',
                 altText: $message,
-                afterSwap: true,
             )
             ->target('#tags')
             ->swap('innerHTML')

@@ -16,7 +16,7 @@ final class DestroyClientController
 
         return htmx()
             ->trigger('hideModal')
-            ->toast(type: 'success', text: 'Token successfully deleted', afterSwap: true)
+            ->toast(type: 'success', text: 'Token successfully deleted')
             ->target('#clients')
             ->swap('outerHTML')
             ->response(view('partials.settings.clients')->fragment('clients'));
