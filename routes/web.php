@@ -23,6 +23,8 @@ use App\Http\Controllers\Clients\DestroyClientController;
 use App\Http\Controllers\Clients\ShowClientController;
 use App\Http\Controllers\Dashboard\SearchBookmarksController;
 use App\Http\Controllers\Dashboard\ShowDashboardController;
+use App\Http\Controllers\Settings\ChangeViewTypeController;
+use App\Http\Controllers\Settings\DisableViewSwitchController;
 use App\Http\Controllers\Shared\GetAuthenticatedUserTagsController;
 use App\Http\Controllers\Tag\DeleteTagController;
 use App\Http\Controllers\Tag\EditTagController;
@@ -42,8 +44,18 @@ Route::group([
     Route::post('/login', LoginController::class)->name('.login.execute');
 });
 
-Route::view('/settings', 'pages.auth.settings')->middleware('auth')->name('auth.settings');
 Route::delete('/logout', LogoutController::class)->middleware('auth')->name('auth.logout');
+
+Route::group([
+    'as' => 'settings',
+    'prefix' => 'settings',
+    'middleware' => 'auth',
+], function () {
+    Route::view('/', 'pages.auth.settings');
+
+    Route::put('/viewType', ChangeViewTypeController::class)->name('.viewType');
+    Route::put('/disableViewSwitch', DisableViewSwitchController::class)->name('.disableViewSwitch');
+});
 
 Route::group([
     'as' => 'bookmarks',
@@ -118,17 +130,3 @@ Route::group([
     Route::patch('/{addonClient}/activate', ActivateClientController::class)->name('.activate');
     Route::patch('/{addonClient}/deactivate', DeactivateClientController::class)->name('.deactivate');
 });
-
-Route::put('/settings/viewType', function () {
-    $viewType = request()->get('view_type');
-
-    preferences()->set('view_type', $viewType);
-
-    return view('partials.settings.view-type')->fragment('choose');
-})->name('settings.viewType');
-
-Route::put('/settings/disableViewSwitch', function () {
-    preferences()->set('disable_view_switch', ! preferences()->get('disable_view_switch'));
-
-    return htmx()->refresh()->response();
-})->name('settings.disableViewSwitch');

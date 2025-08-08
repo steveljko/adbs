@@ -78,3 +78,5 @@
 - [ ] create 'low performance' mode
 
 - [ ] apply new button components in all modals
+
+- [ ] fix actions with icons not showing in list style

@@ -54,6 +54,30 @@ htmx.on('toast', (e) => {
     });
 });
 
+htmx.on('toast_after_redirect', (e) => {
+    const { type, text, altText } = e.detail;
+    sessionStorage.setItem('toast_after_redirect', JSON.stringify({
+        status: type,
+        title: text,
+        text: altText,
+    }));
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const storedToast = sessionStorage.getItem('toast_after_redirect');
+    if (storedToast) {
+        const toastData = JSON.parse(storedToast);
+
+        new Notify({
+            status: toastData.status,
+            title: toastData.title,
+            text: toastData.text
+        });
+
+        sessionStorage.removeItem('toast_after_redirect');
+    }
+});
+
 document.addEventListener('htmx:responseError', function (event) {
     const errors = JSON.parse(event.detail.xhr.response).errors;
 
