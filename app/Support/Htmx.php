@@ -114,8 +114,11 @@ final class Htmx
         return $this;
     }
 
-    public function toast(string $type, string $text, ?string $altText = '', bool $afterSwap = false)
-    {
+    public function toast(
+        string $type,
+        string $text,
+        ?string $altText = '',
+    ) {
         $data = [
             'toast' => [
                 'type' => $type,
@@ -124,7 +127,7 @@ final class Htmx
             ],
         ];
 
-        $headerName = $afterSwap ? 'HX-Trigger-After-Swap' : 'HX-Trigger';
+        $headerName = 'HX-Trigger';
 
         // if trigger is present in headers array
         if (isset($this->headers[$headerName])) {
@@ -153,6 +156,26 @@ final class Htmx
      */
     public function apply(Response $response): Response
     {
+        // convert HX-Trigger to HX-Trigger-After-Swap if retarget or reswap is present
+        if ((isset($this->headers['HX-Retarget']) || isset($this->headers['HX-Reswap']))
+            && isset($this->headers['HX-Trigger'])) {
+
+            $this->headers['HX-Trigger-After-Swap'] = $this->headers['HX-Trigger'];
+            unset($this->headers['HX-Trigger']);
+        }
+
+        // convert toast to toast_after_redirect if redirect or refresh is present
+        if ((isset($this->headers['HX-Redirect']) || isset($this->headers['HX-Refresh']))
+            && isset($this->headers['HX-Trigger'])) {
+
+            $triggerData = json_decode($this->headers['HX-Trigger'], true);
+            if ($triggerData && isset($triggerData['toast'])) {
+                $triggerData['toast_after_redirect'] = $triggerData['toast'];
+                unset($triggerData['toast']);
+                $this->headers['HX-Trigger'] = json_encode($triggerData);
+            }
+        }
+
         foreach ($this->headers as $name => $value) {
             $response->header($name, $value);
         }
