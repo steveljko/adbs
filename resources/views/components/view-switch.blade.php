@@ -4,7 +4,7 @@
     id="switch"
 >
     <button
-        class="{{ request()->query('view_type') === 'list' ? 'bg-orange-50 text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }} flex items-center space-x-1 rounded-md p-1.5 transition-colors duration-200"
+        class="{{ preferences()->get('view_type') === 'list' ? 'bg-orange-50 text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }} flex items-center space-x-1 rounded-md p-1.5 transition-colors duration-200"
         hx-get="{{ route('dashboard') }}"
         hx-include="#filters"
         hx-push-url="true"
@@ -20,7 +20,7 @@
         <span class="text-sm font-medium">List</span>
     </button>
     <button
-        class="{{ request()->query('view_type') === 'card' || !request()->query('view_type') ? 'bg-orange-50 text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }} flex items-center space-x-1 rounded-md p-1.5 transition-colors duration-200"
+        class="{{ preferences()->get('view_type') === 'card' ? 'bg-orange-50 text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }} flex items-center space-x-1 rounded-md p-1.5 transition-colors duration-200"
         hx-get="{{ route('dashboard') }}"
         hx-include="#filters"
         hx-push-url="true"

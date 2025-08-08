@@ -18,6 +18,7 @@ final class ShowDashboardController
     public function __invoke(Request $request): View|RedirectResponse|string
     {
         $filters = $this->extractFilters($request);
+
         $pagination = $this->extractPagination($request);
 
         $this->validateQueryParams($request);
@@ -46,7 +47,7 @@ final class ShowDashboardController
             'tags' => $tagModels,
             'sites' => $querySites,
             'title' => $request->query('title'),
-            'viewType' => $request->query('view_type', 'card'),
+            'viewType' => preferences()->get('view_type') ?: $request->query('view_type', 'card'),
         ];
     }
 

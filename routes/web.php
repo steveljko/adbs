@@ -118,3 +118,17 @@ Route::group([
     Route::patch('/{addonClient}/activate', ActivateClientController::class)->name('.activate');
     Route::patch('/{addonClient}/deactivate', DeactivateClientController::class)->name('.deactivate');
 });
+
+Route::put('/settings/viewType', function () {
+    $viewType = request()->get('view_type');
+
+    preferences()->set('view_type', $viewType);
+
+    return view('partials.settings.view-type')->fragment('choose');
+})->name('settings.viewType');
+
+Route::put('/settings/disableViewSwitch', function () {
+    preferences()->set('disable_view_switch', ! preferences()->get('disable_view_switch'));
+
+    return htmx()->refresh()->response();
+})->name('settings.disableViewSwitch');

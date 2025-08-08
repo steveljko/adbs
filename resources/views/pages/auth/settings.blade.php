@@ -1,17 +1,19 @@
 @extends('layouts.home')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="space-y-4">
-        @include('partials.settings.tags')
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="space-y-4">
+            @include('partials.settings.tags')
 
-        @include('partials.settings.import-export')
+            @include('partials.settings.view-type')
 
-        @fragment('clients')
-        @include('partials.settings.clients')
-        @endfragment
+            @include('partials.settings.import-export')
 
-        <div class="h-16"></div>
+            @fragment('clients')
+                @include('partials.settings.clients')
+            @endfragment
+
+            <div class="h-16"></div>
+        </div>
     </div>
-</div>
 @endsection
