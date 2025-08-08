@@ -12,31 +12,6 @@ final class PreferencesManager
 {
     private User $user;
 
-    /**
-     * name:
-     *  - type
-     *  - default
-     *  - allowed_values
-     *  - category (can be blank)
-     *  - description
-     */
-    // TODO: move allowed preferences into config dir.
-    private static array $allowed = [
-        'view_type' => [
-            'type' => 'string',
-            'default' => 'card',
-            'allowed_values' => ['card', 'list', 'low_performance'],
-            'category' => 'view',
-            'description' => 'Default view type for displaying content on homepage.',
-        ],
-        'disable_view_switch' => [
-            'type' => 'boolean',
-            'default' => false,
-            'category' => 'view',
-            'description' => 'Hide the floating view switch on all pages.',
-        ],
-    ];
-
     public function __construct(User $user)
     {
         $this->user = $user;
@@ -82,11 +57,47 @@ final class PreferencesManager
     }
 
     /**
+     * Get all preferences for the user
+     */
+    public function all(): array
+    {
+        $preferences = [];
+        $allowedPreferences = self::getAllowedPreferences();
+
+        foreach ($allowedPreferences as $key => $config) {
+            $preferences[$key] = $this->get($key);
+        }
+
+        return $preferences;
+    }
+
+    /**
+     * Get allowed preferences from config
+     */
+    private static function getAllowedPreferences(): array
+    {
+        static $flattenedConfig = null;
+
+        if ($flattenedConfig === null) {
+            $config = config('preferences', []);
+            $flattenedConfig = [];
+
+            foreach ($config as $category => $preferences) {
+                foreach ($preferences as $key => $preference) {
+                    $flattenedConfig[$key] = array_merge($preference, ['category' => $category]);
+                }
+            }
+        }
+
+        return $flattenedConfig;
+    }
+
+    /**
      * Cast value to appropriate type
      */
     private function castValue(string $key, string $value)
     {
-        $type = self::$allowed[$key]['type'];
+        $type = self::getAllowedPreferences()[$key]['type'];
 
         return match ($type) {
             'boolean' => in_array(mb_strtolower($value), ['true', '1']),
@@ -102,7 +113,7 @@ final class PreferencesManager
      */
     private function getDefaultValue(string $key)
     {
-        return self::$allowed[$key]['default'] ?? null;
+        return self::getAllowedPreferences()[$key]['default'] ?? null;
     }
 
     /**
@@ -126,7 +137,7 @@ final class PreferencesManager
      */
     private function validatePreferenceKey(string $key): void
     {
-        if (! isset(self::$allowed[$key])) {
+        if (! isset(self::getAllowedPreferences()[$key])) {
             throw new InvalidArgumentException("Preference key '{$key}' is not allowed.");
         }
     }
@@ -136,7 +147,7 @@ final class PreferencesManager
      */
     private function validatePreferenceValue(string $key, $value): void
     {
-        $allowedPreferences = self::$allowed;
+        $allowedPreferences = self::getAllowedPreferences();
         $config = $allowedPreferences[$key];
 
         $expectedType = $config['type'];

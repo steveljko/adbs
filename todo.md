@@ -65,8 +65,8 @@
 - [ ] add user preferences manager
     - [x] add table and model
     - [x] add preferences manager
+    - [x] move allowed preferences inside 'config' directory
     - [ ] register as service provider and 'preferences()' helper
-    - [ ] move allowed preferences inside 'config' directory
     - [ ] create global request validation
 
 - [ ] add view type switch in settings page
