@@ -34,9 +34,8 @@
 
 - [ ] add loading state and eager bookmark loading on frontpage
     - [x] add infinite scroll loading
-    - [ ] add load more button on smaller screens
     - [x] add skeleton loading state for card type
-    - [ ] finish loading state for list type
+    - [x] finish loading state for list type
 
 - [x] refactor js file to support alpine js
     - [x] refactor suggestions to use alpine js
@@ -78,4 +77,4 @@
 
 - [ ] apply new button components in all modals
 
-- [ ] fix actions with icons not showing in list style
+- [x] fix actions with icons not showing in list style

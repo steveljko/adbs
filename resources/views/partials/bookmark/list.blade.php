@@ -40,7 +40,10 @@
             title="Edit bookmark"
             type="button"
         >
-            <x-icons.edit />
+            <x-icon
+                class="h-4 w-4"
+                name="edit"
+            />
         </button>
         <button
             class="ml-1 rounded p-1.5 text-gray-500 transition-colors hover:bg-red-100 hover:text-red-500"
@@ -51,7 +54,10 @@
             title="Delete bookmark"
             type="button"
         >
-            <x-icons.garbage />
+            <x-icon
+                class="h-4 w-4"
+                name="garbage"
+            />
         </button>
     </div>
 </li>

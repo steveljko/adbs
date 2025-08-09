@@ -19,9 +19,21 @@
             x-init="setTimeout(() => show = true, 250)"
         >
             @if ($type == 'list')
-                @foreach ($bookmarks as $bookmark)
-                    @include('partials.bookmark.list', ['bookmark' => $bookmark])
-                @endforeach
+                <div
+                    x-data="{ 'loading': true }"
+                    x-init="setTimeout(() => loading = false, 500)"
+                >
+                    @foreach ($bookmarks as $bookmark)
+                        <template x-if="loading">
+                            @include('partials.bookmark.list-loading', ['bookmark' => $bookmark])
+                        </template>
+                        <template x-if="!loading">
+                            <div x-init="$nextTick(() => htmx.process($el))">
+                                @include('partials.bookmark.list', ['bookmark' => $bookmark])
+                            </div>
+                        </template>
+                    @endforeach
+                </div>
             @else
                 @foreach ($bookmarks as $bookmark)
                     <div
