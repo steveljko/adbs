@@ -1,24 +1,18 @@
 @props(['bookmark'])
 
-<li
-    class="group flex items-center justify-between rounded-lg p-3 transition-colors duration-150 hover:bg-orange-50"
->
-    <div
-        class="flex min-w-0 flex-grow items-center"
-    >
-        <div
-            class="flex-shrink-0"
-        >
+<li class="group flex items-center justify-between rounded-lg p-3 transition-colors duration-150 hover:bg-orange-50">
+    <div class="flex min-w-0 flex-grow items-center">
+        <div class="flex-shrink-0">
             @if ($bookmark->favicon)
                 <img
-                    alt="Website favicon"
+                    alt="website favicon"
                     class="h-5 w-5 select-none rounded"
+                    id="favicon"
+                    loading="lazy"
                     src="{{ asset($bookmark->favicon) }}"
                 >
             @else
-                <div
-                    class="flex h-5 w-5 items-center justify-center rounded bg-gray-200 text-xs text-gray-500"
-                >
+                <div class="flex h-5 w-5 items-center justify-center rounded bg-gray-200 text-xs text-gray-500">
                     {{ substr($bookmark->title, 0, 1) }}
                 </div>
             @endif
@@ -31,16 +25,12 @@
             {{ $bookmark->title }}
         </a>
         @if ($bookmark->description)
-            <span
-                class="ml-2 hidden truncate text-xs text-gray-400 sm:inline"
-            >
+            <span class="ml-2 hidden truncate text-xs text-gray-400 sm:inline">
                 {{ $bookmark->description }}
             </span>
         @endif
     </div>
-    <div
-        class="ml-2 flex items-center opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-    >
+    <div class="ml-2 flex items-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
         <button
             class="rounded p-1.5 text-gray-500 transition-colors hover:bg-orange-100 hover:text-orange-500"
             hx-get="{{ route('bookmarks.edit', $bookmark->id) }}"

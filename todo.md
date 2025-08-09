@@ -67,11 +67,10 @@
     - [x] add preferences manager
     - [x] move allowed preferences inside 'config' directory
     - [x] register 'preferences()' helper
-    - [ ] create global request validation
 
-- [ ] add view type switch in settings page
-    - [ ] add option to disable bottom right switch
-    - [ ] apply in settings page
+- [x] add view type switch in settings page
+    - [x] add option to disable bottom right switch
+    - [x] apply in settings page
 
 - [x] add wrapper around favicon if icon is white
 

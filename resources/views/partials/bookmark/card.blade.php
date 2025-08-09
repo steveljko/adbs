@@ -5,8 +5,8 @@
         <img
             alt="website favicon"
             class="h-6 w-6 select-none rounded transition-transform duration-200 group-hover:scale-110"
+            id="favicon"
             loading="lazy"
-            onload="window.checkFaviconBrightness(this)"
             src="{{ asset($bookmark->favicon) }}"
         >
     </div>

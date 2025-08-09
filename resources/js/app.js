@@ -76,6 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         sessionStorage.removeItem('toast_after_redirect');
     }
+
+    setTimeout(() => {
+        document.querySelectorAll('#favicon').forEach(img => {
+            if (img.complete) {
+                checkFaviconBrightness(img);
+            } else {
+                img.addEventListener('load', () => checkFaviconBrightness(img));
+            }
+        });
+    }, 100);
 });
 
 document.addEventListener('htmx:responseError', function (event) {
@@ -138,37 +148,23 @@ function initMasonry() {
 function checkFaviconBrightness(img) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
-
     ctx.drawImage(img, 0, 0);
 
-
-    // extract pixel data from the canvas as array of RGBA values
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-
-    let totalBrightness = 0;
-    let pixelCount = 0;
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let whitePixels = 0, visiblePixels = 0;
 
     for (let i = 0; i < data.length; i += 4) {
-        const alpha = data[i + 3];
-
-        // only analyze visible pixels (alpha > 0 means not fully transparent)
-        if (alpha > 0) {
-            const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            totalBrightness += brightness;
-            pixelCount++;
+        if (data[i + 3] > 25) { // alpha > 25
+            visiblePixels++;
+            if (data[i] > 240 && data[i + 1] > 240 && data[i + 2] > 240) {
+                whitePixels++;
+            }
         }
     }
 
-    const avgBrightness = totalBrightness / pixelCount;
-
-    // if average brightness is high or mostly transparent
-    if (avgBrightness > 200 || pixelCount < (canvas.width * canvas.height * 0.1)) {
+    if (visiblePixels > 0 && whitePixels / visiblePixels > 0.9) {
         img.classList.add('bg-gray-500', 'p-1');
     }
 }
-
-window.checkFaviconBrightness = checkFaviconBrightness;
