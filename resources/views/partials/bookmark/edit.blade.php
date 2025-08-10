@@ -1,16 +1,9 @@
 <form
-    hx-indicator="button #spinner"
     hx-put="{{ route('bookmarks.update', $bookmark) }}"
     id="modal-content"
 >
     <x-modal.header>Edit Bookmark</x-modal.header>
     <x-modal.body>
-        <x-form.input
-            label="Website URL"
-            name="url"
-            type="text"
-            value="{{ $bookmark->url }}"
-        />
         <div class="flex gap-6">
             <div class="mb-2">
                 <x-form.label name="favicon">Favicon</x-form.label>
@@ -37,10 +30,11 @@
         <x-form.tags :selectedTags="$bookmark->tags" />
     </x-modal.body>
     <x-modal.footer>
-        <x-button.secondary
+        <x-button
             @click="$store.modal.hide()"
             type="button"
-        >Cancel</x-button.secondary>
+            variant="secondary"
+        >Cancel</x-button>
         <x-button type="submit">Edit Bookmark</x-button>
     </x-modal.footer>
 </form>

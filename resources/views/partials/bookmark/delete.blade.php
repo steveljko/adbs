@@ -1,10 +1,20 @@
-<form hx-delete="{{ route('bookmarks.destroy', $bookmark) }}" hx-indicator="button #spinner" id="modal-content">
+<form
+    hx-delete="{{ route('bookmarks.destroy', $bookmark) }}"
+    id="modal-content"
+>
     <x-modal.header>Delete Bookmark</x-modal.header>
     <x-modal.body>
         Delete {{ $bookmark->title }}?
     </x-modal.body>
     <x-modal.footer>
-        <x-button.secondary type="button" @click="$store.modal.hide()">Cancel</x-button.secondary>
-        <x-button type="submit" color="bg-red-500">Delete Bookmark</x-button>
+        <x-button
+            @click="$store.modal.hide()"
+            type="button"
+            variant="secondary"
+        >Cancel</x-button>
+        <x-button
+            type="submit"
+            variant="danger"
+        >Delete Bookmark</x-button>
     </x-modal.footer>
 </form>

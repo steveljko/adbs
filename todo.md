@@ -32,7 +32,7 @@
     - [x] add mysql support for database
     - [x] add sqlite support for database
 
-- [ ] add loading state and eager bookmark loading on frontpage
+- [x] add loading state and eager bookmark loading on frontpage
     - [x] add infinite scroll loading
     - [x] add skeleton loading state for card type
     - [x] finish loading state for list type
@@ -61,7 +61,7 @@
 
 - [x] add model policies for crud operations
 
-- [ ] add user preferences manager
+- [x] add user preferences manager
     - [x] add table and model
     - [x] add preferences manager
     - [x] move allowed preferences inside 'config' directory
@@ -75,6 +75,8 @@
 
 - [ ] create 'low performance' mode
 
-- [ ] apply new button components in all modals
+- [x] apply new button components in all modals
 
 - [x] fix actions with icons not showing in list style
+
+- [ ] fix site query is trowing invalid site response

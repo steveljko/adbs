@@ -18,6 +18,10 @@ final class DestroyBookmarkController
 
         $bookmark->delete();
 
-        return htmx()->trigger('loadBookmarks')->response();
+        // TODO: respect toast no matter where is called
+        return htmx()
+            ->trigger('loadBookmarks')
+            ->toast(type: 'success', text: 'Bookmark successfully deleted!')
+            ->response();
     }
 }
