@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 img.addEventListener('load', () => checkFaviconBrightness(img));
             }
         });
-    }, 100);
+    }, 500);
 });
 
 document.addEventListener('htmx:responseError', function (event) {
