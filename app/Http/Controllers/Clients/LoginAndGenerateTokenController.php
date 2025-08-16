@@ -13,6 +13,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 final class LoginAndGenerateTokenController
 {
@@ -30,9 +31,7 @@ final class LoginAndGenerateTokenController
         ]);
 
         if (! Auth::attempt($data)) {
-            return new JsonResponse([
-                'status' => ApiResponseStatus::FAILED,
-            ], Response::HTTP_FORBIDDEN);
+            throw ValidationException::withMessages(['email' => 'Incorrect credentials are provided.']);
         }
 
         $token = Str::random(48);

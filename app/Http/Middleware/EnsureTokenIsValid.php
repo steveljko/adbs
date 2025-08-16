@@ -52,7 +52,10 @@ final class EnsureTokenIsValid
 
         $addonClient->update(['last_activity_at' => now()]);
 
-        $request->merge(['user' => $addonClient->user]);
+        $request->merge([
+            'token' => $addonClient->token,
+            'user' => $addonClient->user,
+        ]);
 
         return $next($request);
     }
