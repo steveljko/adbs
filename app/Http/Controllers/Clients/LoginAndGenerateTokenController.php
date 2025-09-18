@@ -4,58 +4,46 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Clients;
 
-use App\Enums\AddonClientStatus;
-use App\Enums\ApiResponseStatus;
-use App\Models\AddonClients;
+use App\Http\Requests\LoginRequest;
+use App\Models\TokenBrowserInfo;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 final class LoginAndGenerateTokenController
 {
-    public function __invoke(Request $request): JsonResponse
+    /**
+     * Handle user login and generate access/refresh tokens with browser information.
+     */
+    public function __invoke(LoginRequest $request): JsonResponse
     {
-        if (empty($request->header('X-Addon-Version'))) {
-            return new JsonResponse([
-                'status' => ApiResponseStatus::FAILED,
-                'message' => 'Addon version is not provided correctly.'
-            ], Response::HTTP_FORBIDDEN);
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
         }
 
-        $data = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        if (! Auth::attempt($data)) {
-            throw ValidationException::withMessages(['email' => 'Incorrect credentials are provided.']);
-        }
-
-        $token = Str::random(48);
+        $user = Auth::user();
+        $accessToken = $user->createToken('extension-token', ['*'], now()->addMinutes(15));
+        $refreshToken = $user->createToken('extension-refresh-token', ['*'], now()->addDays(30))->plainTextToken;
 
         $userAgent = $request->header('User-Agent');
         [$name, $version] = $this->getAgentInfo($userAgent);
 
-        $ac = new AddonClients();
-        $ac->token = Hash::make($token);
-        $ac->browser = $name;
-        $ac->browser_version = $version;
-        $ac->user_agent = $userAgent;
-        $ac->addon_version = $request->header('X-Addon-Version', null);
-        $ac->ip_address = $request->ip();
-        $ac->status = AddonClientStatus::PENDING;
-        $ac->user_id = Auth::id();
-        $ac->save();
+        TokenBrowserInfo::create([
+            'personal_access_token_id' => $accessToken->accessToken->id,
+            'browser' => $name,
+            'browser_version' => $version,
+            'user_agent' => $userAgent,
+            'ip_address' => $request->ip(),
+        ]);
 
         return new JsonResponse([
-            'status' => ApiResponseStatus::SUCCESS,
-            'token' => $token,
-            'user_name' => Auth::user()->name,
-        ], Response::HTTP_OK);
+            'access_token' => $accessToken->plainTextToken,
+            'refresh_token' => $refreshToken,
+            'user' => $user->only(['name', 'email']),
+            'expires_in' => 900 // 15 minutes
+        ]);
     }
 
     private function getAgentInfo($userAgent)

@@ -8,11 +8,12 @@ use App\Http\Controllers\Installer\DatabaseController;
 use App\Http\Controllers\Installer\RequirmentsController;
 use App\Http\Controllers\Installer\UserCreationController;
 use App\Http\Controllers\Installer\WelcomeController;
-use App\Models\AddonClients;
+use App\Models\PersonalAccessToken;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 final class AppServiceProvider extends ServiceProvider
 {
@@ -49,6 +50,8 @@ final class AppServiceProvider extends ServiceProvider
             });
         }
 
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
         View::composer([
             'pages.auth.settings',
             'partials.settings.tags',
@@ -56,7 +59,7 @@ final class AppServiceProvider extends ServiceProvider
         ], function ($view) {
             if (Auth::check()) {
                 $view->with('tags', Auth::user()->tags()->orderBy('created_at', 'desc')->get());
-                $view->with('clients', AddonClients::whereUserId(Auth::id())->orderBy('created_at', 'desc')->get());
+                $view->with('clients', Auth::user()->tokens()->where('name', 'extension-token')->with('info')->get());
             }
         });
     }
