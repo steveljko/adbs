@@ -22,6 +22,7 @@ final class LoginAndGenerateTokenController
         if (empty($request->header('X-Addon-Version'))) {
             return new JsonResponse([
                 'status' => ApiResponseStatus::FAILED,
+                'message' => 'Addon version is not provided correctly.'
             ], Response::HTTP_FORBIDDEN);
         }
 

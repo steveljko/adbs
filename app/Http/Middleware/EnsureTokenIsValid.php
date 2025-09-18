@@ -43,6 +43,13 @@ final class EnsureTokenIsValid
             ], HttpResponse::HTTP_UNAUTHORIZED);
         }
 
+        if ($addonClient->status === AddonClientStatus::PENDING) {
+            return new JsonResponse([
+                'status' => ApiResponseStatus::FAILED,
+                'message' => 'First you need to approve token in settings',
+            ], HttpResponse::HTTP_FORBIDDEN);
+        }
+
         if ($addonClient->status === AddonClientStatus::REVOKED || $addonClient->status === AddonClientStatus::INACTIVE) {
             return new JsonResponse([
                 'status' => ApiResponseStatus::FAILED,
@@ -54,6 +61,7 @@ final class EnsureTokenIsValid
 
         $request->merge([
             'token' => $addonClient->token,
+            'token_status' => $addonClient->status->label(),
             'user' => $addonClient->user,
         ]);
 
