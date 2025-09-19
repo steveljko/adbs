@@ -1,5 +1,5 @@
 <form
-    hx-delete="{{ route('client.destroy', $addonClient) }}"
+    hx-delete="{{ route('client.destroy', $personalAccessToken) }}"
     hx-indicator="button #spinner"
     id="modal-content"
 >

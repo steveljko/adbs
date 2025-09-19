@@ -1,36 +1,36 @@
 <x-card id="clients" class="z-5">
     <x-slot name="header">
-        <h3 class="font-semibold text-gray-800">Browser Extensions</h3>
+        <h3 class="font-semibold text-gray-800">Browser Connections</h3>
     </x-slot>
 
     <div class="space-y-6" x-data="{ openDropdown: null }">
         @forelse($clients as $client)
         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
             <div class="flex-1">
-                <h4 class="font-medium text-gray-900 capitalize">{{ $client->browser }}</h4>
+                <h4 class="font-medium text-gray-900 capitalize">{{ $client->info->browser }}</h4>
                 <p class="text-sm text-gray-500">
-                    @if($client->browser_version)
-                    Version {{ $client->browser_version }}
+                    @if($client->info->browser_version)
+                    Version {{ $client->info->browser_version }}
                     @endif
-                    @if($client->addon_version)
-                    • Extension v{{ $client->addon_version }}
+                    @if($client->info->addon_version)
+                    • Extension v{{ $client->info->addon_version }}
                     @endif
                 </p>
-                @if($client->last_activity_at)
+                @if($client->last_used_at)
                 <p class="text-xs text-gray-400">
-                    Last active: {{ $client->last_activity_at->diffForHumans() }}
+                    Last active: {{ $client->last_used_at->diffForHumans() }}
                 </p>
                 @endif
             </div>
 
-            <div class="flex items-center space-x-3">
+              <div class="flex items-center space-x-3">
                 <div class="flex items-center space-x-2">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                            @if($client->status === App\Enums\AddonClientStatus::PENDING)
+                            @if($client->status === App\Enums\TokenStatus::PENDING)
                                 bg-yellow-100 text-yellow-800
-                            @elseif($client->status === App\Enums\AddonClientStatus::ACTIVE)
+                            @elseif($client->status === App\Enums\TokenStatus::ACTIVE)
                                 bg-green-100 text-green-800
-                            @elseif($client->status === App\Enums\AddonClientStatus::REVOKED)
+                            @elseif($client->status === App\Enums\TokenStatus::REVOKED)
                                 bg-gray-100 text-gray-800
                             @else
                                 bg-red-100 text-red-800

@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Clients;
 
-use App\Models\AddonClients;
+use App\Models\PersonalAccessToken;
 
 final class ShowClientController
 {
-    public function __invoke(AddonClients $addonClient)
+    public function __invoke(PersonalAccessToken $personalAccessToken)
     {
-        return view('partials.clients.show', compact('addonClient'));
+        $personalAccessToken->load('info');
+        return view('partials.clients.show', compact('personalAccessToken'));
     }
 }

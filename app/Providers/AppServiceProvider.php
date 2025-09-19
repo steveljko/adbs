@@ -59,7 +59,7 @@ final class AppServiceProvider extends ServiceProvider
         ], function ($view) {
             if (Auth::check()) {
                 $view->with('tags', Auth::user()->tags()->orderBy('created_at', 'desc')->get());
-                $view->with('clients', Auth::user()->tokens()->where('name', 'extension-token')->with('info')->get());
+                $view->with('clients', Auth::user()->tokens()->where('name', 'access_token')->with('info')->get());
             }
         });
     }

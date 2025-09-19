@@ -6,13 +6,14 @@ namespace App\Http\Controllers\Clients;
 
 use App\Http\Actions\AddonClients\DeleteClientAction;
 use App\Models\AddonClients;
+use App\Models\PersonalAccessToken;
 use Illuminate\Http\Response;
 
 final class DestroyClientController
 {
-    public function __invoke(AddonClients $addonClient, DeleteClientAction $deleteClient): Response
+    public function __invoke(PersonalAccessToken $personalAccessToken, DeleteClientAction $deleteClient): Response
     {
-        $deleteClient->execute($addonClient);
+        $deleteClient->execute($personalAccessToken);
 
         return htmx()
             ->trigger('hideModal')

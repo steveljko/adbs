@@ -5,18 +5,20 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Clients;
 
 use App\Http\Actions\AddonClients\DeactivateClientAction;
-use App\Models\AddonClients;
+use App\Models\PersonalAccessToken;
 use Illuminate\Support\Facades\Auth;
 
 final class DeactivateClientController
 {
-    public function __invoke(AddonClients $addonClient, DeactivateClientAction $deactivateClient)
-    {
-        if (! $addonClient->user()->is(Auth::user())) {
+    public function __invoke(
+        PersonalAccessToken $personalAccessToken,
+        DeactivateClientAction $deactivateClient
+    ) {
+        if (! $personalAccessToken->tokenable->is(Auth::user())) {
             return htmx()->toast(type: 'warning', text: 'Not authorized to deactivate this token.')->response();
         }
 
-        if (! $deactivateClient->execute($addonClient)) {
+        if (! $deactivateClient->execute($personalAccessToken)) {
             return htmx()->toast(type: 'warning', text: 'Token cannot be deactivated from current status.')->response();
         }
 

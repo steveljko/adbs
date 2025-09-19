@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Actions\AddonClients;
 
-use App\Models\AddonClients;
+use App\Models\PersonalAccessToken;
 
 final class DeleteClientAction
 {
-    public function execute(AddonClients $client)
+    public function execute(PersonalAccessToken $client)
     {
         $client->delete();
     }
