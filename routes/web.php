@@ -126,9 +126,9 @@ Route::group([
     'prefix' => 'client',
     'middleware' => 'auth',
 ], function () {
-    Route::get('/{addonClient}', ShowClientController::class)->name('.show');
-    Route::get('/{addonClient}/delete', DeleteClientController::class)->name('.delete');
-    Route::delete('/{addonClient}/destroy', DestroyClientController::class)->name('.destroy');
-    Route::patch('/{addonClient}/activate', ActivateClientController::class)->name('.activate');
-    Route::patch('/{addonClient}/deactivate', DeactivateClientController::class)->name('.deactivate');
+    Route::get('/{personalAccessToken}', ShowClientController::class)->name('.show');
+    Route::get('/{personalAccessToken}/delete', DeleteClientController::class)->name('.delete');
+    Route::delete('/{personalAccessToken}/destroy', DestroyClientController::class)->name('.destroy');
+    Route::patch('/{personalAccessToken}/activate', ActivateClientController::class)->name('.activate');
+    Route::patch('/{personalAccessToken}/deactivate', DeactivateClientController::class)->name('.deactivate');
 });

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('addon_version')->nullable();
             $table->text('user_agent')->nullable();
             $table->string('ip_address')->nullable();
-            $table->string('status')->default('active');
             $table->text('notes')->nullable();
             $table->timestamps();
         });

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TokenStatus;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\PersonalAccessToken;
 
