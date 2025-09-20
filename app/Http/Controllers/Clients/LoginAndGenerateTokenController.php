@@ -28,12 +28,20 @@ final class LoginAndGenerateTokenController
         $accessToken = null;
         $refreshToken = null;
 
-        DB::transaction(function () use ($user, $request, &$accessToken, &$refreshToken) {
+        $userAgent = $request->header('User-Agent');
+        [$name, $version] = $this->getAgentInfo($userAgent);
+
+        DB::transaction(function () use (
+            $user,
+            $request,
+            $userAgent,
+            $name,
+            $version,
+            &$accessToken,
+            &$refreshToken
+        ) {
             $accessToken = $user->createToken('access_token', ['*'], now()->addMinutes(15));
             $refreshToken = $user->createToken('refresh_token', ['*'], now()->addDays(30));
-
-            $userAgent = $request->header('User-Agent');
-            [$name, $version] = $this->getAgentInfo($userAgent);
 
             TokenBrowserInfo::create([
                 'personal_access_token_id' => $accessToken->accessToken->id,

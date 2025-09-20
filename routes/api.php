@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\TokenStatus;
 use App\Http\Actions\Bookmark\CreateBookmarkAction;
 use App\Http\Controllers\Clients\LoginAndGenerateTokenController;
 use App\Http\Middleware\EnsureTokenIsValid;
@@ -25,7 +26,16 @@ Route::post('/bookmark', function (Request $request) {
 })->middleware(EnsureTokenIsValid::class);
 
 Route::get('/token/status', function (Request $request) {
-    return new JsonResponse([
-        'status' => $request->token_status,
-    ], Response::HTTP_OK);
-})->middleware(EnsureTokenIsValid::class);
+    $status = $request->user()->currentAccessToken()->status;
+
+
+    if ($status == TokenStatus::ACTIVE) {
+        return new JsonResponse([
+            'status' => $status->value,
+        ], Response::HTTP_OK);
+    } else {
+        return new JsonResponse([
+            'status' => $status->value,
+        ], Response::HTTP_FORBIDDEN);
+    }
+})->middleware('auth:sanctum');
