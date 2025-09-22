@@ -6,9 +6,9 @@ namespace App\Http\Controllers\Clients;
 
 use App\Http\Requests\LoginRequest;
 use App\Models\TokenBrowserInfo;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 final class LoginAndGenerateTokenController
@@ -18,7 +18,7 @@ final class LoginAndGenerateTokenController
      */
     public function __invoke(LoginRequest $request): JsonResponse
     {
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        if (! Auth::attempt($request->only('email', 'password'))) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
@@ -43,6 +43,9 @@ final class LoginAndGenerateTokenController
             $accessToken = $user->createToken('access_token', ['*'], now()->addMinutes(15));
             $refreshToken = $user->createToken('refresh_token', ['*'], now()->addDays(30));
 
+            $fingerprint = hash('sha256', $userAgent.'|'.$accessToken->accessToken->id);
+            dd($fingerprint);
+
             TokenBrowserInfo::create([
                 'personal_access_token_id' => $accessToken->accessToken->id,
                 'browser' => $name,
@@ -57,7 +60,7 @@ final class LoginAndGenerateTokenController
                 'access_token' => $accessToken?->plainTextToken,
                 'refresh_token' => $refreshToken?->plainTextToken,
                 'user' => $user->only(['name', 'email']),
-                'expires_in' => 900 // 15 minutes
+                'expires_in' => 900, // 15 minutes
             ]);
         }
     }

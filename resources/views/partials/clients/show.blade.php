@@ -6,15 +6,15 @@
                 <div>
                     <label class="mb-1 block text-sm font-medium text-gray-700">Status</label>
                     <span
-                        class="@if ($personalAccessToken->isPending()) bg-yellow-100 text-yellow-800
-                            @elseif($personalAccessToken->isActive())
+                        class="@if ($personalAccessToken->info->isPending()) bg-yellow-100 text-yellow-800
+                            @elseif($personalAccessToken->info->isActive())
                                 bg-green-100 text-green-800
-                            @elseif($personalAccessToken->status === App\Enums\TokenStatus::REVOKED)
+                            @elseif($personalAccessToken->info->status === App\Enums\TokenStatus::REVOKED)
                                 bg-gray-100 text-gray-800
                             @else
                                 bg-red-100 text-red-800 @endif inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
                     >
-                        {{ $personalAccessToken->status->label() }}
+                        {{ $personalAccessToken->info->status->label() }}
                     </span>
                 </div>
             </div>
@@ -47,7 +47,8 @@
                     <p class="text-sm text-gray-900">
                         @if ($personalAccessToken->last_used_at)
                             {{ $personalAccessToken->last_used_at->format('M j, Y g:i A') }}
-                            <span class="text-gray-500">({{ $personalAccessToken->last_used_at->diffForHumans() }})</span>
+                            <span
+                                class="text-gray-500">({{ $personalAccessToken->last_used_at->diffForHumans() }})</span>
                         @else
                             Never
                         @endif
