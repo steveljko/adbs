@@ -17,6 +17,7 @@ return new class extends Migration
         Schema::create('token_browser_infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('personal_access_token_id')->constrained()->onDelete('cascade');
+            $table->string('browser_identifier');
             $table->string('browser')->nullable();
             $table->string('browser_version')->nullable();
             $table->string('addon_version')->nullable();

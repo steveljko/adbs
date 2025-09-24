@@ -12,6 +12,7 @@ final class TokenBrowserInfo extends Model
 {
     protected $fillable = [
         'personal_access_token_id',
+        'browser_identifier',
         'browser',
         'browser_version',
         'addon_version',
