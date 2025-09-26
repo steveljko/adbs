@@ -12,6 +12,7 @@ final class CreateTokenBrowserInfoAction
 {
     public function execute(
         NewAccessToken $accessToken,
+        NewAccessToken $refreshToken,
         Request $request,
         ParseUserAgentAction $parseUserAgent,
     ) {
@@ -19,7 +20,8 @@ final class CreateTokenBrowserInfoAction
         [$name, $version] = $parseUserAgent->execute($userAgent);
 
         TokenBrowserInfo::create([
-            'personal_access_token_id' => $accessToken->accessToken->id,
+            'access_token_id' => $accessToken->accessToken->id,
+            'refresh_token_id' => $refreshToken->accessToken->id,
             'browser_identifier' => $request->browser_identifier,
             'browser' => $name,
             'browser_version' => $version,

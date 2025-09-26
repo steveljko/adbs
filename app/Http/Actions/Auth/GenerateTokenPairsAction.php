@@ -10,7 +10,7 @@ final class GenerateTokenPairsAction
 {
     public function execute(User $user): array
     {
-        $accessToken = $user->createToken('access_token', ['*'], now()->addMinutes(15));
+        $accessToken = $user->createToken('access_token', ['*'], now()->addMinutes(1));
         $refreshToken = $user->createToken('refresh_token', ['*'], now()->addDays(30));
 
         return [$accessToken, $refreshToken];

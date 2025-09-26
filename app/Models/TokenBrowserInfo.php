@@ -11,7 +11,8 @@ use Laravel\Sanctum\PersonalAccessToken;
 final class TokenBrowserInfo extends Model
 {
     protected $fillable = [
-        'personal_access_token_id',
+        'access_token_id',
+        'refresh_token_id',
         'browser_identifier',
         'browser',
         'browser_version',

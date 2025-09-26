@@ -47,7 +47,12 @@ final class LoginAndGenerateTokenController
         ) {
             [$accessToken, $refreshToken] = $generateTokenPairs->execute($user);
 
-            $createTokenBrowserInfo->execute(accessToken: $accessToken, request: $request, parseUserAgent: $parseUserAgent);
+            $createTokenBrowserInfo->execute(
+                accessToken: $accessToken,
+                refreshToken: $refreshToken,
+                request: $request,
+                parseUserAgent: $parseUserAgent
+            );
         });
 
         return new JsonResponse([

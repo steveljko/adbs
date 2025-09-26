@@ -10,6 +10,6 @@ final class PersonalAccessToken extends SanctumPersonalAccessToken
 {
     public function info()
     {
-        return $this->hasOne(TokenBrowserInfo::class);
+        return $this->hasOne(TokenBrowserInfo::class, 'access_token_id', 'id');
     }
 }
