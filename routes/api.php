@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Actions\Bookmark\CreateBookmarkAction;
-use App\Http\Controllers\Clients\Api\RefreshAccessTokenController;
+use App\Http\Controllers\Clients\Api\RefreshTokenController;
 use App\Http\Controllers\Clients\Api\ShowTokenStatusController;
 use App\Http\Controllers\Clients\LoginAndGenerateTokenController;
 use App\Http\Middleware\EnsureRefreshTokenIsValidMiddleware;
@@ -23,7 +23,7 @@ Route::get('/ping', function () {
 Route::post('/login', LoginAndGenerateTokenController::class);
 
 Route::get('/token/status', ShowTokenStatusController::class)->middleware('auth:sanctum');
-Route::post('/token/refresh', RefreshAccessTokenController::class)->middleware(EnsureRefreshTokenIsValidMiddleware::class);
+Route::post('/token/refresh', RefreshTokenController::class)->middleware(EnsureRefreshTokenIsValidMiddleware::class);
 
 Route::post('/bookmark', function (Request $request) {
     return app(CreateBookmarkAction::class)->execute(data: $request->all(), userId: $request->user->id);

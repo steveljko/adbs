@@ -5,24 +5,22 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Clients\Api;
 
 use App\Http\Actions\Auth\GenerateTokenPairsAction;
-use App\Models\PersonalAccessToken;
+use App\Http\Requests\RefreshTokenRequest;
 use App\Models\TokenBrowserInfo;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
-final class RefreshAccessTokenController
+final class RefreshTokenController
 {
+    /*
+     *
+     */
     public function __invoke(
-        Request $request,
+        RefreshTokenRequest $request,
         GenerateTokenPairsAction $generateTokenPairs,
     ) {
-        $request->validate([
-            'browser_identifier' => ['required', 'string'],
-            'refresh_token' => ['required', 'string'],
-        ]);
-
-        $user = $refreshToken->tokenable;
+        $user = $request->refreshToken->tokenable;
         $browserIdentifier = $request->browser_identifier;
 
         $newAccessToken = null;
@@ -30,8 +28,15 @@ final class RefreshAccessTokenController
 
         $tbi = TokenBrowserInfo::query()
             ->where('browser_identifier', $browserIdentifier)
-            ->where('refresh_token_id', $refreshToken->id)
+            ->where('refresh_token_id', $request->refreshToken->id)
             ->first();
+
+        if (! $tbi->exists()) {
+            return new JsonResponse([
+                'message' => 'Invalid identifier or refresh token',
+                'error' => 'INVALID_REFRESH_TOKEN',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
 
         DB::transaction(function () use (
             $user,
@@ -40,8 +45,6 @@ final class RefreshAccessTokenController
             &$newAccessToken,
             &$newRefreshToken
         ) {
-            $oldAccessTokenId = $tbi->access_token_id;
-
             [$newAccessToken, $newRefreshToken] = $generateTokenPairs->execute($user);
 
             $tbi->update([
@@ -49,18 +52,16 @@ final class RefreshAccessTokenController
                 'refresh_token_id' => $newRefreshToken->accessToken->id,
             ]);
 
-            if ($oldAccessTokenId) {
-                PersonalAccessToken::where('id', $oldAccessTokenId)->delete();
-            }
-
             $user->tokens()
                 ->where('name', 'access_token')
                 ->where('id', '!=', $newAccessToken->accessToken->id)
+                ->where('tokenable_id', $user->id)
                 ->delete();
 
             $user->tokens()
                 ->where('name', 'refresh_token')
                 ->where('id', '!=', $newRefreshToken->accessToken->id)
+                ->where('tokenable_id', $user->id)
                 ->delete();
         });
 

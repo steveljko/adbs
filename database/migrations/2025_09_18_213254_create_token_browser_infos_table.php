@@ -16,8 +16,8 @@ return new class extends Migration
     {
         Schema::create('token_browser_infos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('access_token_id')->constrained('personal_access_tokens')->onDelete('set null');
-            $table->foreignId('refresh_token_id')->constrained('personal_access_tokens')->onDelete('set null');
+            $table->foreignId('access_token_id')->nullable()->constrained('personal_access_tokens')->onDelete('set null');
+            $table->foreignId('refresh_token_id')->nullable()->constrained('personal_access_tokens')->onDelete('set null');
             $table->string('browser_identifier');
             $table->string('browser')->nullable();
             $table->string('browser_version')->nullable();
