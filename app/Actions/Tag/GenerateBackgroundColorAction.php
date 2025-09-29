@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Actions\Tag;
+namespace App\Actions\Tag;
 
 final class GenerateBackgroundColorAction
 {

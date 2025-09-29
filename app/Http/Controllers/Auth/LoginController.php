@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Actions\Auth\LoginAction;
+use App\Actions\Auth\LoginAction;
 use App\Http\Requests\LoginRequest;
 
 final class LoginController

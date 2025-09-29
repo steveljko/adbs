@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Clients\Api;
 
-use App\Http\Actions\Auth\GenerateTokenPairsAction;
+use App\Actions\Auth\GenerateTokenPairsAction;
 use App\Http\Requests\RefreshTokenRequest;
 use App\Models\TokenBrowserInfo;
 use Illuminate\Http\JsonResponse;

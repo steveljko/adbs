@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Actions\AddonClients;
+namespace App\Actions\AddonClients;
 
 use App\Enums\TokenStatus;
 use App\Models\PersonalAccessToken;
@@ -11,8 +11,12 @@ final class DeactivateClientAction
 {
     public function execute(PersonalAccessToken $client): bool
     {
-        if ($client->isActive()) {
-            return $client->update(['status' => TokenStatus::INACTIVE]);
+        $info = $client->info;
+
+        if ($info->isActive()) {
+            $info->status = TokenStatus::INACTIVE;
+
+            return $info->save();
         }
 
         return false;

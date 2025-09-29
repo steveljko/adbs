@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Bookmark;
 
-use App\Http\Actions\Website\GetFaviconAction;
-use App\Http\Actions\Website\GetTitleAction;
+use App\Actions\Website\GetFaviconAction;
+use App\Actions\Website\GetTitleAction;
 use App\Http\Requests\Bookmark\PreviewBookmarkRequest;
 use App\Models\Tag;
 use Illuminate\Http\Request;

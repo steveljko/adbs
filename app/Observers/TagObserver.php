@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Observers;
 
-use App\Http\Actions\Tag\GenerateBackgroundColorAction;
+use App\Actions\Tag\GenerateBackgroundColorAction;
 use App\Models\Tag;
 use Illuminate\Support\Str;
 

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Actions\Bookmark;
+namespace App\Actions\Bookmark;
 
 use App\Exceptions\Bookmark\Import\EmptyBookmarkFileException;
-use App\Http\Actions\Tag\AttachOrCreateTagsAction;
-use App\Http\Actions\Website\GetFaviconAction;
+use App\Actions\Tag\AttachOrCreateTagsAction;
+use App\Actions\Website\GetFaviconAction;
 use App\Jobs\ImportBookmarksJob;
 use App\Models\Bookmark;
 use Illuminate\Encryption\Encrypter;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Bookmark;
 
-use App\Http\Actions\Bookmark\UpdateBookmarkAction;
+use App\Actions\Bookmark\UpdateBookmarkAction;
 use App\Http\Requests\Bookmark\UpdateBookmarkRequest;
 use App\Models\Bookmark;
 use Illuminate\Http\Response;

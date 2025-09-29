@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Actions\Bookmark;
+namespace App\Actions\Bookmark;
 
-use App\Http\Actions\Tag\SyncBookmarkTagsAction;
+use App\Actions\Tag\SyncBookmarkTagsAction;
 use App\Models\Bookmark;
 use Illuminate\Support\Facades\DB;
 

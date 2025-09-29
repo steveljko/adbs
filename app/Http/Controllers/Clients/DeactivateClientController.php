@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Clients;
 
-use App\Http\Actions\AddonClients\DeactivateClientAction;
+use App\Actions\AddonClients\DeactivateClientAction;
 use App\Models\PersonalAccessToken;
 use Illuminate\Support\Facades\Auth;
 

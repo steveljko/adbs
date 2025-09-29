@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Clients;
 
-use App\Http\Actions\Auth\CreateTokenBrowserInfoAction;
-use App\Http\Actions\Auth\GenerateTokenPairsAction;
-use App\Http\Actions\Auth\ParseUserAgentAction as AuthParseUserAgentAction;
+use App\Actions\Auth\CreateTokenBrowserInfoAction;
+use App\Actions\Auth\GenerateTokenPairsAction;
+use App\Actions\Auth\ParseUserAgentAction as AuthParseUserAgentAction;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;

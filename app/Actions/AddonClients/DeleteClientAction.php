@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Actions\AddonClients;
+namespace App\Actions\AddonClients;
 
 use App\Models\PersonalAccessToken;
 

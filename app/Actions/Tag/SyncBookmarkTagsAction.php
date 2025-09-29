@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Actions\Tag;
+namespace App\Actions\Tag;
 
 use App\Models\Bookmark;
 use App\Models\Tag;

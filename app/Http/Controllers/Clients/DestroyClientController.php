@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Clients;
 
-use App\Http\Actions\AddonClients\DeleteClientAction;
+use App\Actions\AddonClients\DeleteClientAction;
 use App\Models\AddonClients;
 use App\Models\PersonalAccessToken;
 use Illuminate\Http\Response;

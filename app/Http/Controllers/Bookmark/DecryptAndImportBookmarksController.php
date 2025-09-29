@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Bookmark;
 
-use App\Http\Actions\Bookmark\ImportBookmarksAction;
+use App\Actions\Bookmark\ImportBookmarksAction;
 use App\Http\Requests\Bookmark\ImportBookmarksWithPasswordRequest;
 use App\Support\TempFileManager;
 use Exception;

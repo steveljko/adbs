@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Bookmark;
 
-use App\Http\Actions\Bookmark\ExportBookmarksAction;
+use App\Actions\Bookmark\ExportBookmarksAction;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

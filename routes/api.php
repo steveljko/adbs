@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Http\Actions\Bookmark\CreateBookmarkAction;
+use App\Actions\Bookmark\CreateBookmarkAction;
 use App\Http\Controllers\Clients\Api\RefreshTokenController;
 use App\Http\Controllers\Clients\Api\ShowTokenStatusController;
 use App\Http\Controllers\Clients\LoginAndGenerateTokenController;

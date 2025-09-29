@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Actions\Auth;
+namespace App\Actions\Auth;
 
 use App\Models\TokenBrowserInfo;
 use Illuminate\Http\Request;
