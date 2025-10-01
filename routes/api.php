@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Actions\Bookmark\CreateBookmarkAction;
+use App\Http\Controllers\Bookmark\API\StoreBookmarkController;
 use App\Http\Controllers\Clients\Api\RefreshTokenController;
 use App\Http\Controllers\Clients\Api\ShowTokenStatusController;
 use App\Http\Controllers\Clients\LoginAndGenerateTokenController;
 use App\Http\Middleware\EnsureRefreshTokenIsValidMiddleware;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +24,11 @@ Route::post('/login', LoginAndGenerateTokenController::class);
 Route::get('/token/status', ShowTokenStatusController::class)->middleware('auth:sanctum');
 Route::post('/token/refresh', RefreshTokenController::class)->middleware(EnsureRefreshTokenIsValidMiddleware::class);
 
-Route::post('/bookmark', function (Request $request) {
-    return app(CreateBookmarkAction::class)->execute(data: $request->all(), userId: $request->user->id);
-})->middleware('auth:sanctum');
+Route::group([
+    'as' => 'bookmark',
+    'prefix' => 'bookmark',
+    'middleware' => 'auth:sanctum',
+], function () {
+    Route::post('/', StoreBookmarkController::class)->name('.store');
+    Route::put('/{bookmark}/tags', StoreBookmarkController::class)->name('.attachTags');
+});

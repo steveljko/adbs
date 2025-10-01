@@ -30,7 +30,6 @@ final class CreateBookmarkRequest extends FormRequest
         return [
             'url' => ['required', 'string', 'url', 'min:8'],
             'title' => ['required', 'string', 'max:512'],
-            'favicon' => ['required', 'string'],
             'tags' => ['array', 'distinct', new UniqueArrayElements()],
         ];
     }

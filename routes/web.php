@@ -29,8 +29,6 @@ use App\Http\Controllers\Shared\GetAuthenticatedUserTagsController;
 use App\Http\Controllers\Tag\DeleteTagController;
 use App\Http\Controllers\Tag\EditTagController;
 use App\Http\Controllers\Tag\UpdateTagController;
-use App\Http\Middleware\EnsureTokenIsValid;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
