@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Bookmark\API\SearchBookmarkController;
 use App\Http\Controllers\Bookmark\API\StoreBookmarkController;
 use App\Http\Controllers\Clients\Api\RefreshTokenController;
 use App\Http\Controllers\Clients\Api\ShowTokenStatusController;
@@ -30,5 +31,6 @@ Route::group([
     'middleware' => 'auth:sanctum',
 ], function () {
     Route::post('/', StoreBookmarkController::class)->name('.store');
+    Route::post('/search', SearchBookmarkController::class)->name('.search');
     Route::put('/{bookmark}/tags', StoreBookmarkController::class)->name('.attachTags');
 });
