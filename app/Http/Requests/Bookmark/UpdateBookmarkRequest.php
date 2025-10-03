@@ -28,9 +28,9 @@ final class UpdateBookmarkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:512'],
-            'favicon' => ['required', 'string'],
-            'tags' => ['array', 'distinct', new UniqueArrayElements()],
+            'title' => ['sometimes', 'string', 'max:512'],
+            'favicon' => ['sometimes', 'string'],
+            'tags' => ['sometimes', 'array', 'distinct', new UniqueArrayElements()],
         ];
     }
 

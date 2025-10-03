@@ -17,17 +17,27 @@ final class SearchBookmarkController
      */
     public function __invoke(Request $request): JsonResponse
     {
-        $request->validate(['url' => ['required', 'string']);
-
+        $request->validate(['url' => ['required', 'string']]);
         $url = urlencode($request->get('url'));
 
         $b = Bookmark::query()
             ->whereUserId(Auth::id())
             ->whereUrl($url)
-            ->exists();
+            ->with(['tags' => function ($q) {
+                $q->select('id', 'name');
+            }])
+            ->first();
 
-        $status = $b === true ? Response::HTTP_OK : Response::HTTP_NOT_FOUND;
+        if ($b === null) {
+            return new JsonResponse([
+                'exists' => false,
+                'bookmark' => [],
+            ], Response::HTTP_NOT_FOUND);
+        }
 
-        return new JsonResponse(['exists' => $b], $status);
+        return new JsonResponse([
+            'exists' => true,
+            'bookmark' => $b,
+        ], Response::HTTP_OK);
     }
 }
