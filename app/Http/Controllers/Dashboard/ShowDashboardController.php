@@ -72,7 +72,8 @@ final class ShowDashboardController
 
         // apply title filter if provided
         if ($filters['title']) {
-            $query->where('title', 'LIKE', '%'.addcslashes($filters['title'], '%_\\').'%');
+            $title = mb_strtolower($filters['title']);
+            $query->whereRaw('LOWER(title) LIKE ?', ['%'.addcslashes($title, '%_\\').'%']);
         }
 
         $totalCount = $query->count();

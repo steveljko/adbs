@@ -6,9 +6,15 @@
     role="listbox"
     x-data="{
         focusedIndex: -1,
+        isVisible: true,
 
         get suggestions() {
             return [...this.$el.querySelectorAll('[role=option]')];
+        },
+
+        hide() {
+            this.isVisible = false;
+            this.focusedIndex = -1;
         },
 
         handleKeydown(event) {
@@ -54,7 +60,7 @@
 
         updateFocus() {
             this.suggestions.forEach((el, index) => {
-                if (!el) return; // Safety check
+                if (!el) return;
                 if (index === this.focusedIndex) {
                     el.classList.add('focus:bg-orange-100');
                     el.focus();
@@ -70,7 +76,7 @@
         }
     }"
     x-ref="suggestions"
-    x-show="suggestions.length > 0"
+    x-show="isVisible && suggestions.length > 0"
 >
     <div class="p-2">
         <div class="mb-1.5 space-y-1">
@@ -83,14 +89,13 @@
                         class="cursor-pointer rounded px-3 py-2 text-sm hover:bg-orange-100 focus:bg-orange-100"
                         hx-get="{{ route('dashboard.search.tag', $tag) }}"
                         hx-on::after-request="
-                            document.getElementById('suggestions-container').innerHTML = '';
-                            Alpine.$data(document.getElementById('suggestions-container')).focusedIndex = -1;
+                            Alpine.$data(document.getElementById('suggestions-container')).hide();
                             document.getElementById('search').value = '';
                             htmx.trigger('#bookmarks-container', 'loadBookmarks');
                         "
                         hx-swap="afterbegin"
                         hx-target="#filters"
-                        hx-trigger="click, keyup[key=='Enter']"
+                        hx-trigger="click"
                         role="option"
                         tabindex="0"
                     >
@@ -107,7 +112,7 @@
                         class="cursor-pointer rounded px-3 py-2 text-sm hover:bg-orange-100 focus:bg-orange-100"
                         hx-get="{{ route('dashboard.search.site', $site) }}"
                         hx-on::after-request="
-                            document.getElementById('suggestions-container').innerHTML = '';
+                            Alpine.$data(document.getElementById('suggestions-container')).hide();
                             document.getElementById('search').value = '';
                             htmx.trigger('#bookmarks-container', 'loadBookmarks');
                         "
