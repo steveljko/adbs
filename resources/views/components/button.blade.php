@@ -6,8 +6,9 @@
     'class' => '',
 ])
 @php
-    $baseClasses =
-        'inline-flex items-center justify-center font-medium rounded shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+    $baseClasses = 'inline-flex items-center justify-center border font-medium rounded shadow-sm transition-colors focus:outline-none
+focus:ring-1
+disabled:opacity-50 disabled:cursor-not-allowed';
     $sizeClasses = [
         'xs' => 'px-2 py-1 text-xs',
         'sm' => 'px-2.5 py-1.5 text-sm',
@@ -16,12 +17,12 @@
         'xl' => 'px-5 py-2.5 text-xl',
     ];
     $variantClasses = [
-        'primary' => 'bg-orange-500 hover:bg-orange-600 text-white focus:ring-orange-500',
-        'secondary' => 'bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
-        'success' => 'bg-green-500 hover:bg-green-600 text-white focus:ring-green-500',
-        'danger' => 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-500',
-        'warning' => 'bg-yellow-500 hover:bg-yellow-600 text-white focus:ring-yellow-500',
-        'blue' => 'bg-blue-700 hover:bg-blue-600 text-white focus:ring-blue-500',
+        'primary' => 'bg-orange-500 hover:bg-orange-600 text-white border-transparent focus:ring-orange-500',
+        'secondary' => 'bg-white hover:bg-gray-50 text-gray-500 border-gray-300 focus:ring-gray-500',
+        'success' => 'bg-green-500 hover:bg-green-600 text-white border-transparent focus:ring-green-500',
+        'danger' => 'bg-red-500 hover:bg-red-600 text-white border-transparent focus:ring-red-500',
+        'warning' => 'bg-yellow-500 hover:bg-yellow-600 text-white border-transparent focus:ring-yellow-500',
+        'blue' => 'bg-blue-700 hover:bg-blue-600 text-white border-transparent focus:ring-blue-500',
     ];
     $spinnerSizes = [
         'xs' => 'w-3 h-3',
