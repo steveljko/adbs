@@ -4,6 +4,7 @@
     'disabled' => false,
     'href' => null,
     'class' => '',
+    'sid' => null,
 ])
 @php
     $baseClasses = 'inline-flex items-center justify-center border font-medium rounded shadow-sm transition-colors focus:outline-none
@@ -47,24 +48,26 @@ disabled:opacity-50 disabled:cursor-not-allowed';
 @if ($isLink)
     <a
         {{ $dynamicAttributes }}
+        @if ($variant != 'secondary') hx-indicator="this" @endif
         @if ($disabled) aria-disabled="true" tabindex="-1" @endif
         class="{{ $buttonClasses }}"
         href="{{ $href }}"
-        hx-indicator="this"
     >
     @else
         <button
             {{ $dynamicAttributes }}
             @if ($disabled) disabled @endif
+            @if ($variant == 'primary' || $sid != null) hx-indicator="this" @endif
             class="{{ $buttonClasses }}"
-            hx-indicator="this"
         >
 @endif
-<x-icon
-    class="htmx-indicator {{ $spinnerClass }} mr-2 hidden animate-spin [&.htmx-request]:block [form.htmx-request_&]:block"
-    name="spinner"
-    viewBox="0 0 100 101"
-/>
+@if ($variant == 'primary' || $sid != null)
+    <x-icon
+        class="htmx-indicator {{ $spinnerClass }} mr-2 hidden animate-spin [&.htmx-request]:block [form.htmx-request_&]:block"
+        name="spinner"
+        viewBox="0 0 100 101"
+    />
+@endif
 {{ $slot }}
 @if ($isLink)
     </a>

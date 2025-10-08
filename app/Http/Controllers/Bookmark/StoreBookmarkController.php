@@ -20,6 +20,9 @@ final class StoreBookmarkController
     ): Response {
         $action->execute(data: $request->validated(), userId: Auth::id());
 
-        return htmx()->trigger('loadBookmarks')->response();
+        return htmx()
+            ->trigger('loadBookmarks')
+            ->toast(type: 'success', text: 'Bookmark created!')
+            ->response();
     }
 }

@@ -1,7 +1,6 @@
 import './echo';
 import htmx from 'htmx.org';
-import Notify from 'simple-notify'
-import 'simple-notify/dist/simple-notify.css'
+import Notify from './notify'
 import Coloris from "@melloware/coloris";
 import "@melloware/coloris/dist/coloris.css";
 import Alpine from 'alpinejs'
@@ -11,6 +10,7 @@ window.htmx = htmx;
 window.Alpine = Alpine
 Coloris.init();
 window.Coloris = Coloris;
+const notify = new Notify;
 
 document.addEventListener('alpine:init', () => {
     Alpine.store('modal', {
@@ -47,11 +47,7 @@ Alpine.start();
 htmx.on('toast', (e) => {
     const { type, text, altText } = e.detail;
 
-    new Notify({
-        status: type,
-        title: text,
-        text: altText,
-    });
+    notify[type](text);
 });
 
 htmx.on('toast_after_redirect', (e) => {
@@ -68,11 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (storedToast) {
         const toastData = JSON.parse(storedToast);
 
-        new Notify({
-            status: toastData.status,
-            title: toastData.title,
-            text: toastData.text
-        });
+        notify[toastData.status](toastData.title);
 
         sessionStorage.removeItem('toast_after_redirect');
     }

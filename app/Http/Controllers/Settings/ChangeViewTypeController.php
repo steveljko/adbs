@@ -15,7 +15,7 @@ final class ChangeViewTypeController
         preferences()->set('view_type', $viewType);
 
         return htmx()
-            ->toast(type: 'success', text: 'View type succesfully changed!')
+            ->toast(type: 'info', text: 'View type updated')
             ->response(view('partials.settings.view-type')->fragment('choose'));
     }
 }
