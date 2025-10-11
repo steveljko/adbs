@@ -58,7 +58,7 @@ final class AppServiceProvider extends ServiceProvider
             'partials.settings.clients',
         ], function ($view) {
             if (Auth::check()) {
-                $view->with('tags', Auth::user()->tags()->orderBy('created_at', 'desc')->get());
+                $view->with('tags', Auth::user()->tags()->orderBy('created_at', 'desc')->paginate(10));
                 $view->with('clients', Auth::user()->tokens()->where('name', 'access_token')->with('info')->get());
             }
         });

@@ -28,6 +28,7 @@ use App\Http\Controllers\Settings\DisableViewSwitchController;
 use App\Http\Controllers\Shared\GetAuthenticatedUserTagsController;
 use App\Http\Controllers\Tag\DeleteTagController;
 use App\Http\Controllers\Tag\EditTagController;
+use App\Http\Controllers\Tag\SearchTagsController;
 use App\Http\Controllers\Tag\UpdateTagController;
 use Illuminate\Support\Facades\Route;
 
@@ -113,6 +114,7 @@ Route::group([
     'middleware' => 'auth',
 ], function () {
     Route::get('/', GetAuthenticatedUserTagsController::class);
+    Route::get('/search', SearchTagsController::class)->name('.search');
     Route::get('/{tag}', [GetAuthenticatedUserTagsController::class, 'renderTag'])->name('.get');
     Route::get('/{tag}/edit', EditTagController::class)->name('.edit')->middleware('can:update,tag');
     Route::put('/{tag}/update', UpdateTagController::class)->name('.update');

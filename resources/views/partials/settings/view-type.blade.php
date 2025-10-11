@@ -1,12 +1,12 @@
 <x-card id="view-type">
     <x-slot name="header">
-        <h3 class="font-semibold text-gray-800">Change View Type</h3>
+        <h3 class="font-semibold text-gray-800">Appearnce</h3>
     </x-slot>
 
     <div class="space-y-4">
         @fragment('choose')
             <section id="choose">
-                <h3 class="mb-3 font-medium text-gray-800">Choose View Style Type</h3>
+                <h3 class="mb-3 text-[15px] text-gray-600">View Style</h3>
                 <div class="flex space-x-2 rounded border p-1">
                     <button
                         class="{{ preferences()->get('view_type') === 'list' ? 'bg-orange-50 text-orange-500 shadow-sm' : 'text-gray-500 hover:bg-gray-200' }} flex w-full items-center space-x-1 rounded-md p-1.5 transition-colors duration-200"
@@ -55,7 +55,7 @@
         @endfragment
 
         <section id="disable">
-            <h3 class="mb-3 font-medium text-gray-800">Disable Switch</h3>
+            <h3 class="mb-3 text-[15px] text-gray-600">Screen Type Switch</h3>
             <label class="flex items-center space-x-3">
                 <input
                     @checked(preferences()->get('disable_view_switch'))

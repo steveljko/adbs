@@ -27,6 +27,7 @@ final class UpdateTagController
             return htmx()->response();
         }
 
+        // FIX: show footer on tag update
         return htmx()
             ->trigger('hideModal')
             ->toast(
@@ -35,7 +36,7 @@ final class UpdateTagController
                 altText: $message,
             )
             ->target('#tags')
-            ->swap('innerHTML')
+            ->swap('outerHTML')
             ->response(view('partials.settings.tags'));
     }
 }
