@@ -1,5 +1,9 @@
 <form
-    hx-put="{{ route('tags.update', $tag) }}"
+    hx-put="{{ route('tags.update', [
+        'tag' => $tag,
+        'search' => $search,
+        'page' => $page,
+    ]) }}"
     id="modal-content"
 >
     <x-modal.header>Edit Bookmark</x-modal.header>
@@ -37,7 +41,11 @@
     </x-modal.body>
     <x-modal.footer class="flex justify-between border-t border-gray-200 p-4">
         <x-button
-            hx-delete="{{ route('tags.delete', $tag) }}"
+            hx-delete="{{ route('tags.delete', [
+                'tag' => $tag,
+                'search' => $search,
+                'page' => $page,
+            ]) }}"
             type="button"
             variant="danger"
         >Delete Bookmark</x-button>

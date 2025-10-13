@@ -6,15 +6,12 @@
             {{ $header }}
         </div>
     @endif
-
     <div class="p-4">
         {{ $slot }}
     </div>
-
     @if ($footer || isset($footer))
         <div
             class="border-t border-gray-200 px-4 py-2"
-            hx-swap-oob="true"
             id="card-footer"
         >
             {{ $footer }}

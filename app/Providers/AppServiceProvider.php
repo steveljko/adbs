@@ -54,7 +54,7 @@ final class AppServiceProvider extends ServiceProvider
 
         View::composer([
             'pages.auth.settings',
-            'partials.settings.tags',
+            /* 'partials.settings.tags', */
             'partials.settings.clients',
         ], function ($view) {
             if (Auth::check()) {

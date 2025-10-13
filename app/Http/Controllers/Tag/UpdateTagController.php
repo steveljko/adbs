@@ -17,26 +17,30 @@ final class UpdateTagController
         EditTagAction $editTag,
         Tag $tag
     ): Response {
-        if (Auth::user()->cannot('update', $tag)) {
-            abort(403);
-        }
-
-        [$isChanged, $message] = array_values($editTag->execute(request: $request, tag: $tag));
+        [$isChanged, $message] = array_values($editTag->execute($request, $tag));
 
         if (! $isChanged) {
             return htmx()->response();
         }
 
-        // FIX: show footer on tag update
+        $search = $request->string('search')->toString();
+        $page = $request->integer('page', 1);
+
+        $tags = Auth::user()
+            ->tags()
+            ->when($search, fn ($q) => $q->where('name', 'like', "%{$search}%"))
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'page', $page);
+
         return htmx()
             ->trigger('hideModal')
-            ->toast(
-                type: 'success',
-                text: 'Succesfully changed tag details.',
-                altText: $message,
-            )
+            ->toast(type: 'success', text: $message)
             ->target('#tags')
             ->swap('outerHTML')
-            ->response(view('partials.settings.tags'));
+            ->response(view('partials.settings.tags', [
+                'tags' => $tags,
+                'search' => $search,
+                'page' => $page,
+            ]));
     }
 }
