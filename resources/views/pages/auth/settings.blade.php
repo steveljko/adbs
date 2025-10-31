@@ -5,7 +5,7 @@
         <div class="w-full space-y-4">
             @include('partials.settings.tags')
 
-            @include('partials.settings.view-type')
+            @include('partials.settings.appearance')
 
             @include('partials.settings.import-export')
 
