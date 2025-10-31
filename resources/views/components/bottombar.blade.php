@@ -167,8 +167,4 @@
             id="suggestions-container"
         ></div>
     </div>
-
-    @if (preferences()->get('disable_view_switch') != true)
-        <x-view-switch />
-    @endif
 </div>
