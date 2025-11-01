@@ -52,6 +52,7 @@ final class User extends Authenticatable
         return $this->bookmarks()
             ->whereNotNull('imported_at')
             ->where('can_undo', true)
+            ->orderBy('imported_at', 'desc')
             ->exists();
     }
 

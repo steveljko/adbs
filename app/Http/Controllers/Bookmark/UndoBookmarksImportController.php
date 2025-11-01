@@ -18,22 +18,10 @@ final class UndoBookmarksImportController
 
     public function confirm(): Response
     {
-        $latestImportedAt = Bookmark::query()
-            ->whereUserId(Auth::id())
-            ->whereNotNull('imported_at')
-            ->where('can_undo', true)
-            ->max('imported_at');
+        $deletedCount = Bookmark::latestImportForUser(Auth::user())->delete();
 
-        if ($latestImportedAt) {
-            Bookmark::query()
-                ->whereUserId(Auth::id())
-                ->where('imported_at', $latestImportedAt)
-                ->where('can_undo', true)
-                ->delete();
-
-            return htmx()->toast('success', 'Successfully undo latest import')->response();
-        }
-
-        return htmx()->toast('error', "You can't perform action")->response();
+        return $deletedCount > 0
+            ? htmx()->toast('success', 'Successfully undid latest import')->response()
+            : htmx()->toast('error', "You can't perform this action")->response();
     }
 }

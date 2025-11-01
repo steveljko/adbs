@@ -7,7 +7,7 @@
 
             @include('partials.settings.appearance')
 
-            @include('partials.settings.import-export')
+            @include('partials.settings.backup')
 
             @fragment('clients')
                 @include('partials.settings.clients')

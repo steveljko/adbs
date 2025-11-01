@@ -94,6 +94,19 @@ final class Bookmark extends Model
             });
     }
 
+    public function scopeLatestImportForUser($query, User $user)
+    {
+        $latestImportedAt = self::query()
+            ->whereUserId($user->id)
+            ->whereNotNull('imported_at')
+            ->where('can_undo', true)
+            ->max('imported_at');
+
+        return $query->whereUserId($user->id)
+            ->where('imported_at', $latestImportedAt)
+            ->where('can_undo', true);
+    }
+
     /**
      * Encode url and decode on get value
      */
