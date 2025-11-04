@@ -104,6 +104,7 @@ final class Bookmark extends Model
 
         return $query->whereUserId($user->id)
             ->where('imported_at', $latestImportedAt)
+            ->where('imported_at', '>=', now()->subMinutes(30))
             ->where('can_undo', true);
     }
 
