@@ -19,7 +19,6 @@
     "dependencies": {
         "@melloware/coloris": "^0.25.0",
         "alpinejs": "^3.14.9",
-        "htmx.org": "^1.9.12",
-        "masonry-layout": "^4.2.2"
+        "htmx.org": "^1.9.12"
     }
 }

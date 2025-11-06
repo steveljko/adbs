@@ -4,7 +4,6 @@ import Notify from './notify'
 import Coloris from "@melloware/coloris";
 import "@melloware/coloris/dist/coloris.css";
 import Alpine from 'alpinejs'
-import Masonry from "masonry-layout";
 
 window.htmx = htmx;
 window.Alpine = Alpine
@@ -101,40 +100,6 @@ document.addEventListener('keydown', (event) => {
         }
     }
 });
-
-let masonry;
-document.addEventListener('htmx:afterSettle', (e) => {
-    if (e.target.id === 'bookmarks-container') {
-        const viewType = e.detail.requestConfig.parameters?.view_type ||
-                         new URLSearchParams(window.location.search).get('view_type') || 'card';
-        if (viewType === 'card') {
-            setTimeout(() => {
-                initMasonry();
-            }, 250);
-        }
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('view_type') === 'card' || !urlParams.get('view_type')) {
-        setTimeout(() => {
-            initMasonry();
-        }, 250);
-    }
-});
-
-
-function initMasonry() {
-    const container = document.getElementById('bookmarks-container');
-    if (container) {
-        masonry = new Masonry(container, {
-            itemSelector: '.bookmark-card',
-            gutter: 16,
-            horizontalOrder: true
-        });
-    }
-}
 
 // used for showing dark background for white favicons
 function checkFaviconBrightness(img) {

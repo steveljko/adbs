@@ -13,7 +13,7 @@ use Illuminate\View\View;
 
 final class ShowDashboardController
 {
-    private const PER_PAGE = 30;
+    private const PER_PAGE = 28;
 
     public function __invoke(Request $request): View|RedirectResponse|string
     {
@@ -116,7 +116,7 @@ final class ShowDashboardController
             return $bookmarks.$loadMore;
         }
 
-        $bookmarks = view('components.bookmarks', array_merge($data, ['showSwitch' => 'true']))->render();
+        $bookmarks = view('components.bookmarks', $data)->render();
         $loadMore = view('components.loadmore', $data)->render();
 
         return $bookmarks.$loadMore;
