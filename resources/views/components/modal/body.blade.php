@@ -1,3 +1,6 @@
-<div id="modal-body" class="p-4 pt-0">
+<div
+    class="p-4 pt-0"
+    id="modal-body"
+>
     {{ $slot }}
 </div>
