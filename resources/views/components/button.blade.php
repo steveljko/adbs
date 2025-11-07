@@ -5,6 +5,7 @@
     'href' => null,
     'class' => '',
     'sid' => null,
+    'id' => null,
 ])
 @php
     $baseClasses = 'inline-flex items-center justify-center border font-medium rounded shadow-sm transition-colors focus:outline-none
@@ -42,24 +43,32 @@ disabled:opacity-50 disabled:cursor-not-allowed';
         ->implode(' ');
     $spinnerClass = $spinnerSizes[$size] ?? $spinnerSizes['md'];
     $isLink = !empty($href);
-    $excludedAttrs = ['class', 'variant', 'size', 'disabled', 'href'];
+    $excludedAttrs = ['class', 'variant', 'size', 'href'];
     $dynamicAttributes = $attributes->except($excludedAttrs);
 @endphp
 @if ($isLink)
-    <a
-        {{ $dynamicAttributes }}
-        @if ($variant != 'secondary') hx-indicator="this" @endif
-        @if ($disabled) aria-disabled="true" tabindex="-1" @endif
-        class="{{ $buttonClasses }}"
-        href="{{ $href }}"
+
+    @if ($id)
+        id="{{ $id }}"
+    @endif
+    {{ $dynamicAttributes }}
+    @if ($variant != 'secondary')
+        hx-indicator="this"
+    @endif
+    @if ($disabled)
+        aria-disabled="true" tabindex="-1"
+    @endif
+    class="{{ $buttonClasses }}"
+    href="{{ $href }}"
     >
-    @else
-        <button
-            {{ $dynamicAttributes }}
-            @if ($disabled) disabled @endif
-            @if ($variant == 'primary' || $sid != null) hx-indicator="this" @endif
-            class="{{ $buttonClasses }}"
-        >
+@else
+    <button
+        {{ $dynamicAttributes }}
+        @if ($disabled) disabled @endif
+        @if ($variant == 'primary' || $sid != null) hx-indicator="this" @endif
+        @if ($id) id="{{ $id }}" @endif
+        class="{{ $buttonClasses }}"
+    >
 @endif
 @if ($variant == 'primary' || $sid != null)
     <x-icon

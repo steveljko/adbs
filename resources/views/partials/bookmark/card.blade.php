@@ -60,28 +60,30 @@
         </div>
         <div class="flex items-center space-x-1">
             <button
-                class="rounded p-1 transition-all duration-200 hover:scale-110 hover:bg-gray-200"
+                class="rounded-md p-1 text-gray-500 transition-all duration-200 hover:bg-blue-100 hover:text-blue-600"
                 hx-get="{{ route('bookmarks.edit', $bookmark->id) }}"
                 hx-push-url="false"
                 hx-swap="innerHTML"
                 hx-target="#dialog"
+                title="Edit bookmark"
                 type="button"
             >
                 <x-icon
-                    class="h-3.5 w-3.5 text-gray-600"
+                    class="h-4 w-4"
                     name="edit"
                 />
             </button>
             <button
-                class="rounded p-1 transition-all duration-200 hover:scale-110 hover:bg-gray-200"
+                class="rounded-md p-1 text-gray-500 transition-all duration-200 hover:bg-red-100 hover:text-red-600"
                 hx-get="{{ route('bookmarks.delete', $bookmark->id) }}"
                 hx-push-url="false"
                 hx-swap="innerHTML"
                 hx-target="#dialog"
+                title="Delete bookmark"
                 type="button"
             >
                 <x-icon
-                    class="h-3.5 w-3.5 text-gray-600"
+                    class="h-4 w-4"
                     name="garbage"
                 />
             </button>
