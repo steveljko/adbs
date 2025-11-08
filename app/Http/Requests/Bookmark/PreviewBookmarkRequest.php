@@ -41,9 +41,9 @@ final class PreviewBookmarkRequest extends FormRequest
         return [
             function (Validator $validator) {
                 // Check if website is reachable.
-                if ($this->url !== null) {
+                if ($this->url !== null && ! $validator->errors()->has('url')) {
                     try {
-                        Http::get($this->url);
+                        Http::timeout(5)->get($this->url);
                     } catch (ConnectionException $e) {
                         $validator->errors()->add(
                             'url',

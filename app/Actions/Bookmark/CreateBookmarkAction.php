@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Actions\Bookmark;
 
-use App\Enums\BookmarkStatus;
 use App\Actions\Tag\AttachOrCreateTagsAction;
 use App\Actions\Website\GetFaviconAction;
+use App\Enums\BookmarkStatus;
 use App\Models\Bookmark;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 final class CreateBookmarkAction
 {
@@ -24,7 +25,13 @@ final class CreateBookmarkAction
     public function execute(array $data, int $userId): Bookmark
     {
         if (! isset($data['favicon'])) {
-            $data['favicon'] = $this->getFaviconAction->execute($data['url'], 32);
+            try {
+                $data['favicon'] = $this->getFaviconAction->execute($data['url'], 32);
+            } catch (RuntimeException $e) {
+                Log::warning('Failed to fetch favicon', ['url' => $data['url'], 'error' => $e->getMessage()]);
+
+                $data['favicon'] = null;
+            }
         }
 
         $data = array_merge($data, [
