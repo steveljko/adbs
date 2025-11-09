@@ -4,12 +4,45 @@ declare(strict_types=1);
 
 namespace App\Actions\Tag;
 
-final class GenerateBackgroundColorAction
+use Exception;
+
+final class GenerateTagColorsAction
 {
-    public function execute(string $color): string
+    private array $colors = [
+        '#0B69FF',
+        '#00C2A8',
+        '#FF6B6B',
+        '#FFB84D',
+        '#9B59FF',
+        '#00A3FF',
+        '#27D27D',
+        '#FF4DA6',
+        '#4D5CFF',
+        '#FFC857',
+    ];
+
+    private string $textColor = '';
+
+    public function getTextColor(): string
     {
-        $lightness = (float) 0.95;
-        $hexColor = mb_ltrim($color, '#');
+        $color = $this->colors[array_rand($this->colors)];
+        $this->textColor = $color;
+
+        return $this->textColor;
+    }
+
+    public function setTextColor(): string
+    {
+        return 'asd';
+    }
+
+    public function getBackgroundColor(float $lightness = 0.95): string
+    {
+        if (! $this->textColor) {
+            throw new Exception('Text color is not choosen');
+        }
+
+        $hexColor = mb_ltrim($this->textColor, '#');
 
         if (mb_strlen($hexColor) === 3) {
             $hexColor = $hexColor[0].$hexColor[0].

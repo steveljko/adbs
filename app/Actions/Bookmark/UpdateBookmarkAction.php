@@ -10,20 +10,20 @@ use Illuminate\Support\Facades\DB;
 
 final class UpdateBookmarkAction
 {
-    public function __construct(public SyncBookmarkTagsAction $syncBookmarkTagsAction) {}
+    public function __construct(
+        public readonly SyncBookmarkTagsAction $syncBookmarkTagsAction
+    ) {}
 
-    /**
-     * Update bookmark
-     */
+    // FIX: update background color
     public function execute(Bookmark $bookmark, array $data): array
     {
         return DB::transaction(function () use ($bookmark, $data) {
-            $tagsChanged = $this->syncBookmarkTagsAction->execute(
+            $result = $this->syncBookmarkTagsAction->execute(
                 bookmark: $bookmark,
                 tags: $data['tags'] ?? []
             );
 
-            if ($tagsChanged === true) {
+            if ($result->isSuccessful()) {
                 $bookmark->withAdditionalFields(['tags']);
             }
 

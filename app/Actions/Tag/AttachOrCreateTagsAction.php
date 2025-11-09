@@ -6,98 +6,97 @@ namespace App\Actions\Tag;
 
 use App\Models\Bookmark;
 use App\Models\Tag;
+use App\ValueObjects\TagAttachOrCreateResult;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 final class AttachOrCreateTagsAction
 {
-    private array $colors = [
-        '#e74c3c',
-        '#2ecc71',
-        '#3498db',
-        '#f1c40f',
-        '#9b59b6',
-        '#e67e22',
-        '#1abc9c',
-        '#34495e',
-        '#95a5a6',
-        '#ecf0f1',
-        '#d35400',
-        '#c0392b',
-        '#27ae60',
-        '#2980b9',
-        '#8e44ad',
-        '#f39c12',
-        '#2c3e50',
-    ];
+    public function __construct(
+        private readonly GenerateTagColorsAction $generateTagColorsAction
+    ) {}
 
     /*
     * Attach existing tags or create new ones for the given bookmark.
     */
-    public function execute(Bookmark $bookmark, array $tags = []): void
+    public function execute(Bookmark $bookmark, array $tags = []): TagAttachOrCreateResult
     {
-        $tagsToAttach = [];
+        $sanitizedTags = $this->sanitizeTags($tags);
 
-        if (! empty($tags)) {
-            foreach ($tags as $name) {
-                if (empty($name) || ! is_string($name)) {
-                    continue;
-                }
-
-                $tag = Tag::where('name', $name)->first();
-                $textColor = $this->colors[array_rand($this->colors)];
-                $bgColor = $this->getBackgroundColor($textColor);
-
-                if (! $tag) {
-                    $tag = Tag::create([
-                        'name' => $name,
-                        'background_color' => $bgColor,
-                        'text_color' => $textColor,
-                        'user_id' => Auth::id(),
-                    ]);
-                }
-
-                $tagsToAttach[] = $tag->id;
-            }
+        if ($sanitizedTags->isEmpty()) {
+            return new TagAttachOrCreateResult(
+                success: false,
+                attached: 0,
+            );
         }
 
-        if (! empty($tagsToAttach)) {
-            $bookmark->tags()->attach($tagsToAttach);
-        }
+        $tagIds = $this->getOrCreateTags($sanitizedTags);
+
+        $bookmark->tags()->attach($tagIds);
 
         Log::info('Attached tags to bookmark', [
-            'tags' => $tagsToAttach,
             'bookmark_id' => $bookmark->id,
+            'tag_ids' => $tagIds,
+            'tag_count' => count($tagIds),
             'executed_by' => Auth::id(),
         ]);
+
+        return new TagAttachOrCreateResult(
+            success: true,
+            attached: count($tagIds)
+        );
     }
 
-    private function getBackgroundColor(string $color): string
+    /*
+     * Return clean collection of valid, unique tag names.
+     */
+    private function sanitizeTags(array $tags): Collection
     {
-        $lightness = (float) 0.95;
-        $hexColor = mb_ltrim($color, '#');
+        return collect($tags)
+            ->filter(fn ($tag) => is_string($tag) && ! empty(mb_trim($tag)))
+            ->map(fn ($tag) => mb_trim($tag))
+            ->unique()
+            ->values();
+    }
 
-        if (mb_strlen($hexColor) === 3) {
-            $hexColor = $hexColor[0].$hexColor[0].
-                $hexColor[1].$hexColor[1].
-                $hexColor[2].$hexColor[2];
+    private function getOrCreateTags(Collection $tagNames): array
+    {
+        $existingTags = Tag::whereIn('name', $tagNames)
+            ->where('user_id', Auth::id())
+            ->pluck('id', 'name');
+
+        $missingTagNames = $tagNames->diff($existingTags->keys());
+
+        if ($missingTagNames->isNotEmpty()) {
+            $newTags = $this->createTags($missingTagNames);
+            $existingTags = $existingTags->merge($newTags);
         }
 
-        $r = hexdec(mb_substr($hexColor, 0, 2));
-        $g = hexdec(mb_substr($hexColor, 2, 2));
-        $b = hexdec(mb_substr($hexColor, 4, 2));
+        return $existingTags->values()->toArray();
+    }
 
-        // apply lightness by blending with white
-        $r = (int) round($r + ($lightness * (255 - $r)));
-        $g = (int) round($g + ($lightness * (255 - $g)));
-        $b = (int) round($b + ($lightness * (255 - $b)));
+    private function createTags(Collection $tagNames): Collection
+    {
+        $userId = Auth::id();
 
-        // ensure values are within valid range
-        $r = max(0, min(255, $r));
-        $g = max(0, min(255, $g));
-        $b = max(0, min(255, $b));
+        $tagsData = $tagNames->map(function ($name) use ($userId) {
+            return [
+                'name' => $name,
+                'key' => Str::slug($name),
+                'text_color' => $this->generateTagColorsAction->getTextColor(),
+                'background_color' => $this->generateTagColorsAction->getBackgroundColor(),
+                'user_id' => $userId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        })->toArray();
 
-        // convert back to hex
-        return sprintf('#%02x%02x%02x', $r, $g, $b);
+        Tag::insert($tagsData);
+
+        return Tag::whereIn('name', $tagNames)
+            ->where('user_id', $userId)
+            ->pluck('id', 'name');
     }
 }

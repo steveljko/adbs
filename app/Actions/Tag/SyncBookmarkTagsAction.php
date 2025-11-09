@@ -6,46 +6,101 @@ namespace App\Actions\Tag;
 
 use App\Models\Bookmark;
 use App\Models\Tag;
+use App\ValueObjects\TagSyncResult;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 final class SyncBookmarkTagsAction
 {
-    public function __construct(private AttachOrCreateTagsAction $attachOrCreateTagsAction) {}
+    public function __construct(
+        private readonly AttachOrCreateTagsAction $attachOrCreateTagsAction
+    ) {}
 
-    public function execute(Bookmark $bookmark, array $tags = []): bool
+    public function execute(Bookmark $bookmark, array $tags = []): TagSyncResult
     {
-        $bookmarkTags = $bookmark->tags()->pluck('name')->toArray();
-        $tagsToAttach = array_diff($tags, $bookmarkTags);
-        $tagsToDelete = array_diff($bookmarkTags, $tags);
+        $bookmarkTags = $this->getBookmarkTags($bookmark);
+        $toAttach = $this->getTagsToAttach($tags, $bookmarkTags);
+        $toDetach = $this->getTagsToDetach($tags, $bookmarkTags);
 
-        $changed = false;
-
-        if (count($tagsToAttach) >= 1) {
-            $this->attachOrCreateTagsAction->execute(bookmark: $bookmark, tags: $tagsToAttach);
-            $changed = true;
+        if ($toAttach->isEmpty() && $toDetach->isEmpty()) {
+            return new TagSyncResult(
+                success: false,
+                attached: [],
+                detached: []
+            );
         }
 
-        if (count($tagsToDelete) >= 1) {
-            $this->detachTags(bookmark: $bookmark, tagsToDelete: $tagsToDelete);
-            $changed = true;
-        }
+        $this->attachNewTags($bookmark, $toAttach);
+        $this->detachRemovedTags($bookmark, $toDetach);
 
-        return $changed;
+        Log::info('Tag sync completed successfully', [
+            'bookmark_id' => $bookmark->id,
+            'attached' => $toAttach->toArray(),
+            'detached' => $toDetach->toArray(),
+            'executed_by' => Auth::id(),
+        ]);
+
+        return new TagSyncResult(
+            success: true,
+            attached: $toAttach->toArray(),
+            detached: $toDetach->toArray()
+        );
     }
 
-    private function detachTags(Bookmark $bookmark, array $tagsToDelete): void
+    private function getBookmarkTags(Bookmark $bookmark): Collection
     {
-        DB::transaction(function () use ($bookmark, $tagsToDelete) {
-            foreach ($tagsToDelete as $tag) {
-                $tagModel = Tag::whereUserId(Auth::id())->where('name', $tag)->first();
-                if ($tagModel) {
-                    $bookmark->tags()->detach($tagModel);
-                    if ($tagModel->bookmarks()->count() === 0) {
-                        $tagModel->delete();
-                    }
-                }
+        return $bookmark->tags()->pluck('name');
+    }
+
+    private function getTagsToAttach(array $toAttach, Collection $bookmarkTags): Collection
+    {
+        return collect($toAttach)->diff($bookmarkTags);
+    }
+
+    private function getTagsToDetach(array $toDetach, Collection $bookmarkTags): Collection
+    {
+        return $bookmarkTags->diff($toDetach);
+    }
+
+    private function attachNewTags(Bookmark $bookmark, Collection $tags): void
+    {
+        if ($tags->isEmpty()) {
+            return;
+        }
+
+        $this->attachOrCreateTagsAction->execute(
+            bookmark: $bookmark,
+            tags: $tags->toArray()
+        );
+    }
+
+    private function detachRemovedTags(Bookmark $bookmark, Collection $tags): void
+    {
+        if ($tags->isEmpty()) {
+            return;
+        }
+
+        DB::transaction(function () use ($bookmark, $tags) {
+            $tagModels = Tag::whereUserId(Auth::id())
+                ->whereIn('name', $tags)
+                ->get();
+
+            foreach ($tagModels as $tag) {
+                $bookmark->tags()->detach($tag);
+                $this->deleteIfUnused($tag);
             }
         });
+    }
+
+    // delete tag if it has no associated bookmarks
+    private function deleteIfUnused(Tag $tag): void
+    {
+        $tag->refresh();
+
+        if ($tag->bookmarks()->doesntExist()) {
+            $tag->delete();
+        }
     }
 }
