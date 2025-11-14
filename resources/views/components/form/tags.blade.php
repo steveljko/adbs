@@ -5,19 +5,29 @@
     <div class="w-full">
         <div class="relative">
             <input
-                class="block text-md w-full rounded-md border border-gray-300 px-3 py-2 text-a focus:border-orange-500 focus:outline-none"
-                type="text" name="name" id="name" placeholder="Add a tag" hx-trigger="keyup changed delay:500ms"
-                hx-get="{{ route('tags') }}" hx-include="#name,#tags" hx-target="#suggestions-container"
-                autocomplete="off" {{ $attributes }} />
+                {{ $attributes }}
+                autocomplete="off"
+                class="text-a block w-full rounded-md border border-gray-300 px-3 py-2 text-md focus:border-orange-500 focus:outline-none"
+                hx-get="{{ route('tags') }}"
+                hx-include="#name,#tags"
+                hx-target="#suggestions-container"
+                hx-trigger="keyup changed delay:500ms"
+                id="name"
+                name="name"
+                placeholder="Add a tag"
+                type="text"
+            />
             <div id="suggestions-container"></div>
         </div>
-        <div id="tags" class="mt-2 flex space-x-2 flex-wrap">
+        <div
+            class="mt-2 flex flex-wrap space-x-2"
+            id="tags"
+        >
             @if (isset($selectedTags))
-            @foreach ($selectedTags as $tag)
-            @include('partials.dashboard.filters.tag', ['tag' => $tag])
-            @endforeach
+                @foreach ($selectedTags as $tag)
+                    @include('partials.dashboard.filters.tag', ['tag' => $tag])
+                @endforeach
             @endif
         </div>
-        <span id="tags-error" class="hidden text-red-500 block text-sm mt-2"></span>
     </div>
 </div>

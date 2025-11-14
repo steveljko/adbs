@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Shared;
 
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 final class GetAuthenticatedUserTagsController
@@ -16,6 +17,7 @@ final class GetAuthenticatedUserTagsController
         $queryTags = $request->query('tags', []);
 
         $tags = Tag::query()
+            ->where('user_id', Auth::id())
             ->where('name', 'LIKE', "%$name%")
             ->get()
             ->filter(function ($tag) use ($queryTags) {
@@ -25,8 +27,16 @@ final class GetAuthenticatedUserTagsController
         return view('partials.tag.tags-suggestions', compact('tags', 'name'));
     }
 
-    public function renderTag(string $tag): View
+    public function renderTag(string $name): View
     {
-        return view('partials.tag.unstored-tag', compact('tag'));
+        $tag = Tag::where('user_id', Auth::id())
+            ->where('name', $name)
+            ->first();
+
+        if ($tag) {
+            return view('partials.dashboard.filters.tag', compact('tag'));
+        }
+
+        return view('partials.tag.unstored-tag', ['tag' => $name]);
     }
 }
