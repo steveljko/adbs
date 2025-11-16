@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\LoginAction;
 use App\Http\Requests\LoginRequest;
+use App\ValueObjects\LoginCredentials;
 
 final class LoginController
 {
@@ -15,11 +16,12 @@ final class LoginController
         LoginRequest $request,
         LoginAction $action
     ) {
-        $ok = $action->execute($request->only('email', 'password'));
+        $creds = LoginCredentials::fromRequest($request);
+
+        $ok = $action->execute($creds);
 
         if ($ok) {
             return htmx()->redirect(route(self::REDIRECT_TO))->response(null);
         }
-
     }
 }
