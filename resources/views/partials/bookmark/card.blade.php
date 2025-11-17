@@ -1,6 +1,9 @@
 @props(['bookmark'])
 
-<div class="rounded border border-gray-200 hover:shadow-sm">
+<div
+    class="rounded border border-gray-200 hover:shadow-sm"
+    id="card"
+>
     <div class="flex items-center border-b border-gray-100 p-4">
         <div class="mr-3 flex-shrink-0">
             <img

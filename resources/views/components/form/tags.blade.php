@@ -1,6 +1,6 @@
 @props(['tags', 'selectedTags'])
 
-<div>
+<div id="tags-field">
     <x-form.label name="tags">Tags</x-form.label>
     <div class="w-full">
         <div class="relative">
