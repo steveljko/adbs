@@ -1,6 +1,6 @@
 @props(['bookmark'])
 
-<li class="group flex items-center justify-between rounded-lg p-3 transition-colors duration-150 hover:bg-orange-50">
+<li class="group flex items-center justify-between rounded border border-gray-200 p-3 hover:shadow-sm">
     <div class="flex min-w-0 flex-grow items-center">
         <div class="flex-shrink-0">
             @if ($bookmark->favicon)
