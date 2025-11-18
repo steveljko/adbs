@@ -47,7 +47,7 @@ final class SearchBookmarksController
 
     public function renderSite(string $site): View
     {
-        return view('partials.dashboard.filters.site', ['site' => $site]);
+        return view('partials.dashboard.filters.site', compact('site'));
     }
 
     private function handleTagSearch(Request $request, string $input): Response

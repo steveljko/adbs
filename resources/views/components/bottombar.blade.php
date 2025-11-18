@@ -12,19 +12,10 @@
                     title="Search bookmarks"
                     x-show="!searchExpanded"
                 >
-                    <svg
+                    <x-icon
                         class="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                        ></path>
-                    </svg>
+                        name="search"
+                    />
                     <span class="text-sm">Search</span>
                 </button>
 

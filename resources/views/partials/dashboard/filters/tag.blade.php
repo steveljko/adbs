@@ -18,7 +18,7 @@
     >
     <button
         class="flex h-5 w-5 items-center justify-center rounded-full text-orange-500 transition-colors duration-150 focus:outline-none focus:ring-2"
-        onclick="this.parentNode.remove();"
+        onclick="this.parentNode.remove(); htmx.trigger('#bookmarks-container', 'loadBookmarks')"
         type="button"
     >
         <x-icon

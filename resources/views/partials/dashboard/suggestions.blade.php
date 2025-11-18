@@ -87,7 +87,7 @@
                         :aria-selected="focusedIndex === {{ $loop->index }}"
                         @mouseenter="setFocusIndex({{ $loop->index }})"
                         class="cursor-pointer rounded px-3 py-2 text-sm hover:bg-orange-100 focus:bg-orange-100"
-                        hx-get="{{ route('dashboard.search.tag', $tag) }}"
+                        hx-get="{ route('dashboard.search.tag', $tag) }}"
                         hx-on::after-request="
                             Alpine.$data(document.getElementById('suggestions-container')).hide();
                             document.getElementById('search').value = '';
@@ -118,7 +118,7 @@
                         "
                         hx-swap="afterbegin"
                         hx-target="#filters"
-                        hx-trigger="click, keyup[key=='Enter']"
+                        hx-trigger="click"
                         role="option"
                         tabindex="0"
                     >
