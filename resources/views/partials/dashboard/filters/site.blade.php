@@ -1,9 +1,8 @@
 <span
     class="group inline-flex items-center justify-between gap-2 rounded-full border border-orange-200 bg-orange-50 px-2 py-1 text-sm font-medium text-orange-600 transition-colors duration-150 hover:bg-orange-100"
+    id="site-filter"
 >
-    <span
-        class="flex items-center gap-1.5"
-    >
+    <span class="flex items-center gap-1.5">
         site: {{ $site }}
     </span>
     <input

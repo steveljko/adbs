@@ -42,15 +42,17 @@ final class Bookmark extends Model
     /**
      * Get unique site domains for the authenticated user
      */
-    public static function getSitesForUser(): array
+    public static function getUniqueUrls(): array
     {
         return self::where('user_id', Auth::id())
             ->get()
             ->map(function ($bookmark) {
                 $parsed = parse_url($bookmark->url);
+                $host = $parsed['host'] ?? $bookmark->url;
 
-                return $parsed['host'] ?? $bookmark->url;
+                return preg_replace('/^www\./i', '', $host);
             })
+            ->filter() // remove null
             ->unique()
             ->values()
             ->toArray();

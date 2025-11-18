@@ -1,5 +1,6 @@
 <span
     class="group inline-flex items-center justify-between gap-2 rounded-full border px-2 py-1 text-sm font-medium transition-colors duration-150"
+    id="tag-filter"
     style="background-color: {{ $tag->background_color }}; color: {{ $tag->text_color }}; border-color: {{ $tag->text_color }};"
 >
     <span class="flex items-center gap-1.5">

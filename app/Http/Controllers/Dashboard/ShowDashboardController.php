@@ -147,7 +147,7 @@ final class ShowDashboardController
         }
 
         $availableTags = Tag::getForUser();
-        $availableSites = Bookmark::getSitesForUser();
+        $availableSites = Bookmark::getUniqueUrls();
 
         $invalidTags = array_diff($queryTags, $availableTags);
         $invalidSites = array_diff($querySites, $availableSites);
