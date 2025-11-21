@@ -60,6 +60,7 @@ RUN if [ -f .env.example ]; then cp .env.example .env; fi \
     && chmod 664 .env \
     && rm -rf bootstrap/cache/*.php \
     && php artisan key:generate \
+    && php artisan storage:link \
     && php artisan route:cache \
     && php artisan view:cache
 
