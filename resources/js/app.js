@@ -1,5 +1,5 @@
-import './echo';
 import htmx from 'htmx.org';
+import 'htmx-ext-sse';
 import Notify from './notify'
 import Coloris from "@melloware/coloris";
 import "@melloware/coloris/dist/coloris.css";
@@ -30,7 +30,7 @@ document.addEventListener('alpine:init', () => {
     window.modal = Alpine.store('modal');
 });
 
-htmx.on('htmx:afterSwap', (e) => { if (e.detail.target.id == 'dialog') window.modal.show() });
+htmx.on('htmx:afterSwap', (e) => {if (e.detail.target && e.detail.target.id == 'dialog') window.modal.show() });
 
 htmx.on('htmx:beforeSwap', (e) => {
     if (e.detail.target.id == 'dialog' && !e.detail.xhr.response) {
@@ -125,3 +125,41 @@ function checkFaviconBrightness(img) {
         img.classList.add('bg-gray-500', 'p-1');
     }
 }
+
+document.body.addEventListener('htmx:sseMessage', function(event) {
+    // TODO: Refactor this...
+    if (event.target.id == 'progress') {
+        const data = JSON.parse(event.detail.data);
+        const progress = document.getElementById('progress');
+
+        if (data.code === 'WAITING') {
+            return
+        } else {
+            if (progress.classList.contains('hidden')) progress.classList.toggle('hidden');
+        }
+
+        document.getElementById('importBtn').classList.add('hidden');
+
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const progressMessage = document.getElementById('progressMessage');
+
+        progressFill.style.width = data.progress + '%';
+        progressPercent.textContent = data.progress + '%';
+        progressMessage.textContent = data.message;
+
+        if (data.status === 'completed') {
+            progressFill.classList.remove('bg-blue-600');
+            progressFill.classList.add('bg-green-600');
+            progressMessage.classList.remove('text-gray-600');
+            progressMessage.classList.add('text-green-600');
+        } else if (data.status === 'failed') {
+            progressFill.classList.remove('bg-blue-600');
+            progressFill.classList.add('bg-red-600');
+            progressMessage.classList.remove('text-gray-600');
+            progressMessage.classList.add('text-red-600');
+        }
+
+        htmx.trigger(event.target, 'htmx:sseClose');
+    }
+});

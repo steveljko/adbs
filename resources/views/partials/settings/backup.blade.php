@@ -99,6 +99,7 @@
                         <x-button
                             @click="$refs.fileInput.click()"
                             class="w-full"
+                            id="importBtn"
                             size="sm"
                             type="button"
                             variant="blue"

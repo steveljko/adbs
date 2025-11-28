@@ -5,20 +5,17 @@ declare(strict_types=1);
 namespace App\Actions\Bookmark;
 
 use App\Exceptions\Bookmark\Import\EmptyBookmarkFileException;
-use App\Actions\Tag\AttachOrCreateTagsAction;
-use App\Actions\Website\GetFaviconAction;
 use App\Jobs\ImportBookmarksJob;
-use App\Models\Bookmark;
+use Illuminate\Bus\Batch;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 final class ImportBookmarksAction
 {
-    public function __construct(
-        private AttachOrCreateTagsAction $attachOrCreateTags,
-        private GetFaviconAction $getFavicon
-    ) {}
-
     public function execute($file, ?string $password = null)
     {
         $content = is_string($file) ? file_get_contents($file) : file_get_contents($file->getRealPath());
@@ -34,7 +31,7 @@ final class ImportBookmarksAction
             throw new EmptyBookmarkFileException;
         }
 
-        return $this->dispatchImportJob($bookmarks);
+        $this->dispatchImportJob($bookmarks);
     }
 
     /*
@@ -56,19 +53,47 @@ final class ImportBookmarksAction
         $userId = Auth::id();
         $chunkSize = 100;
 
-        /* Bookmark::query() */
-        /*     ->whereUserId($userId) */
-        /*     ->where('recently_imported', true) */
-        /*     ->update(['recently_imported' => false]); */
+        Cache::put("upload_progress_{$userId}", [
+            'progress' => 0,
+            'status' => 'processing',
+            'message' => 'Starting upload...',
+            'total' => count($bookmarks),
+            'processed' => 0,
+        ], 3600);
 
-        if (count($bookmarks) > $chunkSize) {
-            $chunks = array_chunk($bookmarks, $chunkSize);
-            foreach ($chunks as $chunk) {
-                ImportBookmarksJob::dispatch($chunk, $userId);
-            }
-        } else {
-            ImportBookmarksJob::dispatch($bookmarks, $userId);
+        $chunks = array_chunk($bookmarks, $chunkSize);
+        $jobs = [];
+
+        foreach ($chunks as $chunk) {
+            $jobs[] = new ImportBookmarksJob($chunk, $userId);
         }
+
+        Bus::batch($jobs)
+            ->name("Import Bookmarks - User {$userId}")
+            ->then(function (Batch $batch) use ($userId) {
+                Cache::put("upload_progress_{$userId}", [
+                    'progress' => 100,
+                    'status' => 'completed',
+                    'message' => 'Import completed successfully',
+                    'timestamp' => now()->toIso8601String(),
+                ], 3600);
+            })
+            ->catch(function (Batch $batch, Throwable $e) use ($userId) {
+                Cache::put("upload_progress_{$userId}", [
+                    'progress' => $batch->progress(),
+                    'status' => 'failed',
+                    'message' => 'Import failed: '.$e->getMessage(),
+                    'timestamp' => now()->toIso8601String(),
+                ], 3600);
+            })
+            ->finally(function (Batch $batch) use ($userId) {
+                Log::info("Batch import finished for user {$userId}", [
+                    'batch_id' => $batch->id,
+                    'total_jobs' => $batch->totalJobs,
+                    'failed_jobs' => $batch->failedJobs,
+                ]);
+            })
+            ->dispatch();
     }
 
     /**

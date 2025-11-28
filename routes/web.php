@@ -91,6 +91,7 @@ Route::group([
     ], function () {
         Route::post('/', RequestBookmarkImportController::class);
         Route::post('/confirm', ConfirmBookmarkImportController::class)->name('.confirm');
+        Route::get('/progress', [ConfirmBookmarkImportController::class, 'progress'])->name('.progress');
         Route::post('/decrypt', DecryptAndImportBookmarksController::class)->name('.decrypt');
         Route::get('/undo', UndoBookmarksImportController::class)->name('.undo');
         Route::delete('/undo/confirm', [UndoBookmarksImportController::class, 'confirm'])->name('.undo.confirm');

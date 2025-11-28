@@ -29,7 +29,7 @@
         >
             <div
                 @click.stop
-                class="animate-fadeInDown absolute right-0 top-0 h-screen w-1/2 rounded-lg bg-white md:w-1/4"
+                class="animate-fadeInDown absolute right-0 top-[.5rem] h-screen w-full rounded-lg bg-white sm:w-2/3 md:w-1/2 lg:w-2/5 xl:w-1/3"
                 hx-target="this"
                 id="dialog"
                 role="document"

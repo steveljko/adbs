@@ -26,6 +26,7 @@
 
     <body
         class="bg-[#fcfcfc]"
+        hx-ext="sse"
         hx-headers='{"X-CSRF-TOKEN": "{{ csrf_token() }}"}'
     >
         <x-htmx-error-handler />
