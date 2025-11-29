@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Bookmark;
 
 use App\Rules\UniqueArrayElements;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Response;
 
 final class CreateBookmarkRequest extends FormRequest
 {
@@ -28,19 +25,9 @@ final class CreateBookmarkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'url' => ['required', 'string', 'url', 'min:8'],
+            'url' => ['required', 'string', 'url:http,https', 'min:8'],
             'title' => ['required', 'string', 'max:512'],
             'tags' => ['array', 'distinct', new UniqueArrayElements()],
         ];
-    }
-
-    /**
-     * Handle failed validation and return validation errors as a JSON response.
-     */
-    protected function failedValidation(Validator $validator): void
-    {
-        throw new HttpResponseException(response()->json([
-            'errors' => $validator->errors(),
-        ], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

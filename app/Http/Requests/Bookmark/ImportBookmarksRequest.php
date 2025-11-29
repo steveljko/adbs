@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Bookmark;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\View;
-use Illuminate\Validation\ValidationException;
-use Mauricius\LaravelHtmx\Http\HtmxRequest;
-use Mauricius\LaravelHtmx\Http\HtmxResponse;
+use Illuminate\Support\Facades\Request;
 
 final class ImportBookmarksRequest extends FormRequest
 {
@@ -47,25 +43,5 @@ final class ImportBookmarksRequest extends FormRequest
             'file.file' => 'The uploaded item must be a file.',
             'file.mimes' => 'The file must be in JSON format.',
         ];
-    }
-
-    public function failedValidation(Validator $validator): void
-    {
-        $request = app()->make(HtmxRequest::class);
-
-        if ($request->isHtmxRequest()) {
-            $view = View::renderFragment('partials.bookmark.import-export.export', 'form', [
-                'errors' => $validator->errors(),
-            ]);
-
-            $response = with(new HtmxResponse())
-                ->addRenderedFragment($view)
-                ->reswap('innerHTML')
-                ->retarget('form');
-
-            throw new ValidationException($validator, $response);
-        }
-
-        parent::failedValidation($validator);
     }
 }
