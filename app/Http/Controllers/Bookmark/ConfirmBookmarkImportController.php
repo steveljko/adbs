@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * This controller handles the confirmation of bookmark imports.
@@ -35,8 +34,11 @@ final class ConfirmBookmarkImportController
             $tempFile->delete($tempFileName);
 
             return htmx()
-                ->toast(type: 'info', text: 'Bookmark import has been started!')
-                ->response();
+                ->trigger('hideModal')
+                ->toast(type: 'info', text: 'Import is starting!')
+                ->target('#progressContainer')
+                ->swap('innerHTML')
+                ->response(view('partials.bookmark.import-export.import-progress'));
         } catch (Exception $e) {
             Log::error('Bookmark import confirmation failed.', [
                 'error' => $e->getMessage(),
@@ -50,55 +52,40 @@ final class ConfirmBookmarkImportController
         }
     }
 
-    // TODO: improve this...
     public function progress()
     {
         $userId = Auth::id();
+        $data = Cache::get("upload_progress_{$userId}");
 
-        return new StreamedResponse(function () use ($userId) {
-            $lastProgress = -1;
+        if (! $data) {
+            $data = [
+                'progress' => 0,
+                'status' => 'waiting',
+                'message' => 'No upload in progress',
+            ];
+        }
 
-            while (true) {
-                $data = Cache::get("upload_progress_{$userId}");
+        $isComplete = in_array($data['status'], ['completed', 'failed']);
 
-                if (! $data) {
-                    echo 'data: '.json_encode([
-                        'code' => 'WAITING',
-                        'message' => 'Job not found',
-                    ])."\n\n";
-                    ob_flush();
-                    flush();
-                    break;
-                }
+        // Stop polling when complete
+        if ($isComplete) {
+            return htmx()
+                ->trigger('progressComplete')
+                ->target('#progress')
+                ->swap('innerHTML')
+                ->response(view('partials.bookmark.import-export.import-progress', [
+                    'progress' => $data['progress'],
+                    'message' => $data['message'],
+                ])->fragment('content'));
+            Cache::forget("upload_progress_{$userId}");
+        }
 
-                if ($data['progress'] !== $lastProgress) {
-                    echo 'data: '.json_encode($data)."\n\n";
-                    ob_flush();
-                    flush();
-                    $lastProgress = $data['progress'];
-                }
-
-                if ($data['status'] === 'completed' || $data['status'] === 'failed') {
-                    echo 'data: '.json_encode($data)."\n\n";
-                    ob_flush();
-                    flush();
-
-                    // clean up cache after delay
-                    Cache::forget("upload_progress_{$userId}");
-                    break;
-                }
-
-                // avoid hammering the cache
-                usleep(500000); // 0.5 seconds
-
-                if (connection_aborted()) {
-                    break;
-                }
-            }
-        }, 200, [
-            'Content-Type' => 'text/event-stream',
-            'Cache-Control' => 'no-cache',
-            'X-Accel-Buffering' => 'no',
-        ]);
+        return htmx()
+            ->target('#progress')
+            ->swap('innerHTML')
+            ->response(view('partials.bookmark.import-export.import-progress', [
+                'progress' => $data['progress'],
+                'message' => $data['message'],
+            ])->fragment('content'));
     }
 }

@@ -38,7 +38,12 @@ final class DecryptAndImportBookmarksController
 
             $tempFile->delete($tempFileName);
 
-            return htmx()->toast(type: 'info', text: 'Import is starting!')->response();
+            return htmx()
+                ->trigger('hideModal')
+                ->toast(type: 'info', text: 'Import is starting!')
+                ->target('#progressContainer')
+                ->swap('innerHTML')
+                ->response(view('partials.bookmark.import-export.import-progress'));
         } catch (DecryptException $e) {
             Log::warning('Invalid password provided for encrypted bookmark import', [
                 'user_id' => Auth::id(),

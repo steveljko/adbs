@@ -68,54 +68,55 @@
                     </p>
                 </div>
 
-                @fragment('form')
-                    <form
-                        class="space-y-4"
-                        hx-encoding="multipart/form-data"
-                        hx-post="{{ route('bookmarks.import') }}"
-                        hx-swap="none"
-                        x-data="{
-                            selectedFile: null,
-                            handleFileSelect(event) {
-                                event.preventDefault();
-                                this.selectedFile = event.target.files[0];
-                                if (this.selectedFile) {
-                                    htmx.trigger(this.$refs.form, 'submit');
+                <div id="progressContainer">
+                    @fragment('form')
+                        <form
+                            class="space-y-4"
+                            hx-encoding="multipart/form-data"
+                            hx-post="{{ route('bookmarks.import') }}"
+                            hx-swap="none"
+                            x-data="{
+                                selectedFile: null,
+                                handleFileSelect(event) {
+                                    event.preventDefault();
+                                    this.selectedFile = event.target.files[0];
+                                    if (this.selectedFile) {
+                                        htmx.trigger(this.$refs.form, 'submit');
+                                    }
                                 }
-                            }
-                        }"
-                        x-ref="form"
-                    >
-                        <input
-                            @change="handleFileSelect($event)"
-                            accept=".json"
-                            class="sr-only"
-                            id="file-input"
-                            name="file"
-                            type="file"
-                            x-ref="fileInput"
+                            }"
+                            x-ref="form"
                         >
+                            <input
+                                @change="handleFileSelect($event)"
+                                accept=".json"
+                                class="sr-only"
+                                id="file-input"
+                                name="file"
+                                type="file"
+                                x-ref="fileInput"
+                            >
 
-                        <x-button
-                            @click="$refs.fileInput.click()"
-                            class="w-full"
-                            id="importBtn"
-                            size="sm"
-                            type="button"
-                            variant="blue"
-                        >
-                            <span class="flex items-center justify-center gap-2">
-                                <x-icon
-                                    class="h-4 w-4"
-                                    name="document"
-                                />
-                                Choose File
-                            </span>
-                        </x-button>
-                    </form>
-                @endfragment
+                            <x-button
+                                @click="$refs.fileInput.click()"
+                                class="w-full"
+                                id="importBtn"
+                                size="sm"
+                                type="button"
+                                variant="blue"
+                            >
+                                <span class="flex items-center justify-center gap-2">
+                                    <x-icon
+                                        class="h-4 w-4"
+                                        name="document"
+                                    />
+                                    Choose File
+                                </span>
+                            </x-button>
+                        </form>
+                    @endfragment
+                </div>
 
-                @include('partials.bookmark.import-export.import-progress')
             </div>
         </div>
 

@@ -74,7 +74,7 @@ final class ImportBookmarksAction
                 Cache::put("upload_progress_{$userId}", [
                     'progress' => 100,
                     'status' => 'completed',
-                    'message' => 'Import completed successfully',
+                    'message' => 'Import finished',
                     'timestamp' => now()->toIso8601String(),
                 ], 3600);
             })

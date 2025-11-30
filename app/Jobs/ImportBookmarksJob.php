@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Actions\Bookmark\CreateBookmarkAction;
+use App\Http\Requests\Bookmark\CreateBookmarkRequest;
 use Exception;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,7 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Throwable;
+use Illuminate\Support\Facades\Validator;
 
 final class ImportBookmarksJob implements ShouldQueue
 {
@@ -27,7 +28,6 @@ final class ImportBookmarksJob implements ShouldQueue
 
     public function handle(CreateBookmarkAction $action): void
     {
-        // Check if batch has been cancelled
         if ($this->batch()?->cancelled()) {
             return;
         }
@@ -35,19 +35,21 @@ final class ImportBookmarksJob implements ShouldQueue
         $processed = 0;
         $failed = 0;
 
-        foreach ($this->bookmarks as $bookmark) {
+        $validatedBookmarks = $this->validateBookmarks();
+
+        foreach ($validatedBookmarks as $bookmark) {
             if ($this->batch()?->cancelled()) {
                 break;
             }
 
             try {
                 $action->execute([
-                    'title' => $bookmark['title'],
                     'url' => $bookmark['url'],
+                    'title' => $bookmark['title'],
+                    'tags' => $bookmark['tags'] ?? [],
                 ], $this->userId);
 
                 $processed++;
-
                 $this->updateBatchProgress();
             } catch (Exception $e) {
                 $failed++;
@@ -59,20 +61,68 @@ final class ImportBookmarksJob implements ShouldQueue
             }
         }
 
+        $failedValidation = count($this->bookmarks) - count($validatedBookmarks);
+
         Log::info('Chunk processed', [
             'user_id' => $this->userId,
             'processed' => $processed,
-            'failed' => $failed,
+            'failed_validation' => $failedValidation,
+            'failed_execution' => $failed,
+            'total_in_chunk' => count($this->bookmarks),
         ]);
     }
 
-    public function failed(?Throwable $exception): void
+    protected function validateBookmarks(): array
     {
-        Log::error('Import job failed', [
+        $validatedBookmarks = [];
+
+        foreach ($this->bookmarks as $index => $bookmark) {
+            if (! is_array($bookmark)) {
+                Log::warning('Bookmark is not an array', [
+                    'user_id' => $this->userId,
+                    'index' => $index,
+                    'type' => gettype($bookmark),
+                ]);
+
+                continue;
+            }
+
+            $validator = Validator::make($bookmark, (new CreateBookmarkRequest()->rules()));
+
+            if ($validator->fails()) {
+                Log::warning('Invalid bookmark data', [
+                    'user_id' => $this->userId,
+                    'index' => $index,
+                    'url' => $bookmark['url'] ?? 'missing',
+                    'title' => $bookmark['title'] ?? 'missing',
+                    'errors' => $validator->errors()->toArray(),
+                ]);
+
+                continue;
+            }
+
+            if (isset($bookmark['tags']) && is_array($bookmark['tags'])) {
+                $uniqueTags = array_unique($bookmark['tags']);
+                if (count($uniqueTags) !== count($bookmark['tags'])) {
+                    Log::warning('Duplicate tags found', [
+                        'user_id' => $this->userId,
+                        'url' => $bookmark['url'],
+                    ]);
+                    $bookmark['tags'] = array_values($uniqueTags);
+                }
+            }
+
+            $validatedBookmarks[] = $validator->validated();
+        }
+
+        Log::info('Validation complete', [
             'user_id' => $this->userId,
-            'batch_id' => $this->batch()?->id,
-            'error' => $exception?->getMessage(),
+            'total' => count($this->bookmarks),
+            'valid' => count($validatedBookmarks),
+            'invalid' => count($this->bookmarks) - count($validatedBookmarks),
         ]);
+
+        return $validatedBookmarks;
     }
 
     protected function updateBatchProgress(): void
@@ -84,17 +134,10 @@ final class ImportBookmarksJob implements ShouldQueue
         $batch = $this->batch();
         $progress = $batch->progress();
 
-        $cachedProgress = Cache::get("upload_progress_{$this->userId}");
-        $totalBookmarks = $cachedProgress['total'] ?? 0;
-
         Cache::put("upload_progress_{$this->userId}", [
             'progress' => round($progress, 2),
             'status' => 'processing',
             'message' => "Processing bookmarks... {$progress}% complete",
-            'total' => $totalBookmarks,
-            'total_jobs' => $batch->totalJobs,
-            'pending_jobs' => $batch->pendingJobs,
-            'failed_jobs' => $batch->failedJobs,
             'timestamp' => now()->toIso8601String(),
         ], 3600);
     }
