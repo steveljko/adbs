@@ -7,8 +7,10 @@ namespace App\Actions\Tag;
 use App\Models\Bookmark;
 use App\Models\Tag;
 use App\ValueObjects\TagAttachOrCreateResult;
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -18,9 +20,6 @@ final class AttachOrCreateTagsAction
         private readonly GenerateTagColorsAction $generateTagColorsAction
     ) {}
 
-    /*
-    * Attach existing tags or create new ones for the given bookmark.
-    */
     public function execute(Bookmark $bookmark, array $tags = []): TagAttachOrCreateResult
     {
         $sanitizedTags = $this->sanitizeTags($tags);
@@ -32,8 +31,7 @@ final class AttachOrCreateTagsAction
             );
         }
 
-        $tagIds = $this->getOrCreateTags($sanitizedTags);
-
+        $tagIds = $this->getOrCreateTags($sanitizedTags, $bookmark->user_id);
         $bookmark->tags()->attach($tagIds);
 
         Log::info('Attached tags to bookmark', [
@@ -49,9 +47,6 @@ final class AttachOrCreateTagsAction
         );
     }
 
-    /*
-     * Return clean collection of valid, unique tag names.
-     */
     private function sanitizeTags(array $tags): Collection
     {
         return collect($tags)
@@ -61,42 +56,61 @@ final class AttachOrCreateTagsAction
             ->values();
     }
 
-    private function getOrCreateTags(Collection $tagNames): array
+    private function getOrCreateTags(Collection $tagNames, int $userId): array
     {
-        $existingTags = Tag::whereIn('name', $tagNames)
-            ->where('user_id', Auth::id())
-            ->pluck('id', 'name');
+        $tagIds = [];
 
-        $missingTagNames = $tagNames->diff($existingTags->keys());
+        foreach ($tagNames as $name) {
+            $key = Str::slug($name);
 
-        if ($missingTagNames->isNotEmpty()) {
-            $newTags = $this->createTags($missingTagNames);
-            $existingTags = $existingTags->merge($newTags);
+            Log::debug('Processing tag', [
+                'name' => $name,
+                'key' => $key,
+                'user_id' => $userId,
+            ]);
+
+            $tag = DB::transaction(function () use ($key, $name, $userId) {
+                $tag = Tag::where('key', $key)
+                    ->where('user_id', $userId)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($tag) {
+                    Log::debug('Tag exists', ['tag_id' => $tag->id, 'user_id' => $tag->user_id]);
+
+                    return $tag;
+                }
+
+                try {
+                    $tag = new Tag([
+                        'name' => $name,
+                        'key' => $key,
+                        'text_color' => $this->generateTagColorsAction->getTextColor(),
+                        'background_color' => $this->generateTagColorsAction->getBackgroundColor(),
+                        'user_id' => $userId,
+                    ]);
+
+                    $tag->save();
+
+                    Log::debug('Tag created', ['tag_id' => $tag->id]);
+
+                    return $tag;
+
+                } catch (Exception $e) {
+                    Log::error('Tag creation failed', [
+                        'key' => $key,
+                        'user_id' => $userId,
+                        'error' => $e->getMessage(),
+                        'code' => $e->getCode(),
+                    ]);
+
+                    throw $e;
+                }
+            });
+
+            $tagIds[] = $tag->id;
         }
 
-        return $existingTags->values()->toArray();
-    }
-
-    private function createTags(Collection $tagNames): Collection
-    {
-        $userId = Auth::id();
-
-        $tagsData = $tagNames->map(function ($name) use ($userId) {
-            return [
-                'name' => $name,
-                'key' => Str::slug($name),
-                'text_color' => $this->generateTagColorsAction->getTextColor(),
-                'background_color' => $this->generateTagColorsAction->getBackgroundColor(),
-                'user_id' => $userId,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        })->toArray();
-
-        Tag::insert($tagsData);
-
-        return Tag::whereIn('name', $tagNames)
-            ->where('user_id', $userId)
-            ->pluck('id', 'name');
+        return $tagIds;
     }
 }
